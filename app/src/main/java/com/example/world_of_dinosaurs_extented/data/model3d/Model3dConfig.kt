@@ -30,32 +30,12 @@ object Model3dConfig {
             assetPath = "models/stegosaurus.glb",
             scale = 0.5f
         ),
-        // Remote models (downloaded on demand)
-        "velociraptor" to ModelInfo(
-            dinosaurId = "velociraptor",
-            remoteUrl = "https://raw.githubusercontent.com/user/dino-models/main/velociraptor.glb",
-            scale = 0.8f
-        ),
-        "brachiosaurus" to ModelInfo(
-            dinosaurId = "brachiosaurus",
-            remoteUrl = "https://raw.githubusercontent.com/user/dino-models/main/brachiosaurus.glb",
-            scale = 0.3f
-        ),
-        "spinosaurus" to ModelInfo(
-            dinosaurId = "spinosaurus",
-            remoteUrl = "https://raw.githubusercontent.com/user/dino-models/main/spinosaurus.glb",
-            scale = 0.5f
-        ),
-        "pteranodon" to ModelInfo(
-            dinosaurId = "pteranodon",
-            remoteUrl = "https://raw.githubusercontent.com/user/dino-models/main/pteranodon.glb",
-            scale = 0.6f
-        ),
-        "ankylosaurus" to ModelInfo(
-            dinosaurId = "ankylosaurus",
-            remoteUrl = "https://raw.githubusercontent.com/user/dino-models/main/ankylosaurus.glb",
-            scale = 0.5f
-        )
+        // Remote models can be added here when hosted GLB URLs are available:
+        // "velociraptor" to ModelInfo(dinosaurId = "velociraptor", remoteUrl = "https://...", scale = 0.8f),
+        // "brachiosaurus" to ModelInfo(dinosaurId = "brachiosaurus", remoteUrl = "https://...", scale = 0.3f),
+        // "spinosaurus" to ModelInfo(dinosaurId = "spinosaurus", remoteUrl = "https://...", scale = 0.5f),
+        // "pteranodon" to ModelInfo(dinosaurId = "pteranodon", remoteUrl = "https://...", scale = 0.6f),
+        // "ankylosaurus" to ModelInfo(dinosaurId = "ankylosaurus", remoteUrl = "https://...", scale = 0.5f)
     )
 
     fun hasModel(dinosaurId: String): Boolean =
