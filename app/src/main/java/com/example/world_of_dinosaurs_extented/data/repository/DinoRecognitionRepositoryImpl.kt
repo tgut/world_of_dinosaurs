@@ -1,6 +1,6 @@
 package com.example.world_of_dinosaurs_extented.data.repository
 
-import com.example.world_of_dinosaurs_extented.BuildConfig
+import com.example.world_of_dinosaurs_extented.data.SettingsManager
 import com.example.world_of_dinosaurs_extented.data.local.dao.DinosaurDao
 import com.example.world_of_dinosaurs_extented.data.local.mapper.toDomain
 import com.example.world_of_dinosaurs_extented.data.remote.VisionRemoteDataSource
@@ -12,7 +12,8 @@ import javax.inject.Singleton
 @Singleton
 class DinoRecognitionRepositoryImpl @Inject constructor(
     private val visionRemoteDataSource: VisionRemoteDataSource,
-    private val dinosaurDao: DinosaurDao
+    private val dinosaurDao: DinosaurDao,
+    private val settingsManager: SettingsManager
 ) : DinoRecognitionRepository {
 
     // Common dinosaur-related keywords to filter relevant labels
@@ -24,9 +25,9 @@ class DinoRecognitionRepositoryImpl @Inject constructor(
     )
 
     override suspend fun recognizeDinosaur(base64Image: String): List<RecognitionMatch> {
-        val apiKey = BuildConfig.VISION_API_KEY
+        val apiKey = settingsManager.getVisionApiKey()
         if (apiKey.isBlank()) {
-            throw Exception("Vision API key not configured. Add VISION_API_KEY to local.properties")
+            throw Exception("Vision API key not configured. Please set it in Settings.")
         }
 
         val response = visionRemoteDataSource.analyzeImage(base64Image, apiKey)

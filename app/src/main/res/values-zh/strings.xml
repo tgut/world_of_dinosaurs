@@ -104,6 +104,10 @@
     <string name="recognition_results">识别结果</string>
     <string name="captured_image">拍摄的图片</string>
 
+    <string name="vision_api_key_title">Vision API 密钥</string>
+    <string name="vision_api_key_hint">恐龙图像识别功能需要此密钥。请从 Google Cloud Console 获取。</string>
+    <string name="save_api_key">保存</string>
+
     <!-- Phase 16: 3D/AR -->
     <string name="downloading_model">正在下载 3D 模型…</string>
     <string name="model_gesture_hint">拖动旋转 · 捏合缩放</string>

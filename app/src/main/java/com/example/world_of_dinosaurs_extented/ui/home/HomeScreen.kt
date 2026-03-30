@@ -42,7 +42,6 @@ import com.example.world_of_dinosaurs_extented.ui.home.components.FilterChips
 fun HomeScreen(
     onDinosaurClick: (String) -> Unit,
     onNavigateToTimeline: () -> Unit,
-    onNavigateToQrScan: () -> Unit,
     onNavigateToQuiz: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToRecognition: () -> Unit = {},
@@ -87,7 +86,6 @@ fun HomeScreen(
                 currentRoute = "home",
                 onNavigateToHome = {},
                 onNavigateToTimeline = onNavigateToTimeline,
-                onNavigateToQrScan = onNavigateToQrScan,
                 onNavigateToQuiz = onNavigateToQuiz,
                 onNavigateToSettings = onNavigateToSettings
             )

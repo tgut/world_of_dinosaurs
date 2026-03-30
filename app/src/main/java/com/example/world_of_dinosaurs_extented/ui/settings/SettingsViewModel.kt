@@ -17,6 +17,13 @@ class SettingsViewModel @Inject constructor(
 
     val language: Flow<String> = settingsManager.languageFlow
     val theme: Flow<String> = settingsManager.themeFlow
+    val visionApiKey: Flow<String> = settingsManager.visionApiKeyFlow
+
+    fun setVisionApiKey(key: String) {
+        viewModelScope.launch {
+            settingsManager.setVisionApiKey(key.trim())
+        }
+    }
 
     fun setLanguage(lang: String) {
         viewModelScope.launch {

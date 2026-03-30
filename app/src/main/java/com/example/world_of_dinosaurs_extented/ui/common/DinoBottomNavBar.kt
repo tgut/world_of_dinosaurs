@@ -2,7 +2,6 @@ package com.example.world_of_dinosaurs_extented.ui.common
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Timeline
@@ -23,14 +22,12 @@ fun DinoBottomNavBar(
     currentRoute: String,
     onNavigateToHome: () -> Unit,
     onNavigateToTimeline: () -> Unit,
-    onNavigateToQrScan: () -> Unit,
     onNavigateToQuiz: () -> Unit,
     onNavigateToSettings: () -> Unit
 ) {
     val items = listOf(
         BottomNavItem(R.string.home, Icons.Default.Home, "home"),
         BottomNavItem(R.string.timeline, Icons.Default.Timeline, "timeline"),
-        BottomNavItem(R.string.qr_scan, Icons.Default.QrCodeScanner, "qrscan"),
         BottomNavItem(R.string.quiz, Icons.Default.Quiz, "quiz"),
         BottomNavItem(R.string.settings, Icons.Default.Settings, "settings")
     )
@@ -45,7 +42,6 @@ fun DinoBottomNavBar(
                     when (item.route) {
                         "home" -> onNavigateToHome()
                         "timeline" -> onNavigateToTimeline()
-                        "qrscan" -> onNavigateToQrScan()
                         "quiz" -> onNavigateToQuiz()
                         "settings" -> onNavigateToSettings()
                     }

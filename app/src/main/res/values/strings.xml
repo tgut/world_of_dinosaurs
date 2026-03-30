@@ -104,6 +104,10 @@
     <string name="recognition_results">Results</string>
     <string name="captured_image">Captured image</string>
 
+    <string name="vision_api_key_title">Vision API Key</string>
+    <string name="vision_api_key_hint">Required for dinosaur image recognition. Get your key from Google Cloud Console.</string>
+    <string name="save_api_key">Save</string>
+
     <!-- Phase 16: 3D/AR -->
     <string name="downloading_model">Downloading 3D model…</string>
     <string name="model_gesture_hint">Drag to rotate · Pinch to zoom</string>

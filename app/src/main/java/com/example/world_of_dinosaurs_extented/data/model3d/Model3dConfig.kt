@@ -15,8 +15,8 @@ object Model3dConfig {
 
     private val models = mapOf(
         // Bundled models (in APK assets)
-        "tyrannosaurus_rex" to ModelInfo(
-            dinosaurId = "tyrannosaurus_rex",
+        "trex" to ModelInfo(
+            dinosaurId = "trex",
             assetPath = "models/tyrannosaurus_rex.glb",
             scale = 0.5f
         ),

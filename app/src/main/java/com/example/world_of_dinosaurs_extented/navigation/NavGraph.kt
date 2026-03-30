@@ -30,7 +30,6 @@ fun DinoNavGraph(navController: NavHostController) {
             HomeScreen(
                 onDinosaurClick = { id -> navController.navigate(Screen.Detail.createRoute(id)) },
                 onNavigateToTimeline = { navController.navigate(Screen.Timeline.route) },
-                onNavigateToQrScan = { navController.navigate(Screen.QrScan.route) },
                 onNavigateToQuiz = { navController.navigate(Screen.Quiz.route) },
                 onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
                 onNavigateToRecognition = { navController.navigate(Screen.DinoRecognition.route) }
@@ -80,7 +79,6 @@ fun DinoNavGraph(navController: NavHostController) {
                 },
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToHome = { navController.navigate(Screen.Home.createRoute()) },
-                onNavigateToQrScan = { navController.navigate(Screen.QrScan.route) },
                 onNavigateToQuiz = { navController.navigate(Screen.Quiz.route) },
                 onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
             )

@@ -1,12 +1,20 @@
 package com.example.world_of_dinosaurs_extented.ui.settings
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -20,6 +28,17 @@ fun SettingsScreen(
 ) {
     val language by viewModel.language.collectAsStateWithLifecycle(initialValue = "en")
     val theme by viewModel.theme.collectAsStateWithLifecycle(initialValue = "system")
+    val savedApiKey by viewModel.visionApiKey.collectAsStateWithLifecycle(initialValue = "")
+    var apiKeyInput by remember { mutableStateOf("") }
+    var apiKeyVisible by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+
+    // Sync input field with saved value when it loads
+    LaunchedEffect(savedApiKey) {
+        if (apiKeyInput.isEmpty() && savedApiKey.isNotEmpty()) {
+            apiKeyInput = savedApiKey
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -81,6 +100,52 @@ fun SettingsScreen(
                     onClick = { viewModel.setTheme("dark") },
                     label = { Text(stringResource(R.string.dark)) }
                 )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Vision API Key section
+            Text(
+                text = stringResource(R.string.vision_api_key_title),
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(R.string.vision_api_key_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = apiKeyInput,
+                onValueChange = { apiKeyInput = it },
+                label = { Text("API Key") },
+                singleLine = true,
+                visualTransformation = if (apiKeyVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { apiKeyVisible = !apiKeyVisible }) {
+                        Icon(
+                            if (apiKeyVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                            contentDescription = null
+                        )
+                    }
+                },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = {
+                    viewModel.setVisionApiKey(apiKeyInput)
+                    focusManager.clearFocus()
+                }),
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = {
+                    viewModel.setVisionApiKey(apiKeyInput)
+                    focusManager.clearFocus()
+                },
+                enabled = apiKeyInput.trim() != savedApiKey
+            ) {
+                Text(stringResource(R.string.save_api_key))
             }
 
             Spacer(modifier = Modifier.height(32.dp))

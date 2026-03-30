@@ -32,7 +32,6 @@ fun TimelineScreen(
     onEraClick: (DinosaurEra) -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToHome: () -> Unit,
-    onNavigateToQrScan: () -> Unit,
     onNavigateToQuiz: () -> Unit,
     onNavigateToSettings: () -> Unit,
     viewModel: TimelineViewModel = hiltViewModel()
@@ -55,7 +54,6 @@ fun TimelineScreen(
                 currentRoute = "timeline",
                 onNavigateToHome = onNavigateToHome,
                 onNavigateToTimeline = {},
-                onNavigateToQrScan = onNavigateToQrScan,
                 onNavigateToQuiz = onNavigateToQuiz,
                 onNavigateToSettings = onNavigateToSettings
             )

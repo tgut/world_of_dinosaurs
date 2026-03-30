@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -28,6 +29,10 @@ class SettingsManager @Inject constructor(
         prefs[THEME_KEY] ?: "system"
     }
 
+    val visionApiKeyFlow: Flow<String> = dataStore.data.map { prefs ->
+        prefs[VISION_API_KEY] ?: ""
+    }
+
     suspend fun setLanguage(language: String) {
         dataStore.edit { prefs -> prefs[LANGUAGE_KEY] = language }
     }
@@ -36,8 +41,17 @@ class SettingsManager @Inject constructor(
         dataStore.edit { prefs -> prefs[THEME_KEY] = theme }
     }
 
+    suspend fun setVisionApiKey(key: String) {
+        dataStore.edit { prefs -> prefs[VISION_API_KEY] = key }
+    }
+
+    suspend fun getVisionApiKey(): String {
+        return dataStore.data.map { prefs -> prefs[VISION_API_KEY] ?: "" }.first()
+    }
+
     companion object {
         private val LANGUAGE_KEY = stringPreferencesKey("language")
         private val THEME_KEY = stringPreferencesKey("theme")
+        private val VISION_API_KEY = stringPreferencesKey("vision_api_key")
     }
 }

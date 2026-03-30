@@ -112,7 +112,6 @@ fun QrScanScreen(
                 currentRoute = "qrscan",
                 onNavigateToHome = onNavigateToHome,
                 onNavigateToTimeline = onNavigateToTimeline,
-                onNavigateToQrScan = {},
                 onNavigateToQuiz = onNavigateToQuiz,
                 onNavigateToSettings = onNavigateToSettings
             )
