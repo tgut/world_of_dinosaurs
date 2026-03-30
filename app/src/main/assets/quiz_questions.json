@@ -1,0 +1,317 @@
+[
+  {
+    "id": "q1",
+    "question": "Which dinosaur is known as the 'King of the Tyrant Lizards'?",
+    "questionZh": "哪种恐龙被称为「暴君蜥蜴之王」？",
+    "imageUrl": null,
+    "options": [
+      "Velociraptor",
+      "Tyrannosaurus Rex",
+      "Allosaurus",
+      "Spinosaurus"
+    ],
+    "optionsZh": [
+      "迅猛龙",
+      "霸王龙",
+      "异特龙",
+      "棘龙"
+    ],
+    "correctIndex": 1,
+    "explanation": "Tyrannosaurus Rex literally means 'King of the Tyrant Lizards' in Latin.",
+    "explanationZh": "霸王龙的拉丁语名字意思就是「暴君蜥蜴之王」。"
+  },
+  {
+    "id": "q2",
+    "question": "How many horns did Triceratops have?",
+    "questionZh": "三角龙有几个角？",
+    "imageUrl": null,
+    "options": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "optionsZh": [
+      "1个",
+      "2个",
+      "3个",
+      "4个"
+    ],
+    "correctIndex": 2,
+    "explanation": "Triceratops means 'three-horned face' - it had two large brow horns and one smaller nose horn.",
+    "explanationZh": "三角龙的意思是「三个角的脸」——它有两个大的眉角和一个小的鼻角。"
+  },
+  {
+    "id": "q3",
+    "question": "Which period did most dinosaurs go extinct at the end of?",
+    "questionZh": "大多数恐龙在哪个时期末灭绝？",
+    "imageUrl": null,
+    "options": [
+      "Triassic",
+      "Jurassic",
+      "Cretaceous",
+      "Permian"
+    ],
+    "optionsZh": [
+      "三叠纪",
+      "侏罗纪",
+      "白垩纪",
+      "二叠纪"
+    ],
+    "correctIndex": 2,
+    "explanation": "The mass extinction event that killed most dinosaurs occurred about 66 million years ago at the end of the Cretaceous period.",
+    "explanationZh": "导致大多数恐龙灭绝的大灭绝事件发生在约6600万年前的白垩纪末期。"
+  },
+  {
+    "id": "q4",
+    "question": "Which dinosaur was the largest carnivore, even bigger than T. Rex?",
+    "questionZh": "哪种恐龙是最大的肉食动物，甚至比霸王龙还大？",
+    "imageUrl": null,
+    "options": [
+      "Allosaurus",
+      "Giganotosaurus",
+      "Spinosaurus",
+      "Carnotaurus"
+    ],
+    "optionsZh": [
+      "异特龙",
+      "南方巨兽龙",
+      "棘龙",
+      "食肉牛龙"
+    ],
+    "correctIndex": 2,
+    "explanation": "Spinosaurus was the largest known carnivorous dinosaur, reaching up to 15 meters in length.",
+    "explanationZh": "棘龙是已知最大的肉食性恐龙，体长可达15米。"
+  },
+  {
+    "id": "q5",
+    "question": "What was special about Velociraptor's body?",
+    "questionZh": "迅猛龙的身体有什么特别之处？",
+    "imageUrl": null,
+    "options": [
+      "It had armor plates",
+      "It was covered in feathers",
+      "It could fly",
+      "It had a horn"
+    ],
+    "optionsZh": [
+      "它有甲板",
+      "它覆盖着羽毛",
+      "它能飞",
+      "它有角"
+    ],
+    "correctIndex": 1,
+    "explanation": "Velociraptor was covered in feathers, as evidenced by quill knobs found on its arm bones.",
+    "explanationZh": "迅猛龙覆盖着羽毛，在它臂骨上发现的羽根瘤提供了证据。"
+  },
+  {
+    "id": "q6",
+    "question": "Which dinosaur is often called a 'living tank'?",
+    "questionZh": "哪种恐龙经常被称为「活坦克」？",
+    "imageUrl": null,
+    "options": [
+      "Stegosaurus",
+      "Triceratops",
+      "Ankylosaurus",
+      "Pachycephalosaurus"
+    ],
+    "optionsZh": [
+      "剑龙",
+      "三角龙",
+      "甲龙",
+      "厚头龙"
+    ],
+    "correctIndex": 2,
+    "explanation": "Ankylosaurus was heavily armored with bony plates covering its entire body and had a massive club tail.",
+    "explanationZh": "甲龙全身披着厚重的骨甲，还有巨大的锤状尾巴，因此被称为「活坦克」。"
+  },
+  {
+    "id": "q7",
+    "question": "What did Stegosaurus use the plates on its back for?",
+    "questionZh": "剑龙背上的骨板有什么作用？",
+    "imageUrl": null,
+    "options": [
+      "Flying",
+      "Temperature regulation and display",
+      "Attacking prey",
+      "Digging"
+    ],
+    "optionsZh": [
+      "飞行",
+      "调节体温和展示",
+      "攻击猎物",
+      "挖掘"
+    ],
+    "correctIndex": 1,
+    "explanation": "The plates on Stegosaurus's back were likely used for temperature regulation (thermoregulation) and visual display.",
+    "explanationZh": "剑龙背上的骨板可能用于调节体温和视觉展示。"
+  },
+  {
+    "id": "q8",
+    "question": "Which prehistoric creature is considered the link between dinosaurs and birds?",
+    "questionZh": "哪种史前生物被认为是恐龙和鸟类之间的纽带？",
+    "imageUrl": null,
+    "options": [
+      "Pteranodon",
+      "Archaeopteryx",
+      "Velociraptor",
+      "Coelophysis"
+    ],
+    "optionsZh": [
+      "无齿翼龙",
+      "始祖鸟",
+      "迅猛龙",
+      "腔骨龙"
+    ],
+    "correctIndex": 1,
+    "explanation": "Archaeopteryx is considered the oldest known bird and a key transitional fossil between non-avian dinosaurs and modern birds.",
+    "explanationZh": "始祖鸟被认为是已知最早的鸟类，是非鸟恐龙和现代鸟类之间的关键过渡化石。"
+  },
+  {
+    "id": "q9",
+    "question": "What was unique about Parasaurolophus?",
+    "questionZh": "副栉龙有什么独特之处？",
+    "imageUrl": null,
+    "options": [
+      "Armor plating",
+      "A long hollow crest on its head",
+      "Giant wings",
+      "Venomous bite"
+    ],
+    "optionsZh": [
+      "骨甲",
+      "头上有长长的空心冠",
+      "巨大的翅膀",
+      "有毒的咬伤"
+    ],
+    "correctIndex": 1,
+    "explanation": "Parasaurolophus had a distinctive hollow crest that may have been used to produce trumpet-like sounds.",
+    "explanationZh": "副栉龙有独特的空心头冠，可能用来发出类似喇叭的声音。"
+  },
+  {
+    "id": "q10",
+    "question": "Which dinosaur's name means 'meat-eating bull'?",
+    "questionZh": "哪种恐龙的名字意为「食肉牛」？",
+    "imageUrl": null,
+    "options": [
+      "Triceratops",
+      "Carnotaurus",
+      "Pachycephalosaurus",
+      "Iguanodon"
+    ],
+    "optionsZh": [
+      "三角龙",
+      "食肉牛龙",
+      "厚头龙",
+      "禽龙"
+    ],
+    "correctIndex": 1,
+    "explanation": "Carnotaurus means 'meat-eating bull' in Latin, referring to its bull-like horns above the eyes.",
+    "explanationZh": "食肉牛龙在拉丁语中意为「食肉牛」，指的是它眼睛上方的牛角状角。"
+  },
+  {
+    "id": "q11",
+    "question": "What was Brachiosaurus's most distinctive feature?",
+    "questionZh": "腕龙最显著的特征是什么？",
+    "imageUrl": null,
+    "options": [
+      "Its tail spikes",
+      "Its front legs were longer than back legs",
+      "Its horns",
+      "Its speed"
+    ],
+    "optionsZh": [
+      "尾部尖刺",
+      "前肢比后肢更长",
+      "角",
+      "速度"
+    ],
+    "correctIndex": 1,
+    "explanation": "Unlike most dinosaurs, Brachiosaurus had front legs longer than its hind legs, giving it a giraffe-like posture.",
+    "explanationZh": "与大多数恐龙不同，腕龙的前肢比后肢更长，呈现类似长颈鹿的姿态。"
+  },
+  {
+    "id": "q12",
+    "question": "Which of these was NOT a dinosaur?",
+    "questionZh": "以下哪个不是恐龙？",
+    "imageUrl": null,
+    "options": [
+      "Triceratops",
+      "Stegosaurus",
+      "Pteranodon",
+      "Velociraptor"
+    ],
+    "optionsZh": [
+      "三角龙",
+      "剑龙",
+      "无齿翼龙",
+      "迅猛龙"
+    ],
+    "correctIndex": 2,
+    "explanation": "Pteranodon was a pterosaur (flying reptile), not a dinosaur. Pterosaurs are a separate group of reptiles.",
+    "explanationZh": "无齿翼龙是翼龙（飞行爬行动物），不是恐龙。翼龙是独立的爬行动物类群。"
+  },
+  {
+    "id": "q13",
+    "question": "How thick was Pachycephalosaurus's skull dome?",
+    "questionZh": "厚头龙的头骨穹顶有多厚？",
+    "imageUrl": null,
+    "options": [
+      "5 cm",
+      "10 cm",
+      "25 cm",
+      "50 cm"
+    ],
+    "optionsZh": [
+      "5厘米",
+      "10厘米",
+      "25厘米",
+      "50厘米"
+    ],
+    "correctIndex": 2,
+    "explanation": "Pachycephalosaurus's skull dome could be up to 25 cm (10 inches) thick.",
+    "explanationZh": "厚头龙的头骨穹顶可以厚达25厘米。"
+  },
+  {
+    "id": "q14",
+    "question": "In which era did the first dinosaurs appear?",
+    "questionZh": "恐龙最早出现在哪个时代？",
+    "imageUrl": null,
+    "options": [
+      "Cambrian",
+      "Permian",
+      "Triassic",
+      "Jurassic"
+    ],
+    "optionsZh": [
+      "寒武纪",
+      "二叠纪",
+      "三叠纪",
+      "侏罗纪"
+    ],
+    "correctIndex": 2,
+    "explanation": "The first dinosaurs appeared during the Triassic period, about 230 million years ago.",
+    "explanationZh": "最早的恐龙出现在三叠纪，大约2.3亿年前。"
+  },
+  {
+    "id": "q15",
+    "question": "What was Spinosaurus's sail likely used for?",
+    "questionZh": "棘龙的帆状脊可能有什么作用？",
+    "imageUrl": null,
+    "options": [
+      "Flying",
+      "Swimming faster",
+      "Temperature regulation and display",
+      "Storing fat"
+    ],
+    "optionsZh": [
+      "飞行",
+      "游得更快",
+      "调节体温和展示",
+      "储存脂肪"
+    ],
+    "correctIndex": 2,
+    "explanation": "The sail of Spinosaurus was likely used for thermoregulation and visual display to attract mates or intimidate rivals.",
+    "explanationZh": "棘龙的帆状脊可能用于调节体温和视觉展示，吸引配偶或威慑对手。"
+  }
+]
