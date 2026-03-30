@@ -94,4 +94,21 @@
     <string name="which_era">Which era does %1$s belong to?</string>
     <string name="which_diet">What is the diet type of %1$s?</string>
     <string name="which_size">What is the size category of %1$s?</string>
+
+    <!-- Phase 16: Recognition -->
+    <string name="identify_dinosaur">Identify Dinosaur</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="analyzing_image">Analyzing image…</string>
+    <string name="confidence_format">%1$d%% match</string>
+    <string name="no_dinosaur_found">No dinosaur identified in this image</string>
+    <string name="recognition_results">Results</string>
+    <string name="captured_image">Captured image</string>
+
+    <!-- Phase 16: 3D/AR -->
+    <string name="downloading_model">Downloading 3D model…</string>
+    <string name="model_gesture_hint">Drag to rotate · Pinch to zoom</string>
+    <string name="tap_to_place">Tap a surface to place the dinosaur</string>
+    <string name="move_phone_hint">Move your phone slowly to detect surfaces</string>
+    <string name="pinch_to_resize">Pinch to resize</string>
+    <string name="reset_placement">Reset</string>
 </resources>

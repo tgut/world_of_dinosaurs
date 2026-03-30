@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -44,6 +45,7 @@ fun HomeScreen(
     onNavigateToQrScan: () -> Unit,
     onNavigateToQuiz: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    onNavigateToRecognition: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -64,6 +66,9 @@ fun HomeScreen(
                 TopAppBar(
                     title = { Text(stringResource(R.string.app_name)) },
                     actions = {
+                        IconButton(onClick = onNavigateToRecognition) {
+                            Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.identify_dinosaur))
+                        }
                         IconButton(onClick = { showSearch = true }) {
                             Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_dinosaurs))
                         }

@@ -21,6 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.world_of_dinosaurs_extented.R
+import com.example.world_of_dinosaurs_extented.data.model3d.Model3dConfig
 import com.example.world_of_dinosaurs_extented.domain.model.Dinosaur
 import com.example.world_of_dinosaurs_extented.ui.common.ErrorView
 import com.example.world_of_dinosaurs_extented.ui.common.LoadingIndicator
@@ -134,7 +135,7 @@ fun DetailScreen(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         // 3D/AR buttons
-                        if (dino.model3dUrl != null) {
+                        if (Model3dConfig.hasModel(dino.id)) {
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 OutlinedButton(onClick = { onView3D(dino.id) }) {
                                     Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))

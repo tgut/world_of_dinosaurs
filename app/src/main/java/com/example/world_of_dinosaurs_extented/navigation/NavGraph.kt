@@ -16,6 +16,7 @@ import com.example.world_of_dinosaurs_extented.ui.quiz.QuizScreen
 import com.example.world_of_dinosaurs_extented.ui.qrscan.QrScanScreen
 import com.example.world_of_dinosaurs_extented.ui.scanhistory.ScanHistoryScreen
 import com.example.world_of_dinosaurs_extented.ui.reviewquiz.ReviewQuizScreen
+import com.example.world_of_dinosaurs_extented.ui.recognition.DinoRecognitionScreen
 import com.example.world_of_dinosaurs_extented.ui.settings.SettingsScreen
 import com.example.world_of_dinosaurs_extented.ui.timeline.TimelineScreen
 
@@ -31,7 +32,8 @@ fun DinoNavGraph(navController: NavHostController) {
                 onNavigateToTimeline = { navController.navigate(Screen.Timeline.route) },
                 onNavigateToQrScan = { navController.navigate(Screen.QrScan.route) },
                 onNavigateToQuiz = { navController.navigate(Screen.Quiz.route) },
-                onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
+                onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
+                onNavigateToRecognition = { navController.navigate(Screen.DinoRecognition.route) }
             )
         }
         composable(
@@ -57,7 +59,10 @@ fun DinoNavGraph(navController: NavHostController) {
             Screen.Model3D.route,
             arguments = listOf(navArgument("dinosaurId") { type = NavType.StringType })
         ) {
-            Model3DScreen(onNavigateBack = { navController.popBackStack() })
+            Model3DScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToAR = { id -> navController.navigate(Screen.AR.createRoute(id)) }
+            )
         }
         composable(
             Screen.AR.route,
@@ -100,6 +105,12 @@ fun DinoNavGraph(navController: NavHostController) {
         }
         composable(Screen.ReviewQuiz.route) {
             ReviewQuizScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(Screen.DinoRecognition.route) {
+            DinoRecognitionScreen(
+                onDinosaurClick = { id -> navController.navigate(Screen.Detail.createRoute(id)) },
                 onNavigateBack = { navController.popBackStack() }
             )
         }

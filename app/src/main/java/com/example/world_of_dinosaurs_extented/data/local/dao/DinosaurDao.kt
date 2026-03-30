@@ -39,4 +39,7 @@ interface DinosaurDao {
 
     @Query("SELECT MAX(lastUpdated) FROM dinosaurs WHERE dataSource = 'remote'")
     suspend fun getLastRemoteUpdateTime(): Long?
+
+    @Query("SELECT * FROM dinosaurs ORDER BY name ASC")
+    suspend fun getAllDinosaursList(): List<DinosaurEntity>
 }

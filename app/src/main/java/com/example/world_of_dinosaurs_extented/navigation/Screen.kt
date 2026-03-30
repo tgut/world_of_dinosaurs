@@ -20,4 +20,5 @@ sealed class Screen(val route: String) {
     data object QrScan : Screen("qrscan")
     data object ScanHistory : Screen("scan_history")
     data object ReviewQuiz : Screen("review_quiz")
+    data object DinoRecognition : Screen("dino_recognition")
 }

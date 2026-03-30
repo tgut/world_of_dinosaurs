@@ -94,4 +94,21 @@
     <string name="which_era">%1$s 属于哪个纪？</string>
     <string name="which_diet">%1$s 的食性是什么？</string>
     <string name="which_size">%1$s 属于什么体型？</string>
+
+    <!-- Phase 16: 图像识别 -->
+    <string name="identify_dinosaur">识别恐龙</string>
+    <string name="take_photo">拍照</string>
+    <string name="analyzing_image">正在分析图片…</string>
+    <string name="confidence_format">匹配度 %1$d%%</string>
+    <string name="no_dinosaur_found">未能从此图片中识别出恐龙</string>
+    <string name="recognition_results">识别结果</string>
+    <string name="captured_image">拍摄的图片</string>
+
+    <!-- Phase 16: 3D/AR -->
+    <string name="downloading_model">正在下载 3D 模型…</string>
+    <string name="model_gesture_hint">拖动旋转 · 捏合缩放</string>
+    <string name="tap_to_place">点击平面放置恐龙</string>
+    <string name="move_phone_hint">缓慢移动手机以检测平面</string>
+    <string name="pinch_to_resize">捏合调整大小</string>
+    <string name="reset_placement">重置</string>
 </resources>

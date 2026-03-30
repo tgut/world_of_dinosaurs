@@ -12,18 +12,19 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class Model3DUiState(
+data class ARViewUiState(
     val dinosaurName: String = "",
     val dinosaurId: String = "",
     val modelPath: String? = null,
     val isLoading: Boolean = true,
     val isDownloading: Boolean = false,
     val error: String? = null,
-    val scale: Float = 1.0f
+    val scale: Float = 1.0f,
+    val isPlaced: Boolean = false
 )
 
 @HiltViewModel
-class Model3DViewModel @Inject constructor(
+class ARViewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getDinosaurDetailUseCase: GetDinosaurDetailUseCase,
     private val settingsManager: SettingsManager,
@@ -32,8 +33,8 @@ class Model3DViewModel @Inject constructor(
 
     private val dinosaurId: String = savedStateHandle.get<String>("dinosaurId") ?: ""
 
-    private val _uiState = MutableStateFlow(Model3DUiState(dinosaurId = dinosaurId))
-    val uiState: StateFlow<Model3DUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ARViewUiState(dinosaurId = dinosaurId))
+    val uiState: StateFlow<ARViewUiState> = _uiState.asStateFlow()
 
     init {
         loadModel()
@@ -51,7 +52,7 @@ class Model3DViewModel @Inject constructor(
         viewModelScope.launch {
             val modelInfo = Model3dConfig.getModelInfo(dinosaurId)
             if (modelInfo == null) {
-                _uiState.update { it.copy(isLoading = false, error = "No 3D model available for this dinosaur") }
+                _uiState.update { it.copy(isLoading = false, error = "No AR model available") }
                 return@launch
             }
 
@@ -68,9 +69,17 @@ class Model3DViewModel @Inject constructor(
                     modelPath = path,
                     isLoading = false,
                     isDownloading = false,
-                    error = if (path == null) "Failed to load 3D model" else null
+                    error = if (path == null) "Failed to load AR model" else null
                 )
             }
         }
+    }
+
+    fun onModelPlaced() {
+        _uiState.update { it.copy(isPlaced = true) }
+    }
+
+    fun resetPlacement() {
+        _uiState.update { it.copy(isPlaced = false) }
     }
 }
