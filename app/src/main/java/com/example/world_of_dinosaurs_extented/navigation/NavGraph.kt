@@ -18,6 +18,7 @@ import com.example.world_of_dinosaurs_extented.ui.scanhistory.ScanHistoryScreen
 import com.example.world_of_dinosaurs_extented.ui.reviewquiz.ReviewQuizScreen
 import com.example.world_of_dinosaurs_extented.ui.recognition.DinoRecognitionScreen
 import com.example.world_of_dinosaurs_extented.ui.map.DiscoveryMapScreen
+import com.example.world_of_dinosaurs_extented.ui.chat.ChatScreen
 import com.example.world_of_dinosaurs_extented.ui.settings.SettingsScreen
 import com.example.world_of_dinosaurs_extented.ui.timeline.TimelineScreen
 
@@ -34,7 +35,8 @@ fun DinoNavGraph(navController: NavHostController) {
                 onNavigateToQuiz = { navController.navigate(Screen.Quiz.route) },
                 onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
                 onNavigateToRecognition = { navController.navigate(Screen.DinoRecognition.route) },
-                onNavigateToMap = { navController.navigate(Screen.DiscoveryMap.createRoute()) }
+                onNavigateToMap = { navController.navigate(Screen.DiscoveryMap.createRoute()) },
+                onNavigateToChat = { navController.navigate(Screen.Chat.createRoute()) }
             )
         }
         composable(
@@ -45,7 +47,8 @@ fun DinoNavGraph(navController: NavHostController) {
                 onNavigateBack = { navController.popBackStack() },
                 onView3D = { id -> navController.navigate(Screen.Model3D.createRoute(id)) },
                 onViewAR = { id -> navController.navigate(Screen.AR.createRoute(id)) },
-                onViewOnMap = { id -> navController.navigate(Screen.DiscoveryMap.createRoute(id)) }
+                onViewOnMap = { id -> navController.navigate(Screen.DiscoveryMap.createRoute(id)) },
+                onAskAI = { id -> navController.navigate(Screen.Chat.createRoute(id)) }
             )
         }
         composable(Screen.Favorites.route) {
@@ -83,7 +86,8 @@ fun DinoNavGraph(navController: NavHostController) {
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToHome = { navController.navigate(Screen.Home.createRoute()) },
                 onNavigateToQuiz = { navController.navigate(Screen.Quiz.route) },
-                onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
+                onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
+                onNavigateToChat = { navController.navigate(Screen.Chat.createRoute()) }
             )
         }
         composable(Screen.QrScan.route) {
@@ -94,7 +98,8 @@ fun DinoNavGraph(navController: NavHostController) {
                 onNavigateToHome = { navController.navigate(Screen.Home.createRoute()) },
                 onNavigateToTimeline = { navController.navigate(Screen.Timeline.route) },
                 onNavigateToQuiz = { navController.navigate(Screen.Quiz.route) },
-                onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
+                onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
+                onNavigateToChat = { navController.navigate(Screen.Chat.createRoute()) }
             )
         }
         composable(Screen.ScanHistory.route) {
@@ -121,6 +126,14 @@ fun DinoNavGraph(navController: NavHostController) {
         ) {
             DiscoveryMapScreen(
                 onDinosaurClick = { id -> navController.navigate(Screen.Detail.createRoute(id)) },
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(
+            Screen.Chat.route,
+            arguments = listOf(navArgument("dinosaurId") { type = NavType.StringType; defaultValue = "" })
+        ) {
+            ChatScreen(
                 onNavigateBack = { navController.popBackStack() }
             )
         }

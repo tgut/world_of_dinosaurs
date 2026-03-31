@@ -40,7 +40,10 @@ fun DiscoveryMapScreen(
 
     // Configure OSMDroid once
     LaunchedEffect(Unit) {
-        Configuration.getInstance().userAgentValue = context.packageName
+        val config = Configuration.getInstance()
+        config.userAgentValue = context.packageName
+        config.osmdroidBasePath = context.getExternalFilesDir(null)
+        config.osmdroidTileCache = java.io.File(context.getExternalFilesDir(null), "osmdroid/tiles")
     }
 
     Scaffold(

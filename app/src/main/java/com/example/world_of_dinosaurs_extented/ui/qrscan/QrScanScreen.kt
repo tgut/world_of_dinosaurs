@@ -48,6 +48,7 @@ fun QrScanScreen(
     onNavigateToTimeline: () -> Unit,
     onNavigateToQuiz: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    onNavigateToChat: () -> Unit = {},
     viewModel: QrScanViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -113,6 +114,7 @@ fun QrScanScreen(
                 onNavigateToHome = onNavigateToHome,
                 onNavigateToTimeline = onNavigateToTimeline,
                 onNavigateToQuiz = onNavigateToQuiz,
+                onNavigateToChat = onNavigateToChat,
                 onNavigateToSettings = onNavigateToSettings
             )
         }

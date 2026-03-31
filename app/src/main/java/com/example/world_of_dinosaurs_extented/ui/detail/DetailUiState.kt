@@ -6,5 +6,7 @@ data class DetailUiState(
     val dinosaur: Dinosaur? = null,
     val isLoading: Boolean = true,
     val error: String? = null,
-    val language: String = "en"
+    val language: String = "en",
+    val isSpeaking: Boolean = false,
+    val showTranslation: Boolean = false
 )

@@ -121,6 +121,26 @@
     <string name="globe_rotate_timeout_hint">Resume auto-rotation after this many seconds of inactivity</string>
     <string name="globe_rotate_timeout_value">%1$ds</string>
 
+    <!-- Phase 18: AI Chat -->
+    <string name="chat">Chat</string>
+    <string name="ai_chat">AI Chat</string>
+    <string name="ask_ai">Ask AI</string>
+    <string name="message_hint">Ask about dinosaurs…</string>
+    <string name="send">Send</string>
+    <string name="ai_thinking">AI is thinking…</string>
+    <string name="no_messages_yet">No messages yet.\nAsk a question about dinosaurs!</string>
+    <string name="voice_input">Voice input</string>
+    <string name="listening">Listening…</string>
+    <string name="chat_provider">AI Provider</string>
+    <string name="chat_provider_hint">Select an AI provider for dinosaur chat. Get an API key from the provider\'s console.</string>
+    <string name="chat_api_key_title">Chat API Key</string>
+    <string name="chat_api_key_hint">Enter your API key</string>
+    <string name="chat_custom_url">Custom Base URL</string>
+    <string name="chat_custom_model">Custom Model Name</string>
+    <string name="chat_not_configured">Please configure an AI provider in Settings first</string>
+    <string name="speech_not_available">Speech recognition is not available on this device</string>
+    <string name="audio_permission_required">Microphone permission is required for voice input</string>
+
     <!-- Phase 16: 3D/AR -->
     <string name="downloading_model">Downloading 3D model…</string>
     <string name="model_gesture_hint">Drag to rotate · Pinch to zoom</string>
@@ -128,4 +148,14 @@
     <string name="move_phone_hint">Move your phone slowly to detect surfaces</string>
     <string name="pinch_to_resize">Pinch to resize</string>
     <string name="reset_placement">Reset</string>
+
+    <!-- Phase 19: TTS & Translation -->
+    <string name="read_aloud">Read Aloud</string>
+    <string name="stop_reading">Stop</string>
+    <string name="translate">Translate</string>
+    <string name="voice_settings">Voice Settings</string>
+    <string name="tts_speed">Speech Speed</string>
+    <string name="tts_pitch">Speech Pitch</string>
+    <string name="tts_speed_value">%.1fx</string>
+    <string name="tts_pitch_value">%.1fx</string>
 </resources>

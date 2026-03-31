@@ -121,6 +121,26 @@
     <string name="globe_rotate_timeout_hint">用户无操作后恢复自动旋转的等待时间</string>
     <string name="globe_rotate_timeout_value">%1$d秒</string>
 
+    <!-- Phase 18: AI 聊天 -->
+    <string name="chat">聊天</string>
+    <string name="ai_chat">AI 聊天</string>
+    <string name="ask_ai">问 AI</string>
+    <string name="message_hint">问关于恐龙的问题…</string>
+    <string name="send">发送</string>
+    <string name="ai_thinking">AI 正在思考…</string>
+    <string name="no_messages_yet">暂无消息\n试试问一个关于恐龙的问题吧！</string>
+    <string name="voice_input">语音输入</string>
+    <string name="listening">正在聆听…</string>
+    <string name="chat_provider">AI 提供商</string>
+    <string name="chat_provider_hint">选择恐龙聊天的 AI 提供商，需从提供商获取 API 密钥。</string>
+    <string name="chat_api_key_title">聊天 API 密钥</string>
+    <string name="chat_api_key_hint">请输入 API 密钥</string>
+    <string name="chat_custom_url">自定义 Base URL</string>
+    <string name="chat_custom_model">自定义模型名称</string>
+    <string name="chat_not_configured">请先在设置中配置 AI 提供商</string>
+    <string name="speech_not_available">此设备不支持语音识别</string>
+    <string name="audio_permission_required">语音输入需要麦克风权限</string>
+
     <!-- Phase 16: 3D/AR -->
     <string name="downloading_model">正在下载 3D 模型…</string>
     <string name="model_gesture_hint">拖动旋转 · 捏合缩放</string>
@@ -128,4 +148,14 @@
     <string name="move_phone_hint">缓慢移动手机以检测平面</string>
     <string name="pinch_to_resize">捏合调整大小</string>
     <string name="reset_placement">重置</string>
+
+    <!-- Phase 19: TTS & Translation -->
+    <string name="read_aloud">朗读</string>
+    <string name="stop_reading">停止</string>
+    <string name="translate">翻译</string>
+    <string name="voice_settings">语音设置</string>
+    <string name="tts_speed">语速</string>
+    <string name="tts_pitch">音调</string>
+    <string name="tts_speed_value">%.1fx</string>
+    <string name="tts_pitch_value">%.1fx</string>
 </resources>

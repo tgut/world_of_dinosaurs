@@ -34,6 +34,7 @@ fun TimelineScreen(
     onNavigateToHome: () -> Unit,
     onNavigateToQuiz: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    onNavigateToChat: () -> Unit = {},
     viewModel: TimelineViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -55,6 +56,7 @@ fun TimelineScreen(
                 onNavigateToHome = onNavigateToHome,
                 onNavigateToTimeline = {},
                 onNavigateToQuiz = onNavigateToQuiz,
+                onNavigateToChat = onNavigateToChat,
                 onNavigateToSettings = onNavigateToSettings
             )
         }

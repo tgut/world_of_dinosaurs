@@ -1,10 +1,12 @@
 package com.example.world_of_dinosaurs_extented.di
 
+import com.example.world_of_dinosaurs_extented.data.repository.ChatRepositoryImpl
 import com.example.world_of_dinosaurs_extented.data.repository.DinoRecognitionRepositoryImpl
 import com.example.world_of_dinosaurs_extented.data.repository.DinosaurRepositoryImpl
 import com.example.world_of_dinosaurs_extented.data.repository.FavoriteRepositoryImpl
 import com.example.world_of_dinosaurs_extented.data.repository.QuizRepositoryImpl
 import com.example.world_of_dinosaurs_extented.data.repository.ScanHistoryRepositoryImpl
+import com.example.world_of_dinosaurs_extented.domain.repository.ChatRepository
 import com.example.world_of_dinosaurs_extented.domain.repository.DinoRecognitionRepository
 import com.example.world_of_dinosaurs_extented.domain.repository.DinosaurRepository
 import com.example.world_of_dinosaurs_extented.domain.repository.FavoriteRepository
@@ -41,6 +43,10 @@ abstract class AppModule {
     @Binds
     @Singleton
     abstract fun bindDinoRecognitionRepository(impl: DinoRecognitionRepositoryImpl): DinoRecognitionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindChatRepository(impl: ChatRepositoryImpl): ChatRepository
 
     companion object {
         @Provides

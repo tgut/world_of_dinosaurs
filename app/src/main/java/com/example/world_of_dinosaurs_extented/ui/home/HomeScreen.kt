@@ -46,6 +46,7 @@ fun HomeScreen(
     onNavigateToSettings: () -> Unit,
     onNavigateToRecognition: () -> Unit = {},
     onNavigateToMap: () -> Unit = {},
+    onNavigateToChat: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -91,6 +92,7 @@ fun HomeScreen(
                 onNavigateToHome = {},
                 onNavigateToTimeline = onNavigateToTimeline,
                 onNavigateToQuiz = onNavigateToQuiz,
+                onNavigateToChat = onNavigateToChat,
                 onNavigateToSettings = onNavigateToSettings
             )
         }

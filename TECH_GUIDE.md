@@ -336,6 +336,174 @@ app/src/main/java/com/example/world_of_dinosaurs_extented/
 6. **Hilt** → 依赖注入（可以后面再深入）
 7. **Coroutines + Flow** → 异步操作（边用边学）
 
+---
+
+## 15. OSMDroid（离线地图）
+
+**是什么**: 基于 OpenStreetMap 的 Android 地图库，完全免费，无需 API Key。
+**在项目中**: 发现地图功能，展示恐龙化石发现地点。
+
+```kotlin
+// OSMDroid 配置
+val config = Configuration.getInstance()
+config.userAgentValue = context.packageName
+config.osmdroidBasePath = context.getExternalFilesDir(null)
+config.osmdroidTileCache = File(context.getExternalFilesDir(null), "osmdroid/tiles")
+
+// 创建地图视图
+MapView(context).apply {
+    setTileSource(TileSourceFactory.MAPNIK)  // 标准地图
+    setMultiTouchControls(true)
+    controller.setZoom(3.0)
+    controller.setCenter(GeoPoint(20.0, 0.0))
+}
+```
+
+**学习资源**:
+- [OSMDroid Wiki](https://github.com/osmdroid/osmdroid/wiki)
+
+---
+
+## 16. OpenAI 兼容 Chat API（AI 聊天）
+
+**是什么**: 使用 OpenAI 兼容格式调用各种大模型 API（DeepSeek / Qwen / Gemini / 自定义）。
+**在项目中**: AI 恐龙问答功能，支持文字和语音输入。
+
+```kotlin
+// 所有提供商使用统一的 OpenAI 格式
+@POST("chat/completions")
+suspend fun chatCompletion(
+    @Header("Authorization") authorization: String,
+    @Body request: ChatCompletionRequest
+): ChatCompletionResponse
+
+// ChatCompletionRequest
+data class ChatCompletionRequest(
+    val model: String,           // "deepseek-chat", "qwen-turbo", "gemini-2.5-flash-lite"
+    val messages: List<ChatMessageDto>,
+    val temperature: Double = 0.7,
+    val max_tokens: Int = 1024
+)
+```
+
+**支持的提供商**:
+| 提供商 | Base URL | 默认模型 |
+|--------|----------|----------|
+| DeepSeek | `https://api.deepseek.com/` | `deepseek-chat` |
+| Qwen | `https://dashscope.aliyuncs.com/compatible-mode/v1/` | `qwen-turbo` |
+| Gemini | `https://generativelanguage.googleapis.com/v1beta/openai/` | `gemini-2.5-flash-lite` |
+| 自定义 | 用户填写 | 用户填写 |
+
+---
+
+## 17. TextToSpeech（语音合成 / TTS）
+
+**是什么**: Android 内置的语音合成引擎，可以将文本朗读出来。
+**在项目中**: 详情页全文朗读、AI 聊天回复朗读，支持中英双语。
+
+```kotlin
+@Singleton
+class TtsManager @Inject constructor(@ApplicationContext context: Context) {
+    private var tts: TextToSpeech? = null
+
+    fun speak(text: String, language: String, speed: Float, pitch: Float) {
+        val locale = if (language == "zh") Locale.CHINESE else Locale.ENGLISH
+        tts?.language = locale
+        tts?.setSpeechRate(speed)
+        tts?.setPitch(pitch)
+        tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
+    }
+}
+```
+
+**特点**: 无需网络、无额外依赖、设备端运行。
+
+---
+
+## 18. SpeechRecognizer（语音识别）
+
+**是什么**: Android 内置的语音识别服务，将语音转为文字。
+**在项目中**: AI 聊天页面的语音输入功能。
+
+```kotlin
+val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+    putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+    putExtra(RecognizerIntent.EXTRA_LANGUAGE, if (lang == "zh") "zh-CN" else "en-US")
+}
+speechRecognizer?.startListening(intent)
+```
+
+**权限**: 需要 `RECORD_AUDIO` 运行时权限。
+
+---
+
+## 项目目录结构速览
+
+```
+app/src/main/java/com/example/world_of_dinosaurs_extented/
+├── DinoApp.kt              # App 入口
+├── MainActivity.kt         # 唯一的 Activity
+├── navigation/             # 页面路由
+├── di/                     # Hilt 依赖注入配置
+├── domain/                 # 业务层
+│   ├── model/              #   数据模型（Dinosaur, Quiz, DinosaurMapMarker 等）
+│   ├── repository/         #   数据仓库接口（ChatRepository, DinoRecognitionRepository 等）
+│   └── usecase/            #   用例（具体业务操作）
+├── data/                   # 数据层
+│   ├── asset/              #   本地 JSON 数据加载
+│   ├── local/              #   Room 数据库
+│   ├── remote/             #   网络 API（Vision API, Chat API）
+│   │   ├── api/            #     Retrofit 接口
+│   │   └── dto/            #     数据传输对象
+│   ├── map/                #   发现地图坐标查找表
+│   ├── model3d/            #   3D 模型配置和缓存
+│   ├── tts/                #   TTS 语音合成管理
+│   ├── repository/         #   数据仓库实现
+│   └── SettingsManager.kt  #   用户设置（DataStore）
+└── ui/                     # 界面层
+    ├── theme/              #   颜色、字体、主题
+    ├── common/             #   公共 UI 组件
+    ├── home/               #   首页（恐龙列表）
+    ├── detail/             #   恐龙详情页（含朗读/翻译）
+    ├── favorites/          #   收藏页
+    ├── quiz/               #   知识问答
+    ├── timeline/           #   时间线
+    ├── qrscan/             #   二维码扫描
+    ├── recognition/        #   图像识别
+    ├── model3d/            #   3D 模型 / AR
+    ├── map/                #   发现地图
+    ├── chat/               #   AI 聊天（文字/语音/TTS）
+    └── settings/           #   设置页（语言/主题/AI提供商/语音配置）
+```
+
+---
+
+## 功能开发阶段
+
+| Phase | 功能 | 状态 |
+|-------|------|------|
+| 1-11 | 核心 App (首页/详情/收藏/问答/设置/双语) | ✅ 已完成 |
+| 12 | 时间线 (三叠纪/侏罗纪/白垩纪) | ✅ 已完成 |
+| 13 | 二维码扫描 + 扫描历史 | ✅ 已完成 |
+| 14 | 扫描复习测验 | ✅ 已完成 |
+| 15 | 扩展到 230 种恐龙 (PBDB + Wikipedia) | ✅ 已完成 |
+| 16 | 图像识别 (Vision API) + 3D/AR (SceneView) | ✅ 已完成 |
+| 17 | 发现地图 (OSMDroid + globe.gl 3D) + 更多 3D 模型 | ✅ 已完成 |
+| 18 | AI 恐龙问答 (多提供商 + 语音输入) | ✅ 已完成 |
+| 19 | TTS 朗读 + 画词翻译 + 地图 Bug 修复 | ✅ 已完成 |
+
+---
+
+## 推荐学习顺序
+
+1. **Kotlin 基础** → 变量、函数、类、空安全、集合操作
+2. **Jetpack Compose** → 基本组件（Text, Button, Image, Column, Row, LazyColumn）
+3. **MVVM + ViewModel** → 理解数据流方向
+4. **Navigation** → 页面跳转
+5. **Room** → 本地数据存储
+6. **Hilt** → 依赖注入（可以后面再深入）
+7. **Coroutines + Flow** → 异步操作（边用边学）
+
 ## 推荐视频/课程
 
 - [Google 官方 Android 基础课程 (Compose)](https://developer.android.com/courses/android-basics-compose/course)

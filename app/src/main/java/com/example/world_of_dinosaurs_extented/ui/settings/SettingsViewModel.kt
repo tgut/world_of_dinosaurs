@@ -19,6 +19,12 @@ class SettingsViewModel @Inject constructor(
     val theme: Flow<String> = settingsManager.themeFlow
     val visionApiKey: Flow<String> = settingsManager.visionApiKeyFlow
     val globeRotateTimeout: Flow<Int> = settingsManager.globeRotateTimeoutFlow
+    val chatProvider: Flow<String> = settingsManager.chatProviderFlow
+    val chatApiKey: Flow<String> = settingsManager.chatApiKeyFlow
+    val chatBaseUrl: Flow<String> = settingsManager.chatBaseUrlFlow
+    val chatModel: Flow<String> = settingsManager.chatModelFlow
+    val ttsSpeed: Flow<Float> = settingsManager.ttsSpeedFlow
+    val ttsPitch: Flow<Float> = settingsManager.ttsPitchFlow
 
     fun setGlobeRotateTimeout(seconds: Int) {
         viewModelScope.launch {
@@ -43,6 +49,42 @@ class SettingsViewModel @Inject constructor(
     fun setTheme(themeValue: String) {
         viewModelScope.launch {
             settingsManager.setTheme(themeValue)
+        }
+    }
+
+    fun setChatProvider(provider: String) {
+        viewModelScope.launch {
+            settingsManager.setChatProvider(provider)
+        }
+    }
+
+    fun setChatApiKey(key: String) {
+        viewModelScope.launch {
+            settingsManager.setChatApiKey(key.trim())
+        }
+    }
+
+    fun setChatBaseUrl(url: String) {
+        viewModelScope.launch {
+            settingsManager.setChatBaseUrl(url.trim())
+        }
+    }
+
+    fun setChatModel(model: String) {
+        viewModelScope.launch {
+            settingsManager.setChatModel(model.trim())
+        }
+    }
+
+    fun setTtsSpeed(speed: Float) {
+        viewModelScope.launch {
+            settingsManager.setTtsSpeed(speed)
+        }
+    }
+
+    fun setTtsPitch(pitch: Float) {
+        viewModelScope.launch {
+            settingsManager.setTtsPitch(pitch)
         }
     }
 }

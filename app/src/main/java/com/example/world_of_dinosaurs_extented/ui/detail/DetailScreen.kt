@@ -5,18 +5,22 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -38,6 +42,7 @@ fun DetailScreen(
     onView3D: (String) -> Unit,
     onViewAR: (String) -> Unit,
     onViewOnMap: (String) -> Unit = {},
+    onAskAI: (String) -> Unit = {},
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -71,6 +76,7 @@ fun DetailScreen(
             uiState.dinosaur != null -> {
                 val dino = uiState.dinosaur!!
                 val language = uiState.language
+                val altLanguage = if (language == "en") "zh" else "en"
                 Column(
                     modifier = Modifier
                         .padding(padding)
@@ -92,6 +98,17 @@ fun DetailScreen(
                             text = dino.getLocalizedName(language),
                             style = MaterialTheme.typography.headlineMedium
                         )
+                        if (uiState.showTranslation) {
+                            val altName = dino.getLocalizedName(altLanguage)
+                            if (altName.isNotBlank()) {
+                                Text(
+                                    text = altName,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontStyle = FontStyle.Italic,
+                                    color = MaterialTheme.colorScheme.tertiary
+                                )
+                            }
+                        }
                         Text(
                             text = dino.scientificName,
                             style = MaterialTheme.typography.bodyMedium,
@@ -136,9 +153,12 @@ fun DetailScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // 3D/AR buttons
-                        if (Model3dConfig.hasModel(dino.id)) {
-                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        // Action buttons: 3D/AR/AI + Read Aloud + Translate
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            if (Model3dConfig.hasModel(dino.id)) {
                                 OutlinedButton(onClick = { onView3D(dino.id) }) {
                                     Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
                                     Spacer(modifier = Modifier.width(4.dp))
@@ -150,8 +170,44 @@ fun DetailScreen(
                                     Text(stringResource(R.string.view_in_ar))
                                 }
                             }
-                            Spacer(modifier = Modifier.height(16.dp))
+                            OutlinedButton(onClick = { onAskAI(dino.id) }) {
+                                Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(stringResource(R.string.ask_ai))
+                            }
                         }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            // Read Aloud / Stop button
+                            if (uiState.isSpeaking) {
+                                OutlinedButton(onClick = { viewModel.stopReading() }) {
+                                    Icon(Icons.Default.Stop, contentDescription = null, modifier = Modifier.size(18.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(stringResource(R.string.stop_reading))
+                                }
+                            } else {
+                                OutlinedButton(onClick = { viewModel.readAloud() }) {
+                                    Icon(Icons.AutoMirrored.Filled.VolumeUp, contentDescription = null, modifier = Modifier.size(18.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(stringResource(R.string.read_aloud))
+                                }
+                            }
+                            // Translate toggle button
+                            OutlinedButton(
+                                onClick = { viewModel.toggleTranslation() },
+                                colors = if (uiState.showTranslation) ButtonDefaults.outlinedButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                                ) else ButtonDefaults.outlinedButtonColors()
+                            ) {
+                                Icon(Icons.Default.Translate, contentDescription = null, modifier = Modifier.size(18.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(stringResource(R.string.translate))
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         // Stats card — only show if there's actual data
                         val hasStats = dino.lengthMeters != null || dino.heightMeters != null || dino.weightKg != null
@@ -172,6 +228,18 @@ fun DetailScreen(
                                 text = desc,
                                 style = MaterialTheme.typography.bodyMedium
                             )
+                            if (uiState.showTranslation) {
+                                val altDesc = dino.getLocalizedDescription(altLanguage)
+                                if (altDesc.isNotBlank()) {
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(
+                                        text = altDesc,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        fontStyle = FontStyle.Italic,
+                                        color = MaterialTheme.colorScheme.tertiary
+                                    )
+                                }
+                            }
                             Spacer(modifier = Modifier.height(16.dp))
                         }
 
@@ -183,10 +251,21 @@ fun DetailScreen(
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Spacer(modifier = Modifier.height(8.dp))
-                            facts.forEach { fact ->
+                            val altFacts = if (uiState.showTranslation) dino.getLocalizedFacts(altLanguage) else emptyList()
+                            facts.forEachIndexed { index, fact ->
                                 Row(modifier = Modifier.padding(vertical = 4.dp)) {
                                     Text("• ", style = MaterialTheme.typography.bodyMedium)
-                                    Text(text = fact, style = MaterialTheme.typography.bodyMedium)
+                                    Column {
+                                        Text(text = fact, style = MaterialTheme.typography.bodyMedium)
+                                        if (uiState.showTranslation && index < altFacts.size) {
+                                            Text(
+                                                text = altFacts[index],
+                                                style = MaterialTheme.typography.bodySmall,
+                                                fontStyle = FontStyle.Italic,
+                                                color = MaterialTheme.colorScheme.tertiary
+                                            )
+                                        }
+                                    }
                                 }
                             }
                             Spacer(modifier = Modifier.height(16.dp))
@@ -230,6 +309,18 @@ fun DetailScreen(
                                 text = habitat,
                                 style = MaterialTheme.typography.bodyMedium
                             )
+                            if (uiState.showTranslation) {
+                                val altHabitat = dino.getLocalizedHabitat(altLanguage)
+                                if (altHabitat.isNotBlank()) {
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(
+                                        text = altHabitat,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        fontStyle = FontStyle.Italic,
+                                        color = MaterialTheme.colorScheme.tertiary
+                                    )
+                                }
+                            }
                         }
 
                         Spacer(modifier = Modifier.height(32.dp))
