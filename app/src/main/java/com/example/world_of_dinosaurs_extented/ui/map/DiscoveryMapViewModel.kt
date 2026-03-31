@@ -61,6 +61,7 @@ class DiscoveryMapViewModel @Inject constructor(
                             markers = markers,
                             isLoading = false,
                             selectedMarker = focusMarker,
+                            focusDinosaurId = focusDinosaurId,
                             focusLat = focusMarker?.lat,
                             focusLng = focusMarker?.lng,
                             focusZoom = if (focusMarker != null) 6.0 else null

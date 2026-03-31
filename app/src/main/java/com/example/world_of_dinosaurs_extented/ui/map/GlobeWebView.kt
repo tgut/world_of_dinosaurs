@@ -17,6 +17,7 @@ import org.json.JSONObject
 fun GlobeWebView(
     markers: List<DinosaurMapMarker>,
     language: String,
+    focusDinosaurId: String? = null,
     focusLat: Double?,
     focusLng: Double?,
     autoRotateTimeoutMs: Long = 10000L,
@@ -57,6 +58,9 @@ fun GlobeWebView(
                         // JS functions queue calls until globe.gl finishes loading,
                         // so it's safe to call them here even before CDN loads
                         val escaped = markersJson.replace("\\", "\\\\").replace("'", "\\'")
+                        if (focusDinosaurId != null) {
+                            evaluateJavascript("setFocusId('$focusDinosaurId')", null)
+                        }
                         evaluateJavascript("loadMarkers('$escaped')", null)
                         evaluateJavascript("setLanguage('$language')", null)
                         evaluateJavascript("setAutoRotateTimeout($autoRotateTimeoutMs)", null)
@@ -71,6 +75,9 @@ fun GlobeWebView(
         },
         update = { webView ->
             val escaped = markersJson.replace("\\", "\\\\").replace("'", "\\'")
+            if (focusDinosaurId != null) {
+                webView.evaluateJavascript("setFocusId('$focusDinosaurId')", null)
+            }
             webView.evaluateJavascript("loadMarkers('$escaped')", null)
             webView.evaluateJavascript("setLanguage('$language')", null)
             webView.evaluateJavascript("setAutoRotateTimeout($autoRotateTimeoutMs)", null)
@@ -89,7 +96,7 @@ private fun buildMarkersJson(markers: List<DinosaurMapMarker>, language: String)
             put("name", m.getLocalizedName(language))
             put("location", m.discoveryLocation)
             put("color", eraToHexColor(m.era))
-            put("size", 0.6)
+            put("size", 0.3)
         }
         array.put(obj)
     }

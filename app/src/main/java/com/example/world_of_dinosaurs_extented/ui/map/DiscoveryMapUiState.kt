@@ -10,6 +10,7 @@ data class DiscoveryMapUiState(
     val error: String? = null,
     val selectedMarker: DinosaurMapMarker? = null,
     val mapStyle: MapStyle = MapStyle.FLAT,
+    val focusDinosaurId: String? = null,
     val focusLat: Double? = null,
     val focusLng: Double? = null,
     val focusZoom: Double? = null,

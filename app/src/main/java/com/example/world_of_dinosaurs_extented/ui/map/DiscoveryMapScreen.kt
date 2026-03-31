@@ -1,5 +1,8 @@
 package com.example.world_of_dinosaurs_extented.ui.map
 
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -65,6 +68,7 @@ fun DiscoveryMapScreen(
                     GlobeWebView(
                         markers = uiState.markers,
                         language = uiState.language,
+                        focusDinosaurId = uiState.focusDinosaurId,
                         focusLat = uiState.focusLat,
                         focusLng = uiState.focusLng,
                         autoRotateTimeoutMs = uiState.globeRotateTimeoutMs,
@@ -78,6 +82,7 @@ fun DiscoveryMapScreen(
                         markers = uiState.markers,
                         language = uiState.language,
                         mapStyle = uiState.mapStyle,
+                        focusDinosaurId = uiState.focusDinosaurId,
                         focusLat = uiState.focusLat,
                         focusLng = uiState.focusLng,
                         focusZoom = uiState.focusZoom,
@@ -126,6 +131,7 @@ private fun OsmMapView(
     markers: List<DinosaurMapMarker>,
     language: String,
     mapStyle: MapStyle,
+    focusDinosaurId: String?,
     focusLat: Double?,
     focusLng: Double?,
     focusZoom: Double?,
@@ -159,12 +165,20 @@ private fun OsmMapView(
 
             mapView.overlays.clear()
             markers.forEach { dinoMarker ->
+                val isFocused = dinoMarker.dinosaurId == focusDinosaurId
                 val osmMarker = Marker(mapView).apply {
                     position = GeoPoint(dinoMarker.lat, dinoMarker.lng)
                     title = dinoMarker.getLocalizedName(language)
                     snippet = dinoMarker.discoveryLocation
-                    setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-                    icon = createMarkerDrawable(eraToColor(dinoMarker.era))
+                    if (isFocused) {
+                        // Focused marker: larger with name label, default pin anchor
+                        setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                        icon = createFocusMarkerDrawable(mapView.context, eraToColor(dinoMarker.era))
+                        showInfoWindow()
+                    } else {
+                        setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+                        icon = createMarkerDrawable(eraToColor(dinoMarker.era))
+                    }
                     setOnMarkerClickListener { _, _ ->
                         onMarkerClick(dinoMarker)
                         true
@@ -221,6 +235,33 @@ private fun createMarkerDrawable(color: Int): android.graphics.drawable.Drawable
         setColor(color)
         setStroke(2, 0xFFFFFFFF.toInt())
     }
+}
+
+private fun createFocusMarkerDrawable(context: Context, color: Int): android.graphics.drawable.Drawable {
+    val density = context.resources.displayMetrics.density
+    val w = (48 * density).toInt()
+    val h = (48 * density).toInt()
+    val bitmap = android.graphics.Bitmap.createBitmap(w, h, android.graphics.Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    // Draw vertical line (pin stem)
+    paint.color = color
+    paint.strokeWidth = 3 * density
+    paint.style = Paint.Style.STROKE
+    canvas.drawLine(w / 2f, h * 0.3f, w / 2f, h.toFloat(), paint)
+
+    // Draw filled circle (pin head)
+    paint.style = Paint.Style.FILL
+    canvas.drawCircle(w / 2f, h * 0.25f, 10 * density, paint)
+
+    // Draw white border on circle
+    paint.style = Paint.Style.STROKE
+    paint.color = 0xFFFFFFFF.toInt()
+    paint.strokeWidth = 2 * density
+    canvas.drawCircle(w / 2f, h * 0.25f, 10 * density, paint)
+
+    return android.graphics.drawable.BitmapDrawable(context.resources, bitmap)
 }
 
 private fun eraToColor(era: DinosaurEra): Int = when (era) {

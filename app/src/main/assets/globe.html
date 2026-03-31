@@ -42,13 +42,45 @@
   let pendingMarkers = null;
   let pendingLang = null;
   let pendingFocus = null;
+  let pendingFocusId = null;
   let autoRotateTimeoutMs = 10000;
   let inactivityTimer = null;
+
+  function setFocusId(id) {
+    focusId = id;
+    if (!globe) { pendingFocusId = id; return; }
+    applyFocusLabel();
+  }
+
+  function applyFocusLabel() {
+    if (!globe) return;
+    var data = globe.pointsData();
+    var focused = focusId ? data.find(function(d) { return d.id === focusId; }) : null;
+    if (focused) {
+      globe.labelsData([focused])
+        .labelLat('lat').labelLng('lng')
+        .labelText('name')
+        .labelSize(1.6)
+        .labelDotRadius(0.6)
+        .labelColor(function() { return 'rgba(255, 255, 80, 1)'; })
+        .labelAltitude(0.025)
+        .labelResolution(3);
+    } else {
+      globe.labelsData([]);
+    }
+  }
 
   function loadMarkers(json) {
     if (!globe) { pendingMarkers = json; return; }
     const data = JSON.parse(json);
+    // If there's a focus marker, make it bigger
+    if (focusId) {
+      data.forEach(function(d) {
+        if (d.id === focusId) { d.size = 0.6; d.altitude = 0.04; }
+      });
+    }
     globe.pointsData(data);
+    applyFocusLabel();
   }
 
   function focusOnPoint(lat, lng) {
@@ -105,8 +137,8 @@
       .pointLat('lat')
       .pointLng('lng')
       .pointColor('color')
-      .pointAltitude(0.02)
-      .pointRadius('size')
+      .pointAltitude(function(d) { return d.altitude || 0.02; })
+      .pointRadius(function(d) { return d.size || 0.3; })
       .pointLabel(d => '<div style="background:rgba(0,0,0,0.8);padding:6px 10px;border-radius:6px;font-family:sans-serif;font-size:13px;color:#fff;pointer-events:none;max-width:200px">' +
         '<b>' + d.name + '</b><br/>' +
         '<span style="color:#aaa;font-size:11px">' + d.location + '</span></div>')
@@ -141,6 +173,7 @@
 
     // Flush pending commands
     if (pendingLang) setLanguage(pendingLang);
+    if (pendingFocusId) { focusId = pendingFocusId; }
     if (pendingMarkers) loadMarkers(pendingMarkers);
     if (pendingFocus) focusOnPoint(pendingFocus.lat, pendingFocus.lng);
 

@@ -41,14 +41,23 @@ fun ARViewScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val arAvailable = remember {
+    // null = still checking, true = supported, false = not supported
+    var arAvailable by remember { mutableStateOf<Boolean?>(null) }
+
+    LaunchedEffect(Unit) {
         try {
-            val availability = ArCoreApk.getInstance().checkAvailability(context)
-            availability == ArCoreApk.Availability.SUPPORTED_INSTALLED ||
+            var availability = ArCoreApk.getInstance().checkAvailability(context)
+            // checkAvailability may return UNKNOWN_CHECKING on first call;
+            // poll until result is definitive
+            while (availability.isTransient) {
+                kotlinx.coroutines.delay(200)
+                availability = ArCoreApk.getInstance().checkAvailability(context)
+            }
+            arAvailable = availability == ArCoreApk.Availability.SUPPORTED_INSTALLED ||
                 availability == ArCoreApk.Availability.SUPPORTED_APK_TOO_OLD ||
                 availability == ArCoreApk.Availability.SUPPORTED_NOT_INSTALLED
         } catch (_: Exception) {
-            false
+            arAvailable = false
         }
     }
 
@@ -84,7 +93,7 @@ fun ARViewScreen(
             contentAlignment = Alignment.Center
         ) {
             when {
-                !arAvailable -> {
+                arAvailable == false -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = stringResource(R.string.ar_not_supported),
@@ -94,7 +103,7 @@ fun ARViewScreen(
                         )
                     }
                 }
-                uiState.isLoading || uiState.isDownloading -> {
+                arAvailable == null || uiState.isLoading || uiState.isDownloading -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         CircularProgressIndicator()
                         Spacer(modifier = Modifier.height(12.dp))
