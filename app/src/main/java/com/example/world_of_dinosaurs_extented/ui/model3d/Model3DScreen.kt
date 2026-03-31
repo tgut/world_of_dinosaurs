@@ -18,6 +18,9 @@ import io.github.sceneview.Scene
 import io.github.sceneview.math.Position
 import io.github.sceneview.node.ModelNode
 import io.github.sceneview.rememberEngine
+import io.github.sceneview.rememberEnvironment
+import io.github.sceneview.rememberEnvironmentLoader
+import io.github.sceneview.rememberMainLightNode
 import io.github.sceneview.rememberModelLoader
 import io.github.sceneview.rememberNodes
 
@@ -102,6 +105,11 @@ private fun Dino3DViewer(
 ) {
     val engine = rememberEngine()
     val modelLoader = rememberModelLoader(engine)
+    val environmentLoader = rememberEnvironmentLoader(engine)
+    val environment = rememberEnvironment(environmentLoader)
+    val mainLightNode = rememberMainLightNode(engine) {
+        intensity = 100_000f
+    }
     val modelNodes = rememberNodes()
 
     LaunchedEffect(modelPath) {
@@ -109,19 +117,23 @@ private fun Dino3DViewer(
             val modelInstance = modelLoader.createModelInstance(modelPath)
             val modelNode = ModelNode(
                 modelInstance = modelInstance,
-                scaleToUnits = scale
+                scaleToUnits = scale * 4f
             ).apply {
-                position = Position(0f, 0f, -2f)
+                position = Position(0f, -0.5f, -2f)
             }
             modelNodes.clear()
             modelNodes.add(modelNode)
-        } catch (_: Exception) {}
+        } catch (e: Exception) {
+            android.util.Log.e("Dino3DViewer", "Failed to load model: $modelPath", e)
+        }
     }
 
     Scene(
         modifier = modifier,
         engine = engine,
         modelLoader = modelLoader,
+        environment = environment,
+        mainLightNode = mainLightNode,
         childNodes = modelNodes
     )
 }

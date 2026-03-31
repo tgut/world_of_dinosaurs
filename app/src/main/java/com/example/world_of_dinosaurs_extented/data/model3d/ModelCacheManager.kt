@@ -24,9 +24,10 @@ class ModelCacheManager @Inject constructor(
      * Returns the file path if available, null otherwise.
      */
     suspend fun resolveModel(modelInfo: Model3dConfig.ModelInfo): String? {
-        // Check if it's a bundled asset
+        // Check if it's a bundled asset — return plain relative path
+        // SceneView's ModelLoader reads from Android AssetManager using relative paths
         modelInfo.assetPath?.let { assetPath ->
-            return "file:///android_asset/$assetPath"
+            return assetPath
         }
 
         // Check if it's a remote model

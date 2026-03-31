@@ -86,7 +86,7 @@ private fun buildMarkersJson(markers: List<DinosaurMapMarker>, language: String)
             put("name", m.getLocalizedName(language))
             put("location", m.discoveryLocation)
             put("color", eraToHexColor(m.era))
-            put("size", 0.4)
+            put("size", 0.6)
         }
         array.put(obj)
     }

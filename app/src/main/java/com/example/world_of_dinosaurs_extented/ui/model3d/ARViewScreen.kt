@@ -155,7 +155,9 @@ private fun ARDinoViewer(
     LaunchedEffect(modelPath) {
         try {
             loadedInstance = modelLoader.createModelInstance(modelPath)
-        } catch (_: Exception) {}
+        } catch (e: Exception) {
+            android.util.Log.e("ARDinoViewer", "Failed to load model: $modelPath", e)
+        }
     }
 
     ARScene(

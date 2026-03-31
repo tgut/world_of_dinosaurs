@@ -47,6 +47,7 @@
     if (!globe) { pendingMarkers = json; return; }
     const data = JSON.parse(json);
     globe.pointsData(data);
+    globe.labelsData(data);
   }
 
   function focusOnPoint(lat, lng) {
@@ -76,6 +77,7 @@
   function closeInfo() {
     document.getElementById('info').style.display = 'none';
     selectedId = null;
+    if (globe) globe.controls().autoRotate = true;
   }
 
   function initGlobe() {
@@ -87,16 +89,28 @@
       .pointLat('lat')
       .pointLng('lng')
       .pointColor('color')
-      .pointAltitude(0.01)
+      .pointAltitude(0.02)
       .pointRadius('size')
-      .pointLabel(d => '<b>' + d.name + '</b><br/>' + d.location)
+      .pointLabel(d => '<div style="background:rgba(0,0,0,0.8);padding:6px 10px;border-radius:6px;font-family:sans-serif;font-size:13px;color:#fff;pointer-events:none;max-width:200px">' +
+        '<b>' + d.name + '</b><br/>' +
+        '<span style="color:#aaa;font-size:11px">' + d.location + '</span></div>')
       .onPointClick(d => {
         selectedId = d.id;
         document.getElementById('markerName').textContent = d.name;
         document.getElementById('markerLoc').textContent = d.location;
         document.getElementById('info').style.display = 'block';
-        globe.pointOfView({ lat: d.lat, lng: d.lng, altitude: 1.5 }, 800);
+        globe.controls().autoRotate = false;
+        globe.pointOfView({ lat: d.lat, lng: d.lng, altitude: 1.2 }, 800);
       })
+      .labelsData([])
+      .labelLat('lat')
+      .labelLng('lng')
+      .labelText('name')
+      .labelSize(1.2)
+      .labelDotRadius(0.4)
+      .labelColor(d => d.color)
+      .labelAltitude(0.025)
+      .labelResolution(2)
       .width(window.innerWidth)
       .height(window.innerHeight)
       (document.getElementById('globe'));
