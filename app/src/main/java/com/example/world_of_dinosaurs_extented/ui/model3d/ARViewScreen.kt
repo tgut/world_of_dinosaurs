@@ -11,12 +11,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.world_of_dinosaurs_extented.R
+import com.google.ar.core.ArCoreApk
 import com.google.ar.core.Config
 import com.google.ar.core.Frame
 import com.google.ar.core.Session
@@ -38,6 +40,17 @@ fun ARViewScreen(
     viewModel: ARViewViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val arAvailable = remember {
+        try {
+            val availability = ArCoreApk.getInstance().checkAvailability(context)
+            availability == ArCoreApk.Availability.SUPPORTED_INSTALLED ||
+                availability == ArCoreApk.Availability.SUPPORTED_APK_TOO_OLD ||
+                availability == ArCoreApk.Availability.SUPPORTED_NOT_INSTALLED
+        } catch (_: Exception) {
+            false
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -71,6 +84,16 @@ fun ARViewScreen(
             contentAlignment = Alignment.Center
         ) {
             when {
+                !arAvailable -> {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = stringResource(R.string.ar_not_supported),
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(32.dp)
+                        )
+                    }
+                }
                 uiState.isLoading || uiState.isDownloading -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         CircularProgressIndicator()
@@ -88,11 +111,6 @@ fun ARViewScreen(
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(32.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.ar_not_supported),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }

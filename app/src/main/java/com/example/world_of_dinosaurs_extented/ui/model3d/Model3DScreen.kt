@@ -117,9 +117,9 @@ private fun Dino3DViewer(
             val modelInstance = modelLoader.createModelInstance(modelPath)
             val modelNode = ModelNode(
                 modelInstance = modelInstance,
-                scaleToUnits = scale * 4f
+                scaleToUnits = scale * 1.5f
             ).apply {
-                position = Position(0f, -0.5f, -2f)
+                position = Position(0f, 0f, 0f)
             }
             modelNodes.clear()
             modelNodes.add(modelNode)
