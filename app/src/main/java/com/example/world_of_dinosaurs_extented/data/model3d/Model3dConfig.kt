@@ -30,12 +30,41 @@ object Model3dConfig {
             assetPath = "models/stegosaurus.glb",
             scale = 0.5f
         ),
-        // Remote models can be added here when hosted GLB URLs are available:
-        // "velociraptor" to ModelInfo(dinosaurId = "velociraptor", remoteUrl = "https://...", scale = 0.8f),
-        // "brachiosaurus" to ModelInfo(dinosaurId = "brachiosaurus", remoteUrl = "https://...", scale = 0.3f),
-        // "spinosaurus" to ModelInfo(dinosaurId = "spinosaurus", remoteUrl = "https://...", scale = 0.5f),
-        // "pteranodon" to ModelInfo(dinosaurId = "pteranodon", remoteUrl = "https://...", scale = 0.6f),
-        // "ankylosaurus" to ModelInfo(dinosaurId = "ankylosaurus", remoteUrl = "https://...", scale = 0.5f)
+        "velociraptor" to ModelInfo(
+            dinosaurId = "velociraptor",
+            assetPath = "models/velociraptor.glb",
+            scale = 0.7f
+        ),
+        "brachiosaurus" to ModelInfo(
+            dinosaurId = "brachiosaurus",
+            assetPath = "models/brachiosaurus.glb",
+            scale = 0.3f
+        ),
+        "spinosaurus" to ModelInfo(
+            dinosaurId = "spinosaurus",
+            assetPath = "models/spinosaurus.glb",
+            scale = 0.5f
+        ),
+        "pteranodon" to ModelInfo(
+            dinosaurId = "pteranodon",
+            assetPath = "models/pteranodon.glb",
+            scale = 0.6f
+        ),
+        "ankylosaurus" to ModelInfo(
+            dinosaurId = "ankylosaurus",
+            assetPath = "models/ankylosaurus.glb",
+            scale = 0.5f
+        ),
+        "parasaurolophus" to ModelInfo(
+            dinosaurId = "parasaurolophus",
+            assetPath = "models/parasaurolophus.glb",
+            scale = 0.5f
+        ),
+        "carnotaurus" to ModelInfo(
+            dinosaurId = "carnotaurus",
+            assetPath = "models/carnotaurus.glb",
+            scale = 0.5f
+        )
     )
 
     fun hasModel(dinosaurId: String): Boolean =

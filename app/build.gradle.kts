@@ -100,6 +100,9 @@ dependencies {
     implementation(libs.mlkit.barcode)
     implementation(libs.zxing.core)
 
+    // Map
+    implementation(libs.osmdroid)
+
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
 

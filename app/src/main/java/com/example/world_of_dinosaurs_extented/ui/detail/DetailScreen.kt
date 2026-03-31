@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,6 +37,7 @@ fun DetailScreen(
     onNavigateBack: () -> Unit,
     onView3D: (String) -> Unit,
     onViewAR: (String) -> Unit,
+    onViewOnMap: (String) -> Unit = {},
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -206,6 +208,12 @@ fun DetailScreen(
                                     text = stringResource(R.string.discovered_at, dino.discoveryLocation),
                                     style = MaterialTheme.typography.bodyMedium
                                 )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                TextButton(onClick = { onViewOnMap(dino.id) }) {
+                                    Icon(Icons.Default.Map, contentDescription = null, modifier = Modifier.size(18.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(stringResource(R.string.view_on_map))
+                                }
                             }
                             Spacer(modifier = Modifier.height(16.dp))
                         }

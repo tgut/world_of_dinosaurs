@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.world_of_dinosaurs_extented.data.SettingsManager
+import com.example.world_of_dinosaurs_extented.data.model3d.Model3dConfig
 import com.example.world_of_dinosaurs_extented.domain.model.DinosaurDiet
 import com.example.world_of_dinosaurs_extented.domain.model.DinosaurEra
 import com.example.world_of_dinosaurs_extented.domain.model.DinosaurSize
@@ -82,6 +83,11 @@ class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(isGridView = !it.isGridView) }
     }
 
+    fun toggleOnly3D() {
+        _uiState.update { it.copy(only3D = !it.only3D) }
+        reloadWithFilters()
+    }
+
     fun retry() = loadDinosaurs()
 
     private fun reloadWithFilters() {
@@ -108,7 +114,8 @@ class HomeViewModel @Inject constructor(
             val matchesEra = state.selectedEra == null || dino.era == state.selectedEra
             val matchesDiet = state.selectedDiet == null || dino.diet == state.selectedDiet
             val matchesSize = state.selectedSize == null || dino.size == state.selectedSize
-            matchesSearch && matchesEra && matchesDiet && matchesSize
+            val matches3D = !state.only3D || Model3dConfig.hasModel(dino.id)
+            matchesSearch && matchesEra && matchesDiet && matchesSize && matches3D
         }
     }
 }

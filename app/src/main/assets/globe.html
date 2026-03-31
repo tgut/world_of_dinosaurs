@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<style>
+  * { margin: 0; padding: 0; }
+  body { overflow: hidden; background: #0a1628; }
+  #globe { width: 100vw; height: 100vh; }
+  #info {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(30,30,30,0.92); color: #fff;
+    padding: 16px; display: none; border-radius: 16px 16px 0 0;
+    font-family: sans-serif;
+  }
+  #info .name { font-size: 18px; font-weight: bold; }
+  #info .loc { font-size: 13px; color: #aaa; margin-top: 4px; }
+  #info .btns { margin-top: 12px; display: flex; gap: 8px; }
+  #info .btns button {
+    padding: 8px 20px; border-radius: 8px; border: none;
+    font-size: 14px; cursor: pointer;
+  }
+  #info .btn-detail { background: #4CAF50; color: #fff; }
+  #info .btn-close { background: #555; color: #fff; }
+</style>
+</head>
+<body>
+<div id="globe"></div>
+<div id="info">
+  <div class="name" id="markerName"></div>
+  <div class="loc" id="markerLoc"></div>
+  <div class="btns">
+    <button class="btn-detail" onclick="viewDetail()">View Detail</button>
+    <button class="btn-close" onclick="closeInfo()">Close</button>
+  </div>
+</div>
+
+<script>
+  // Queue commands until globe.gl is ready
+  let globe = null;
+  let selectedId = null;
+  let pendingMarkers = null;
+  let pendingLang = null;
+  let pendingFocus = null;
+
+  function loadMarkers(json) {
+    if (!globe) { pendingMarkers = json; return; }
+    const data = JSON.parse(json);
+    globe.pointsData(data);
+  }
+
+  function focusOnPoint(lat, lng) {
+    if (!globe) { pendingFocus = { lat, lng }; return; }
+    globe.pointOfView({ lat: lat, lng: lng, altitude: 1.5 }, 1000);
+  }
+
+  function setLanguage(lang) {
+    if (!globe) { pendingLang = lang; return; }
+    const detailBtn = document.querySelector('.btn-detail');
+    const closeBtn = document.querySelector('.btn-close');
+    if (lang === 'zh') {
+      detailBtn.textContent = '\u67E5\u770B\u8BE6\u60C5';
+      closeBtn.textContent = '\u5173\u95ED';
+    } else {
+      detailBtn.textContent = 'View Detail';
+      closeBtn.textContent = 'Close';
+    }
+  }
+
+  function viewDetail() {
+    if (selectedId && window.AndroidBridge) {
+      window.AndroidBridge.onMarkerClick(selectedId);
+    }
+  }
+
+  function closeInfo() {
+    document.getElementById('info').style.display = 'none';
+    selectedId = null;
+  }
+
+  function initGlobe() {
+    globe = Globe()
+      .globeImageUrl('https://unpkg.com/three-globe@2.27.2/example/img/earth-blue-marble.jpg')
+      .bumpImageUrl('https://unpkg.com/three-globe@2.27.2/example/img/earth-topology.png')
+      .backgroundImageUrl('https://unpkg.com/three-globe@2.27.2/example/img/night-sky.png')
+      .pointsData([])
+      .pointLat('lat')
+      .pointLng('lng')
+      .pointColor('color')
+      .pointAltitude(0.01)
+      .pointRadius('size')
+      .pointLabel(d => '<b>' + d.name + '</b><br/>' + d.location)
+      .onPointClick(d => {
+        selectedId = d.id;
+        document.getElementById('markerName').textContent = d.name;
+        document.getElementById('markerLoc').textContent = d.location;
+        document.getElementById('info').style.display = 'block';
+        globe.pointOfView({ lat: d.lat, lng: d.lng, altitude: 1.5 }, 800);
+      })
+      .width(window.innerWidth)
+      .height(window.innerHeight)
+      (document.getElementById('globe'));
+
+    globe.controls().autoRotate = true;
+    globe.controls().autoRotateSpeed = 0.5;
+
+    window.addEventListener('resize', () => {
+      globe.width(window.innerWidth).height(window.innerHeight);
+    });
+
+    // Flush pending commands
+    if (pendingLang) setLanguage(pendingLang);
+    if (pendingMarkers) loadMarkers(pendingMarkers);
+    if (pendingFocus) focusOnPoint(pendingFocus.lat, pendingFocus.lng);
+
+    // Notify Android that globe is ready
+    if (window.AndroidBridge && window.AndroidBridge.onGlobeReady) {
+      window.AndroidBridge.onGlobeReady();
+    }
+  }
+
+  // Load globe.gl dynamically to control init timing
+  var s = document.createElement('script');
+  s.src = 'https://unpkg.com/globe.gl@2.27.2/dist/globe.gl.min.js';
+  s.onload = initGlobe;
+  s.onerror = function() {
+    document.body.innerHTML = '<div style="color:#fff;text-align:center;padding:40px;font-family:sans-serif;">' +
+      '<p style="font-size:18px;">3D Globe</p>' +
+      '<p style="color:#aaa;margin-top:8px;">Failed to load. Check network connection.</p></div>';
+  };
+  document.head.appendChild(s);
+</script>
+</body>
+</html>

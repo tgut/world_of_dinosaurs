@@ -16,8 +16,10 @@ import com.example.world_of_dinosaurs_extented.domain.model.DinosaurEra
 fun FilterChips(
     selectedEra: DinosaurEra?,
     selectedDiet: DinosaurDiet?,
+    only3D: Boolean = false,
     onEraSelected: (DinosaurEra?) -> Unit,
-    onDietSelected: (DinosaurDiet?) -> Unit
+    onDietSelected: (DinosaurDiet?) -> Unit,
+    onToggle3D: () -> Unit = {}
 ) {
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         Row(
@@ -50,6 +52,11 @@ fun FilterChips(
                 .padding(vertical = 4.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
+            FilterChip(
+                selected = only3D,
+                onClick = onToggle3D,
+                label = { Text("3D") }
+            )
             FilterChip(
                 selected = selectedDiet == null,
                 onClick = { onDietSelected(null) },

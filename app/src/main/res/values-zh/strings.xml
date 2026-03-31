@@ -108,6 +108,16 @@
     <string name="vision_api_key_hint">恐龙图像识别功能需要此密钥。请从 Google Cloud Console 获取。</string>
     <string name="save_api_key">保存</string>
 
+    <!-- Phase 17: 发现地图 -->
+    <string name="discovery_map">发现地图</string>
+    <string name="view_detail">查看详情</string>
+    <string name="view_on_map">在地图上查看</string>
+    <string name="map_markers_count">地图上有 %1$d 种恐龙</string>
+    <string name="map_style">地图样式</string>
+    <string name="map_flat">标准</string>
+    <string name="map_satellite">地形</string>
+    <string name="map_globe">3D 地球</string>
+
     <!-- Phase 16: 3D/AR -->
     <string name="downloading_model">正在下载 3D 模型…</string>
     <string name="model_gesture_hint">拖动旋转 · 捏合缩放</string>

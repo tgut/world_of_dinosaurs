@@ -15,5 +15,6 @@ data class HomeUiState(
     val selectedDiet: DinosaurDiet? = null,
     val selectedSize: DinosaurSize? = null,
     val isGridView: Boolean = true,
+    val only3D: Boolean = false,
     val language: String = "en"
 )

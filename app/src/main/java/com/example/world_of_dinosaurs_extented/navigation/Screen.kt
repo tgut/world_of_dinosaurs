@@ -21,4 +21,8 @@ sealed class Screen(val route: String) {
     data object ScanHistory : Screen("scan_history")
     data object ReviewQuiz : Screen("review_quiz")
     data object DinoRecognition : Screen("dino_recognition")
+    data object DiscoveryMap : Screen("discovery_map?dinosaurId={dinosaurId}") {
+        fun createRoute(dinosaurId: String? = null) =
+            if (dinosaurId != null) "discovery_map?dinosaurId=$dinosaurId" else "discovery_map"
+    }
 }

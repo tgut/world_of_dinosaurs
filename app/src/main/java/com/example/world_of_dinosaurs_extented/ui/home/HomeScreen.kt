@@ -12,8 +12,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -45,6 +46,7 @@ fun HomeScreen(
     onNavigateToQuiz: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToRecognition: () -> Unit = {},
+    onNavigateToMap: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -65,6 +67,9 @@ fun HomeScreen(
                 TopAppBar(
                     title = { Text(stringResource(R.string.app_name)) },
                     actions = {
+                        IconButton(onClick = onNavigateToMap) {
+                            Icon(Icons.Default.Map, contentDescription = stringResource(R.string.discovery_map))
+                        }
                         IconButton(onClick = onNavigateToRecognition) {
                             Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.identify_dinosaur))
                         }
@@ -95,8 +100,10 @@ fun HomeScreen(
             FilterChips(
                 selectedEra = uiState.selectedEra,
                 selectedDiet = uiState.selectedDiet,
+                only3D = uiState.only3D,
                 onEraSelected = viewModel::onEraFilterChanged,
-                onDietSelected = viewModel::onDietFilterChanged
+                onDietSelected = viewModel::onDietFilterChanged,
+                onToggle3D = viewModel::toggleOnly3D
             )
 
             when {
@@ -194,9 +201,9 @@ private fun DinosaurGridCard(dino: Dinosaur, language: String, onClick: () -> Un
                 )
                 if (dino.isFeatured) {
                     Icon(
-                        Icons.Default.Star,
+                        Icons.Default.AutoAwesome,
                         contentDescription = stringResource(R.string.featured),
-                        tint = Color(0xFFFFC107),
+                        tint = Color(0xFFFF9800),
                         modifier = Modifier
                             .padding(4.dp)
                             .size(20.dp)
@@ -251,9 +258,9 @@ private fun DinosaurListCard(dino: Dinosaur, language: String, onClick: () -> Un
                     )
                     if (dino.isFeatured) {
                         Icon(
-                            Icons.Default.Star,
+                            Icons.Default.AutoAwesome,
                             contentDescription = stringResource(R.string.featured),
-                            tint = Color(0xFFFFC107),
+                            tint = Color(0xFFFF9800),
                             modifier = Modifier.size(16.dp)
                         )
                     }

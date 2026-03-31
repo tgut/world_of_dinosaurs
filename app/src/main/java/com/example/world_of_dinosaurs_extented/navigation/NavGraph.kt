@@ -17,6 +17,7 @@ import com.example.world_of_dinosaurs_extented.ui.qrscan.QrScanScreen
 import com.example.world_of_dinosaurs_extented.ui.scanhistory.ScanHistoryScreen
 import com.example.world_of_dinosaurs_extented.ui.reviewquiz.ReviewQuizScreen
 import com.example.world_of_dinosaurs_extented.ui.recognition.DinoRecognitionScreen
+import com.example.world_of_dinosaurs_extented.ui.map.DiscoveryMapScreen
 import com.example.world_of_dinosaurs_extented.ui.settings.SettingsScreen
 import com.example.world_of_dinosaurs_extented.ui.timeline.TimelineScreen
 
@@ -32,7 +33,8 @@ fun DinoNavGraph(navController: NavHostController) {
                 onNavigateToTimeline = { navController.navigate(Screen.Timeline.route) },
                 onNavigateToQuiz = { navController.navigate(Screen.Quiz.route) },
                 onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
-                onNavigateToRecognition = { navController.navigate(Screen.DinoRecognition.route) }
+                onNavigateToRecognition = { navController.navigate(Screen.DinoRecognition.route) },
+                onNavigateToMap = { navController.navigate(Screen.DiscoveryMap.createRoute()) }
             )
         }
         composable(
@@ -42,7 +44,8 @@ fun DinoNavGraph(navController: NavHostController) {
             DetailScreen(
                 onNavigateBack = { navController.popBackStack() },
                 onView3D = { id -> navController.navigate(Screen.Model3D.createRoute(id)) },
-                onViewAR = { id -> navController.navigate(Screen.AR.createRoute(id)) }
+                onViewAR = { id -> navController.navigate(Screen.AR.createRoute(id)) },
+                onViewOnMap = { id -> navController.navigate(Screen.DiscoveryMap.createRoute(id)) }
             )
         }
         composable(Screen.Favorites.route) {
@@ -108,6 +111,15 @@ fun DinoNavGraph(navController: NavHostController) {
         }
         composable(Screen.DinoRecognition.route) {
             DinoRecognitionScreen(
+                onDinosaurClick = { id -> navController.navigate(Screen.Detail.createRoute(id)) },
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(
+            Screen.DiscoveryMap.route,
+            arguments = listOf(navArgument("dinosaurId") { type = NavType.StringType; defaultValue = "" })
+        ) {
+            DiscoveryMapScreen(
                 onDinosaurClick = { id -> navController.navigate(Screen.Detail.createRoute(id)) },
                 onNavigateBack = { navController.popBackStack() }
             )
