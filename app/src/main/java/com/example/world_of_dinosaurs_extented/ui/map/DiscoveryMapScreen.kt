@@ -67,6 +67,7 @@ fun DiscoveryMapScreen(
                         language = uiState.language,
                         focusLat = uiState.focusLat,
                         focusLng = uiState.focusLng,
+                        autoRotateTimeoutMs = uiState.globeRotateTimeoutMs,
                         onMarkerClick = { marker ->
                             onDinosaurClick(marker.dinosaurId)
                         },

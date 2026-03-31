@@ -117,6 +117,9 @@
     <string name="map_flat">Standard</string>
     <string name="map_satellite">Topographic</string>
     <string name="map_globe">3D Globe</string>
+    <string name="globe_rotate_timeout_title">Globe Auto-Rotate</string>
+    <string name="globe_rotate_timeout_hint">Resume auto-rotation after this many seconds of inactivity</string>
+    <string name="globe_rotate_timeout_value">%1$ds</string>
 
     <!-- Phase 16: 3D/AR -->
     <string name="downloading_model">Downloading 3D model…</string>

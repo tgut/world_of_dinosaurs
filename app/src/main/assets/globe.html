@@ -42,12 +42,13 @@
   let pendingMarkers = null;
   let pendingLang = null;
   let pendingFocus = null;
+  let autoRotateTimeoutMs = 10000;
+  let inactivityTimer = null;
 
   function loadMarkers(json) {
     if (!globe) { pendingMarkers = json; return; }
     const data = JSON.parse(json);
     globe.pointsData(data);
-    globe.labelsData(data);
   }
 
   function focusOnPoint(lat, lng) {
@@ -68,6 +69,21 @@
     }
   }
 
+  function setAutoRotateTimeout(ms) {
+    autoRotateTimeoutMs = ms;
+  }
+
+  function stopRotateAndScheduleResume() {
+    if (!globe) return;
+    globe.controls().autoRotate = false;
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(function() {
+      if (globe && !selectedId) {
+        globe.controls().autoRotate = true;
+      }
+    }, autoRotateTimeoutMs);
+  }
+
   function viewDetail() {
     if (selectedId && window.AndroidBridge) {
       window.AndroidBridge.onMarkerClick(selectedId);
@@ -77,7 +93,7 @@
   function closeInfo() {
     document.getElementById('info').style.display = 'none';
     selectedId = null;
-    if (globe) globe.controls().autoRotate = true;
+    stopRotateAndScheduleResume();
   }
 
   function initGlobe() {
@@ -99,24 +115,25 @@
         document.getElementById('markerName').textContent = d.name;
         document.getElementById('markerLoc').textContent = d.location;
         document.getElementById('info').style.display = 'block';
+        clearTimeout(inactivityTimer);
         globe.controls().autoRotate = false;
         globe.pointOfView({ lat: d.lat, lng: d.lng, altitude: 1.2 }, 800);
       })
-      .labelsData([])
-      .labelLat('lat')
-      .labelLng('lng')
-      .labelText('name')
-      .labelSize(1.2)
-      .labelDotRadius(0.4)
-      .labelColor(d => d.color)
-      .labelAltitude(0.025)
-      .labelResolution(2)
       .width(window.innerWidth)
       .height(window.innerHeight)
       (document.getElementById('globe'));
 
     globe.controls().autoRotate = true;
     globe.controls().autoRotateSpeed = 0.5;
+
+    // Detect user interaction (drag/zoom) and pause rotation with resume timer
+    var el = document.getElementById('globe');
+    el.addEventListener('pointerdown', function() {
+      if (!selectedId) stopRotateAndScheduleResume();
+    });
+    el.addEventListener('wheel', function() {
+      if (!selectedId) stopRotateAndScheduleResume();
+    });
 
     window.addEventListener('resize', () => {
       globe.width(window.innerWidth).height(window.innerHeight);

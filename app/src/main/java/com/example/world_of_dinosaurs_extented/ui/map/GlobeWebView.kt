@@ -19,6 +19,7 @@ fun GlobeWebView(
     language: String,
     focusLat: Double?,
     focusLng: Double?,
+    autoRotateTimeoutMs: Long = 10000L,
     onMarkerClick: (DinosaurMapMarker) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -58,6 +59,7 @@ fun GlobeWebView(
                         val escaped = markersJson.replace("\\", "\\\\").replace("'", "\\'")
                         evaluateJavascript("loadMarkers('$escaped')", null)
                         evaluateJavascript("setLanguage('$language')", null)
+                        evaluateJavascript("setAutoRotateTimeout($autoRotateTimeoutMs)", null)
                         if (focusLat != null && focusLng != null) {
                             evaluateJavascript("focusOnPoint($focusLat, $focusLng)", null)
                         }
@@ -71,6 +73,7 @@ fun GlobeWebView(
             val escaped = markersJson.replace("\\", "\\\\").replace("'", "\\'")
             webView.evaluateJavascript("loadMarkers('$escaped')", null)
             webView.evaluateJavascript("setLanguage('$language')", null)
+            webView.evaluateJavascript("setAutoRotateTimeout($autoRotateTimeoutMs)", null)
         },
         modifier = modifier
     )

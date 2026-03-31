@@ -33,6 +33,10 @@ class SettingsManager @Inject constructor(
         prefs[VISION_API_KEY] ?: ""
     }
 
+    val globeRotateTimeoutFlow: Flow<Int> = dataStore.data.map { prefs ->
+        prefs[GLOBE_ROTATE_TIMEOUT]?.toIntOrNull() ?: 10
+    }
+
     suspend fun setLanguage(language: String) {
         dataStore.edit { prefs -> prefs[LANGUAGE_KEY] = language }
     }
@@ -49,9 +53,14 @@ class SettingsManager @Inject constructor(
         return dataStore.data.map { prefs -> prefs[VISION_API_KEY] ?: "" }.first()
     }
 
+    suspend fun setGlobeRotateTimeout(seconds: Int) {
+        dataStore.edit { prefs -> prefs[GLOBE_ROTATE_TIMEOUT] = seconds.toString() }
+    }
+
     companion object {
         private val LANGUAGE_KEY = stringPreferencesKey("language")
         private val THEME_KEY = stringPreferencesKey("theme")
         private val VISION_API_KEY = stringPreferencesKey("vision_api_key")
+        private val GLOBE_ROTATE_TIMEOUT = stringPreferencesKey("globe_rotate_timeout")
     }
 }

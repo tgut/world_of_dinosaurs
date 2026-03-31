@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Close
@@ -199,17 +198,6 @@ private fun DinosaurGridCard(dino: Dinosaur, language: String, onClick: () -> Un
                         .height(140.dp)
                         .clip(MaterialTheme.shapes.medium)
                 )
-                if (dino.isFeatured) {
-                    Icon(
-                        Icons.Default.AutoAwesome,
-                        contentDescription = stringResource(R.string.featured),
-                        tint = Color(0xFFFF9800),
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .size(20.dp)
-                            .align(Alignment.TopEnd)
-                    )
-                }
             }
             Column(modifier = Modifier.padding(8.dp)) {
                 Text(
@@ -256,14 +244,6 @@ private fun DinosaurListCard(dino: Dinosaur, language: String, onClick: () -> Un
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.weight(1f)
                     )
-                    if (dino.isFeatured) {
-                        Icon(
-                            Icons.Default.AutoAwesome,
-                            contentDescription = stringResource(R.string.featured),
-                            tint = Color(0xFFFF9800),
-                            modifier = Modifier.size(16.dp)
-                        )
-                    }
                 }
                 Text(
                     text = dino.scientificName,

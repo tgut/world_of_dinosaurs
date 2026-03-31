@@ -18,6 +18,13 @@ class SettingsViewModel @Inject constructor(
     val language: Flow<String> = settingsManager.languageFlow
     val theme: Flow<String> = settingsManager.themeFlow
     val visionApiKey: Flow<String> = settingsManager.visionApiKeyFlow
+    val globeRotateTimeout: Flow<Int> = settingsManager.globeRotateTimeoutFlow
+
+    fun setGlobeRotateTimeout(seconds: Int) {
+        viewModelScope.launch {
+            settingsManager.setGlobeRotateTimeout(seconds)
+        }
+    }
 
     fun setVisionApiKey(key: String) {
         viewModelScope.launch {

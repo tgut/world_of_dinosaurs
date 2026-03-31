@@ -29,12 +29,21 @@ class DiscoveryMapViewModel @Inject constructor(
     init {
         loadMarkers()
         observeLanguage()
+        observeGlobeTimeout()
     }
 
     private fun observeLanguage() {
         viewModelScope.launch {
             settingsManager.languageFlow.collect { lang ->
                 _uiState.update { it.copy(language = lang) }
+            }
+        }
+    }
+
+    private fun observeGlobeTimeout() {
+        viewModelScope.launch {
+            settingsManager.globeRotateTimeoutFlow.collect { seconds ->
+                _uiState.update { it.copy(globeRotateTimeoutMs = seconds * 1000L) }
             }
         }
     }

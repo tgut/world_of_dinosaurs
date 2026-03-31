@@ -29,6 +29,7 @@ fun SettingsScreen(
     val language by viewModel.language.collectAsStateWithLifecycle(initialValue = "en")
     val theme by viewModel.theme.collectAsStateWithLifecycle(initialValue = "system")
     val savedApiKey by viewModel.visionApiKey.collectAsStateWithLifecycle(initialValue = "")
+    val globeTimeout by viewModel.globeRotateTimeout.collectAsStateWithLifecycle(initialValue = 10)
     var apiKeyInput by remember { mutableStateOf("") }
     var apiKeyVisible by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -148,7 +149,38 @@ fun SettingsScreen(
                 Text(stringResource(R.string.save_api_key))
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Globe auto-rotate section
+            Text(
+                text = stringResource(R.string.globe_rotate_timeout_title),
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(R.string.globe_rotate_timeout_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+            ) {
+                Slider(
+                    value = globeTimeout.toFloat(),
+                    onValueChange = { viewModel.setGlobeRotateTimeout(it.toInt()) },
+                    valueRange = 3f..30f,
+                    steps = 8,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    text = stringResource(R.string.globe_rotate_timeout_value, globeTimeout),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             // About section
             Text(

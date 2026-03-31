@@ -13,5 +13,6 @@ data class DiscoveryMapUiState(
     val focusLat: Double? = null,
     val focusLng: Double? = null,
     val focusZoom: Double? = null,
-    val language: String = "en"
+    val language: String = "en",
+    val globeRotateTimeoutMs: Long = 10000L
 )

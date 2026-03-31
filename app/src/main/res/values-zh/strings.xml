@@ -117,6 +117,9 @@
     <string name="map_flat">标准</string>
     <string name="map_satellite">地形</string>
     <string name="map_globe">3D 地球</string>
+    <string name="globe_rotate_timeout_title">地球自动旋转</string>
+    <string name="globe_rotate_timeout_hint">用户无操作后恢复自动旋转的等待时间</string>
+    <string name="globe_rotate_timeout_value">%1$d秒</string>
 
     <!-- Phase 16: 3D/AR -->
     <string name="downloading_model">正在下载 3D 模型…</string>
