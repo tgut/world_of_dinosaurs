@@ -12,7 +12,11 @@ data class QuizUiState(
     val isComplete: Boolean = false,
     val isLoading: Boolean = true,
     val language: String = "en",
-    val result: QuizResult? = null
+    val result: QuizResult? = null,
+    /** 用户看完激励视频后解锁答案解析 */
+    val analysisUnlocked: Boolean = false,
+    /** 激励视频广告加载中 */
+    val isLoadingAd: Boolean = false
 ) {
     val currentQuestion: QuizQuestion?
         get() = questions.getOrNull(currentIndex)

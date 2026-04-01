@@ -195,4 +195,18 @@
     <string name="privacy_consent_accept">Accept</string>
     <string name="privacy_consent_learn_more">Learn More</string>
     <string name="privacy_policy_url">https://github.com/tgut/world_of_dinosaurs/blob/main/PRIVACY_POLICY.md</string>
+
+    <!-- Phase 22: Ads -->
+    <string name="unlock_analysis_hint">Watch a short video to unlock the full explanation</string>
+    <string name="watch_ad_unlock">Watch Ad · Unlock Analysis</string>
+
+    <!-- Donate & Feedback -->
+    <string name="donate">Support the Developer</string>
+    <string name="donate_hint">Like the app? Scan the QR code to buy me a coffee ☕</string>
+    <string name="donate_wechat_label">WeChat Pay</string>
+    <string name="feedback">Send Feedback</string>
+    <string name="feedback_hint">Found a bug or have a suggestion? Let me know!</string>
+    <string name="feedback_email_subject">World of Dinosaurs – Feedback</string>
+    <string name="feedback_email">Tap to send feedback via email</string>
+    <string name="feedback_url">https://github.com/tgut/world_of_dinosaurs/issues</string>
 </resources>

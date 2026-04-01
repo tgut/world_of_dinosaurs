@@ -5,11 +5,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Feedback
 import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -51,6 +55,7 @@ fun SettingsScreen(
     var providerDropdownExpanded by remember { mutableStateOf(false) }
     var showVisionKeyGuide by remember { mutableStateOf(false) }
     var showChatKeyGuide by remember { mutableStateOf(false) }
+    var showDonateDialog by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     val uriHandler = LocalUriHandler.current
 
@@ -429,6 +434,31 @@ fun SettingsScreen(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            // Donate button
+            OutlinedButton(
+                onClick = { showDonateDialog = true },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(Icons.Default.Favorite, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(stringResource(R.string.donate))
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Feedback button
+            val feedbackUrl = stringResource(R.string.feedback_url)
+            OutlinedButton(
+                onClick = { uriHandler.openUri(feedbackUrl) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(Icons.Default.Feedback, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(stringResource(R.string.feedback))
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 
@@ -451,6 +481,43 @@ fun SettingsScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showVisionKeyGuide = false }) {
+                    Text(stringResource(R.string.close))
+                }
+            }
+        )
+    }
+
+    // Donate Dialog
+    if (showDonateDialog) {
+        AlertDialog(
+            onDismissRequest = { showDonateDialog = false },
+            title = { Text(stringResource(R.string.donate)) },
+            text = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(R.string.donate_hint),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Image(
+                        painter = painterResource(R.drawable.qr_wechat_donate),
+                        contentDescription = stringResource(R.string.donate_wechat_label),
+                        modifier = Modifier.size(200.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(R.string.donate_wechat_label),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showDonateDialog = false }) {
                     Text(stringResource(R.string.close))
                 }
             }

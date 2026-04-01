@@ -16,6 +16,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // AdMob is served from google() — no extra repo needed
     }
 }
 

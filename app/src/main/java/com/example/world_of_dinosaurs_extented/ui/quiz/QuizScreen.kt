@@ -3,15 +3,18 @@ package com.example.world_of_dinosaurs_extented.ui.quiz
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.android.gms.ads.rewarded.RewardedAd
 import com.example.world_of_dinosaurs_extented.R
 import com.example.world_of_dinosaurs_extented.ui.common.LoadingIndicator
 
@@ -22,6 +25,10 @@ fun QuizScreen(
     viewModel: QuizViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    // 激励视频广告状态
+    var loadedAd by remember { mutableStateOf<RewardedAd?>(null) }
 
     Scaffold(
         topBar = {
@@ -46,6 +53,31 @@ fun QuizScreen(
             uiState.currentQuestion != null -> QuizQuestionView(
                 uiState = uiState,
                 onAnswerSelected = viewModel::selectAnswer,
+                onWatchAdToUnlock = {
+                    // 如果已有预加载广告则直接播放，否则先加载
+                    val ad = loadedAd
+                    if (ad != null) {
+                        loadedAd = null
+                        viewModel.adManager.showRewardedAd(
+                            activity = context as androidx.activity.ComponentActivity,
+                            ad = ad,
+                            onRewarded = { viewModel.unlockAnalysis() },
+                            onDismissed = {}
+                        )
+                    } else {
+                        viewModel.requestRewardedAd(
+                            onLoaded = { newAd ->
+                                viewModel.adManager.showRewardedAd(
+                                    activity = context as androidx.activity.ComponentActivity,
+                                    ad = newAd,
+                                    onRewarded = { viewModel.unlockAnalysis() },
+                                    onDismissed = {}
+                                )
+                            },
+                            onFailed = {}
+                        )
+                    }
+                },
                 modifier = Modifier.padding(padding)
             )
         }
@@ -56,6 +88,7 @@ fun QuizScreen(
 private fun QuizQuestionView(
     uiState: QuizUiState,
     onAnswerSelected: (Int) -> Unit,
+    onWatchAdToUnlock: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val question = uiState.currentQuestion ?: return
@@ -116,7 +149,7 @@ private fun QuizQuestionView(
             }
         }
 
-        // Explanation after answering
+        // 答题后显示答案解析区域
         if (uiState.isAnswered) {
             Spacer(modifier = Modifier.height(16.dp))
             val isCorrect = uiState.selectedAnswer == question.correctIndex
@@ -125,12 +158,49 @@ private fun QuizQuestionView(
                 style = MaterialTheme.typography.titleMedium,
                 color = if (isCorrect) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = question.getLocalizedExplanation(language),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (uiState.analysisUnlocked) {
+                // 解析已解锁 — 直接显示
+                Text(
+                    text = question.getLocalizedExplanation(language),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                // 未解锁 — 显示"看广告解锁"按钮
+                OutlinedCard(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(R.string.unlock_analysis_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        if (uiState.isLoadingAd) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                        } else {
+                            Button(onClick = onWatchAdToUnlock) {
+                                Icon(
+                                    Icons.Default.PlayCircle,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(stringResource(R.string.watch_ad_unlock))
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

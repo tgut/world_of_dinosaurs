@@ -195,4 +195,18 @@
     <string name="privacy_consent_accept">同意</string>
     <string name="privacy_consent_learn_more">了解更多</string>
     <string name="privacy_policy_url">https://github.com/tgut/world_of_dinosaurs/blob/main/PRIVACY_POLICY.md</string>
+
+    <!-- Phase 22: 广告 -->
+    <string name="unlock_analysis_hint">观看短视频即可解锁完整答案解析</string>
+    <string name="watch_ad_unlock">看广告 · 解锁解析</string>
+
+    <!-- 打赏 & 反馈 -->
+    <string name="donate">支持开发者</string>
+    <string name="donate_hint">觉得好用？扫描二维码请我喝杯咖啡 ☕</string>
+    <string name="donate_wechat_label">微信支付</string>
+    <string name="feedback">发送反馈</string>
+    <string name="feedback_hint">遇到 bug 或有改进建议？告诉我！</string>
+    <string name="feedback_email_subject">恐龙世界 – 反馈</string>
+    <string name="feedback_email">点击通过邮件发送反馈</string>
+    <string name="feedback_url">https://github.com/tgut/world_of_dinosaurs/issues</string>
 </resources>

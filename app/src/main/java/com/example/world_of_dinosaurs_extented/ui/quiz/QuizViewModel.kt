@@ -3,8 +3,10 @@ package com.example.world_of_dinosaurs_extented.ui.quiz
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.world_of_dinosaurs_extented.data.SettingsManager
+import com.example.world_of_dinosaurs_extented.data.ads.AdMobAdManager
 import com.example.world_of_dinosaurs_extented.domain.model.QuizResult
 import com.example.world_of_dinosaurs_extented.domain.usecase.GetQuizQuestionsUseCase
+import com.google.android.gms.ads.rewarded.RewardedAd
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -14,7 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class QuizViewModel @Inject constructor(
     private val getQuizQuestionsUseCase: GetQuizQuestionsUseCase,
-    private val settingsManager: SettingsManager
+    private val settingsManager: SettingsManager,
+    val adManager: AdMobAdManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(QuizUiState())
@@ -80,7 +83,8 @@ class QuizViewModel @Inject constructor(
                 it.copy(
                     currentIndex = it.currentIndex + 1,
                     selectedAnswer = null,
-                    isAnswered = false
+                    isAnswered = false,
+                    analysisUnlocked = false
                 )
             }
         }
@@ -91,5 +95,28 @@ class QuizViewModel @Inject constructor(
             QuizUiState(language = it.language)
         }
         loadQuiz()
+    }
+
+    /** 用户点击"看广告解锁解析"按钮 — 加载激励视频广告 */
+    fun requestRewardedAd(
+        onLoaded: (RewardedAd) -> Unit,
+        onFailed: () -> Unit
+    ) {
+        _uiState.update { it.copy(isLoadingAd = true) }
+        adManager.loadRewardedAd(
+            onLoaded = { ad ->
+                _uiState.update { it.copy(isLoadingAd = false) }
+                onLoaded(ad)
+            },
+            onFailed = {
+                _uiState.update { it.copy(isLoadingAd = false) }
+                onFailed()
+            }
+        )
+    }
+
+    /** 用户看完激励视频后调用，解锁当前题目解析 */
+    fun unlockAnalysis() {
+        _uiState.update { it.copy(analysisUnlocked = true) }
     }
 }

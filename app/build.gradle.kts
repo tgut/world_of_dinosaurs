@@ -120,9 +120,14 @@ dependencies {
     implementation(libs.camerax.view)
     implementation(libs.mlkit.barcode)
     implementation(libs.zxing.core)
+    // Guava: provides ListenableFuture used by ProcessCameraProvider.getInstance()
+    implementation("com.google.guava:guava:31.1-android")
 
     // Map
     implementation(libs.osmdroid)
+
+    // Google AdMob
+    implementation(libs.admob)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)

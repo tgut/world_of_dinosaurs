@@ -19,12 +19,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.google.android.gms.ads.AdView
 import com.example.world_of_dinosaurs_extented.R
 import com.example.world_of_dinosaurs_extented.data.model3d.Model3dConfig
 import com.example.world_of_dinosaurs_extented.domain.model.Dinosaur
@@ -46,6 +49,15 @@ fun DetailScreen(
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    // Banner 广告状态
+    var bannerAd by remember { mutableStateOf<AdView?>(null) }
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.adManager.loadBanner(
+            onLoaded = { bannerAd = it },
+            onFailed = {}
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -68,6 +80,17 @@ fun DetailScreen(
                     }
                 }
             )
+        },
+        bottomBar = {
+            // 穿山甲 Banner 广告 — 320×50，固定底部
+            bannerAd?.let { ad ->
+                BannerAdView(
+                    ad = ad,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                )
+            }
         }
     ) { padding ->
         when {
@@ -329,6 +352,17 @@ fun DetailScreen(
             }
         }
     }
+}
+
+@Composable
+private fun BannerAdView(
+    ad: AdView,
+    modifier: Modifier = Modifier
+) {
+    AndroidView(
+        factory = { ad },
+        modifier = modifier
+    )
 }
 
 @Composable
