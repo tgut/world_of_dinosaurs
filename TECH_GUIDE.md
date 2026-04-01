@@ -473,7 +473,7 @@ app/src/main/java/com/example/world_of_dinosaurs_extented/
     ├── model3d/            #   3D 模型 / AR
     ├── map/                #   发现地图
     ├── chat/               #   AI 聊天（文字/语音/TTS）
-    └── settings/           #   设置页（语言/主题/AI提供商/语音配置）
+    └── settings/           #   设置页（语言/主题/AI提供商/语音配置/API Key 指引）
 ```
 
 ---
@@ -491,6 +491,8 @@ app/src/main/java/com/example/world_of_dinosaurs_extented/
 | 17 | 发现地图 (OSMDroid + globe.gl 3D) + 更多 3D 模型 | ✅ 已完成 |
 | 18 | AI 恐龙问答 (多提供商 + 语音输入) | ✅ 已完成 |
 | 19 | TTS 朗读 + 画词翻译 + 地图 Bug 修复 | ✅ 已完成 |
+| 20 | 时间线美化 + API Key 申请指引 + 小米语音修复 | ✅ 已完成 |
+| 21 | 隐私政策页 + 首次启动同意弹窗 + Release 签名配置 | ✅ 已完成 |
 
 ---
 
