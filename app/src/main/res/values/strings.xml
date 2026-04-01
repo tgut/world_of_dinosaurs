@@ -149,6 +149,36 @@
     <string name="pinch_to_resize">Pinch to resize</string>
     <string name="reset_placement">Reset</string>
 
+    <!-- Phase 20: API Key Guides -->
+    <string name="how_to_get_key">How to get key</string>
+    <string name="close">Close</string>
+    <string name="open_link">Open Link</string>
+
+    <string name="vision_key_guide_title">How to Get Vision API Key</string>
+    <string name="vision_key_guide">1. Go to Google Cloud Console\n\n2. Create a new project (or use an existing one)\n\n3. In the left menu, go to \"APIs &amp; Services\" → \"Library\"\n\n4. Search for \"Cloud Vision API\" and enable it\n\n5. Go to \"APIs &amp; Services\" → \"Credentials\"\n\n6. Click \"Create Credentials\" → \"API Key\"\n\n7. Copy the API key and paste it here</string>
+    <string name="vision_key_guide_url">https://console.cloud.google.com/apis/credentials</string>
+
+    <string name="chat_key_guide_title">How to Get Chat API Key</string>
+    <string name="chat_key_guide_deepseek">DeepSeek:\n\n1. Go to platform.deepseek.com\n\n2. Register / Sign in\n\n3. Go to \"API Keys\" page\n\n4. Click \"Create new API key\"\n\n5. Copy and paste it here</string>
+    <string name="chat_key_guide_deepseek_url">https://platform.deepseek.com/api_keys</string>
+    <string name="chat_key_guide_qwen">Qwen (通义千问):\n\n1. Go to dashscope.console.aliyun.com\n\n2. Register / Sign in with Aliyun account\n\n3. Go to \"API-KEY 管理\"\n\n4. Click \"创建新的 API-KEY\"\n\n5. Copy and paste it here</string>
+    <string name="chat_key_guide_qwen_url">https://dashscope.console.aliyun.com/apiKey</string>
+    <string name="chat_key_guide_gemini">Gemini:\n\n1. Go to aistudio.google.com\n\n2. Sign in with Google account\n\n3. Click \"Get API Key\" in the left menu\n\n4. Click \"Create API Key\"\n\n5. Copy and paste it here</string>
+    <string name="chat_key_guide_gemini_url">https://aistudio.google.com/apikey</string>
+
+    <!-- Timeline Enhancement -->
+    <string name="timeline_header">The Age of Dinosaurs</string>
+    <string name="timeline_header_range">252 Ma → Now</string>
+    <string name="mass_extinction">Mass Extinction</string>
+    <string name="mass_extinction_time">66 million years ago</string>
+    <string name="today">Today</string>
+    <string name="you_are_here">You are here</string>
+    <string name="lasted_years">Lasted %1$d million years</string>
+    <string name="million_years_gap">%1$d million years</string>
+    <string name="era_triassic_desc">Dawn of the dinosaurs</string>
+    <string name="era_jurassic_desc">Giants roam the Earth</string>
+    <string name="era_cretaceous_desc">The final chapter</string>
+
     <!-- Phase 19: TTS & Translation -->
     <string name="read_aloud">Read Aloud</string>
     <string name="stop_reading">Stop</string>

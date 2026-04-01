@@ -7,12 +7,14 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -20,6 +22,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.Alignment
 import com.example.world_of_dinosaurs_extented.R
 import com.example.world_of_dinosaurs_extented.data.ChatProvider
 
@@ -46,7 +49,10 @@ fun SettingsScreen(
     var chatBaseUrlInput by remember { mutableStateOf("") }
     var chatModelInput by remember { mutableStateOf("") }
     var providerDropdownExpanded by remember { mutableStateOf(false) }
+    var showVisionKeyGuide by remember { mutableStateOf(false) }
+    var showChatKeyGuide by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
+    val uriHandler = LocalUriHandler.current
 
     val currentChatProvider = ChatProvider.fromKey(chatProviderKey)
 
@@ -138,11 +144,25 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             // AI Chat Provider section
-            Text(
-                text = stringResource(R.string.chat_provider),
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.chat_provider),
+                    style = MaterialTheme.typography.titleMedium
+                )
+                TextButton(onClick = { showChatKeyGuide = true }) {
+                    Icon(
+                        Icons.Default.HelpOutline,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(stringResource(R.string.how_to_get_key), style = MaterialTheme.typography.labelSmall)
+                }
+            }
             Text(
                 text = stringResource(R.string.chat_provider_hint),
                 style = MaterialTheme.typography.bodySmall,
@@ -253,11 +273,25 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             // Vision API Key section
-            Text(
-                text = stringResource(R.string.vision_api_key_title),
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.vision_api_key_title),
+                    style = MaterialTheme.typography.titleMedium
+                )
+                TextButton(onClick = { showVisionKeyGuide = true }) {
+                    Icon(
+                        Icons.Default.HelpOutline,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(stringResource(R.string.how_to_get_key), style = MaterialTheme.typography.labelSmall)
+                }
+            }
             Text(
                 text = stringResource(R.string.vision_api_key_hint),
                 style = MaterialTheme.typography.bodySmall,
@@ -396,5 +430,73 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
         }
+    }
+
+    // Vision API Key Guide Dialog
+    if (showVisionKeyGuide) {
+        val visionUrl = stringResource(R.string.vision_key_guide_url)
+        AlertDialog(
+            onDismissRequest = { showVisionKeyGuide = false },
+            title = { Text(stringResource(R.string.vision_key_guide_title)) },
+            text = {
+                Text(
+                    text = stringResource(R.string.vision_key_guide),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { uriHandler.openUri(visionUrl) }) {
+                    Text(stringResource(R.string.open_link))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showVisionKeyGuide = false }) {
+                    Text(stringResource(R.string.close))
+                }
+            }
+        )
+    }
+
+    // Chat API Key Guide Dialog
+    if (showChatKeyGuide) {
+        val guideText = when (currentChatProvider) {
+            ChatProvider.DEEPSEEK -> stringResource(R.string.chat_key_guide_deepseek)
+            ChatProvider.QWEN -> stringResource(R.string.chat_key_guide_qwen)
+            ChatProvider.GEMINI -> stringResource(R.string.chat_key_guide_gemini)
+            ChatProvider.CUSTOM -> stringResource(R.string.chat_key_guide_deepseek)
+        }
+        val guideUrl = when (currentChatProvider) {
+            ChatProvider.DEEPSEEK -> stringResource(R.string.chat_key_guide_deepseek_url)
+            ChatProvider.QWEN -> stringResource(R.string.chat_key_guide_qwen_url)
+            ChatProvider.GEMINI -> stringResource(R.string.chat_key_guide_gemini_url)
+            ChatProvider.CUSTOM -> ""
+        }
+        AlertDialog(
+            onDismissRequest = { showChatKeyGuide = false },
+            title = {
+                Text(
+                    stringResource(R.string.chat_key_guide_title) +
+                        " (${currentChatProvider.displayName})"
+                )
+            },
+            text = {
+                Text(
+                    text = guideText,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                if (guideUrl.isNotEmpty()) {
+                    TextButton(onClick = { uriHandler.openUri(guideUrl) }) {
+                        Text(stringResource(R.string.open_link))
+                    }
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showChatKeyGuide = false }) {
+                    Text(stringResource(R.string.close))
+                }
+            }
+        )
     }
 }

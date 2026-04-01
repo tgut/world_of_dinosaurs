@@ -149,6 +149,36 @@
     <string name="pinch_to_resize">捏合调整大小</string>
     <string name="reset_placement">重置</string>
 
+    <!-- Phase 20: API 密钥申请指南 -->
+    <string name="how_to_get_key">如何获取密钥</string>
+    <string name="close">关闭</string>
+    <string name="open_link">打开链接</string>
+
+    <string name="vision_key_guide_title">如何获取 Vision API 密钥</string>
+    <string name="vision_key_guide">1. 打开 Google Cloud Console\n\n2. 创建新项目（或使用已有项目）\n\n3. 在左侧菜单进入「API 和服务」→「库」\n\n4. 搜索「Cloud Vision API」并启用\n\n5. 进入「API 和服务」→「凭据」\n\n6. 点击「创建凭据」→「API 密钥」\n\n7. 复制密钥粘贴到此处</string>
+    <string name="vision_key_guide_url">https://console.cloud.google.com/apis/credentials</string>
+
+    <string name="chat_key_guide_title">如何获取聊天 API 密钥</string>
+    <string name="chat_key_guide_deepseek">DeepSeek（深度求索）:\n\n1. 打开 platform.deepseek.com\n\n2. 注册 / 登录\n\n3. 进入「API Keys」页面\n\n4. 点击「创建 API Key」\n\n5. 复制密钥粘贴到此处</string>
+    <string name="chat_key_guide_deepseek_url">https://platform.deepseek.com/api_keys</string>
+    <string name="chat_key_guide_qwen">通义千问（Qwen）:\n\n1. 打开 dashscope.console.aliyun.com\n\n2. 使用阿里云账号注册 / 登录\n\n3. 进入「API-KEY 管理」\n\n4. 点击「创建新的 API-KEY」\n\n5. 复制密钥粘贴到此处</string>
+    <string name="chat_key_guide_qwen_url">https://dashscope.console.aliyun.com/apiKey</string>
+    <string name="chat_key_guide_gemini">Gemini:\n\n1. 打开 aistudio.google.com\n\n2. 使用 Google 账号登录\n\n3. 点击左侧菜单「Get API Key」\n\n4. 点击「Create API Key」\n\n5. 复制密钥粘贴到此处</string>
+    <string name="chat_key_guide_gemini_url">https://aistudio.google.com/apikey</string>
+
+    <!-- Timeline Enhancement -->
+    <string name="timeline_header">恐龙时代</string>
+    <string name="timeline_header_range">2.52 亿年前 → 现在</string>
+    <string name="mass_extinction">大灭绝</string>
+    <string name="mass_extinction_time">6600 万年前</string>
+    <string name="today">今天</string>
+    <string name="you_are_here">你在这里</string>
+    <string name="lasted_years">持续 %1$d 百万年</string>
+    <string name="million_years_gap">%1$d 百万年</string>
+    <string name="era_triassic_desc">恐龙黎明</string>
+    <string name="era_jurassic_desc">巨兽称霸</string>
+    <string name="era_cretaceous_desc">最终篇章</string>
+
     <!-- Phase 19: TTS & Translation -->
     <string name="read_aloud">朗读</string>
     <string name="stop_reading">停止</string>

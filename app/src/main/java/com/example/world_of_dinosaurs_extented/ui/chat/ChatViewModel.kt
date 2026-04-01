@@ -2,10 +2,12 @@ package com.example.world_of_dinosaurs_extented.ui.chat
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -159,16 +161,28 @@ class ChatViewModel @Inject constructor(
     }
 
     fun startListening(context: Context) {
-        if (!SpeechRecognizer.isRecognitionAvailable(context)) {
+        try {
+            // Try on-device recognizer first (API 33+), then fall back to default.
+            // Skip isRecognitionAvailable() check — it returns false on many Chinese ROMs
+            // (Xiaomi/MIUI, etc.) even though a recognizer is actually present.
+            speechRecognizer = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                SpeechRecognizer.isOnDeviceRecognitionAvailable(context)
+            ) {
+                SpeechRecognizer.createOnDeviceSpeechRecognizer(context)
+            } else {
+                SpeechRecognizer.createSpeechRecognizer(context)
+            }
+        } catch (e: Exception) {
+            Log.w("ChatViewModel", "Failed to create SpeechRecognizer", e)
             _uiState.update { it.copy(error = "speech_not_available") }
             return
         }
 
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
         val language = _uiState.value.language
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, if (language == "zh") "zh-CN" else "en-US")
+            putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
         }
         speechRecognizer?.setRecognitionListener(object : RecognitionListener {
             override fun onReadyForSpeech(params: Bundle?) {}
@@ -179,7 +193,14 @@ class ChatViewModel @Inject constructor(
                 _uiState.update { it.copy(isListening = false) }
             }
             override fun onError(error: Int) {
-                _uiState.update { it.copy(isListening = false) }
+                Log.w("ChatViewModel", "SpeechRecognizer error: $error")
+                val errorMsg = when (error) {
+                    SpeechRecognizer.ERROR_NO_MATCH -> null // silence, no speech detected
+                    SpeechRecognizer.ERROR_CLIENT -> "speech_not_available"
+                    SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> "audio_permission_required"
+                    else -> "speech_not_available"
+                }
+                _uiState.update { it.copy(isListening = false, error = errorMsg) }
             }
             override fun onResults(results: Bundle?) {
                 val text = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull()
@@ -189,7 +210,12 @@ class ChatViewModel @Inject constructor(
                     _uiState.update { it.copy(isListening = false) }
                 }
             }
-            override fun onPartialResults(partialResults: Bundle?) {}
+            override fun onPartialResults(partialResults: Bundle?) {
+                val text = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull()
+                if (text != null) {
+                    _uiState.update { it.copy(inputText = text) }
+                }
+            }
             override fun onEvent(eventType: Int, params: Bundle?) {}
         })
         speechRecognizer?.startListening(intent)
