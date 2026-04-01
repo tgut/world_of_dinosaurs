@@ -493,6 +493,7 @@ app/src/main/java/com/example/world_of_dinosaurs_extented/
 | 19 | TTS 朗读 + 画词翻译 + 地图 Bug 修复 | ✅ 已完成 |
 | 20 | 时间线美化 + API Key 申请指引 + 小米语音修复 | ✅ 已完成 |
 | 21 | 隐私政策页 + 首次启动同意弹窗 + Release 签名配置 | ✅ 已完成 |
+| 22 | 穿山甲广告接入 (Banner 详情页 + 激励视频解锁解析) | ✅ 已完成 |
 
 ---
 

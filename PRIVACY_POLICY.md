@@ -176,7 +176,7 @@ Your continued use of the App after changes constitutes your acceptance of the u
 
 If you have questions about this Privacy Policy or our privacy practices, please contact:
 
-- **Email**: info@worldofdinosaurs.app (or your contact email)
+- **Email**: lzhchen_ustc@163.com
 - **GitHub**: https://github.com/tgut/world_of_dinosaurs
 - **In-App**: Settings → About → Contact Us
 
