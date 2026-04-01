@@ -188,4 +188,11 @@
     <string name="tts_pitch">Speech Pitch</string>
     <string name="tts_speed_value">%.1fx</string>
     <string name="tts_pitch_value">%.1fx</string>
+
+    <!-- Privacy Consent -->
+    <string name="privacy_consent_title">Your Privacy Matters</string>
+    <string name="privacy_consent_message">This app collects camera and microphone data to provide AR viewing, voice chat, and image recognition features. Your data is processed locally or with external AI providers (DeepSeek, Qwen, Gemini, Google Vision). Please read our privacy policy to understand how we handle your information.</string>
+    <string name="privacy_consent_accept">Accept</string>
+    <string name="privacy_consent_learn_more">Learn More</string>
+    <string name="privacy_policy_url">https://github.com/tgut/world_of_dinosaurs/blob/main/PRIVACY_POLICY.md</string>
 </resources>

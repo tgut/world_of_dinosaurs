@@ -3,6 +3,7 @@ package com.example.world_of_dinosaurs_extented.data
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -73,6 +74,10 @@ class SettingsManager @Inject constructor(
         prefs[TTS_PITCH_KEY] ?: 1.0f
     }
 
+    val privacyConsentAcceptedFlow: Flow<Boolean> = dataStore.data.map { prefs ->
+        prefs[PRIVACY_CONSENT_ACCEPTED_KEY] ?: false
+    }
+
     suspend fun setLanguage(language: String) {
         dataStore.edit { prefs -> prefs[LANGUAGE_KEY] = language }
     }
@@ -117,6 +122,10 @@ class SettingsManager @Inject constructor(
         dataStore.edit { prefs -> prefs[TTS_PITCH_KEY] = pitch }
     }
 
+    suspend fun acceptPrivacyConsent() {
+        dataStore.edit { prefs -> prefs[PRIVACY_CONSENT_ACCEPTED_KEY] = true }
+    }
+
     fun getResolvedChatBaseUrl(provider: ChatProvider, customUrl: String): String {
         return if (provider == ChatProvider.CUSTOM) customUrl else provider.baseUrl
     }
@@ -136,5 +145,6 @@ class SettingsManager @Inject constructor(
         private val CHAT_MODEL_KEY = stringPreferencesKey("chat_model")
         private val TTS_SPEED_KEY = floatPreferencesKey("tts_speed")
         private val TTS_PITCH_KEY = floatPreferencesKey("tts_pitch")
+        private val PRIVACY_CONSENT_ACCEPTED_KEY = booleanPreferencesKey("privacy_consent_accepted")
     }
 }

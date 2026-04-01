@@ -25,3 +25,8 @@ local.properties
 LSA/
 world_of_dinosaurs_extented/.idea/
 world_of_dinosaurs_extented/*.iml
+
+# Release signing - DO NOT commit these
+keystore.properties
+*.jks
+*.keystore
