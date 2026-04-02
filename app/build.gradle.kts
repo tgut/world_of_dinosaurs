@@ -8,12 +8,16 @@ plugins {
     alias(libs.plugins.hilt.android)
 }
 
-// Load keystore properties if file exists
+// Load keystore properties: file takes priority, fall back to environment variables (CI)
 val keystorePropertiesFile = rootProject.file("keystore.properties")
 val keystoreProperties = Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(keystorePropertiesFile.inputStream())
 }
+
+fun keystoreProp(key: String): String? =
+    (keystoreProperties[key] as? String)?.takeIf { it.isNotBlank() }
+        ?: System.getenv(key.uppercase().replace(".", "_"))
 
 android {
     namespace = "com.example.world_of_dinosaurs_extented"
@@ -21,11 +25,12 @@ android {
 
     signingConfigs {
         create("release") {
-            if (keystorePropertiesFile.exists()) {
-                storeFile = file(keystoreProperties["storeFile"] as String)
-                storePassword = keystoreProperties["storePassword"] as String
-                keyAlias = keystoreProperties["keyAlias"] as String
-                keyPassword = keystoreProperties["keyPassword"] as String
+            val ksPath = keystoreProp("storeFile")
+            if (ksPath != null) {
+                storeFile = file(ksPath)
+                storePassword = keystoreProp("storePassword")
+                keyAlias = keystoreProp("keyAlias")
+                keyPassword = keystoreProp("keyPassword")
             }
         }
     }

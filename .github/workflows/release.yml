@@ -1,0 +1,64 @@
+name: Build & Release APK
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'   # triggers on v1.0.0, v1.2.3, etc.
+
+jobs:
+  build:
+    name: Build signed APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # Decode the base64-encoded keystore from GitHub Secrets
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/dino-release.jks
+
+      # Build the signed release APK
+      - name: Build release APK
+        run: ./gradlew assembleRelease
+        env:
+          STOREFILE: app/dino-release.jks
+          KEYALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYPASSWORD: ${{ secrets.KEY_PASSWORD }}
+          STOREPASSWORD: ${{ secrets.STORE_PASSWORD }}
+
+      # Find the generated APK (name may vary by version)
+      - name: Locate APK
+        id: find_apk
+        run: |
+          APK=$(find app/build/outputs/apk/release -name "*.apk" | head -1)
+          echo "apk_path=$APK" >> $GITHUB_OUTPUT
+
+      # Create GitHub Release and attach the APK
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "World of Dinosaurs ${{ github.ref_name }}"
+          body: |
+            ## What's new
+            <!-- fill in release notes here, or edit after release -->
+
+            ## Download
+            Install the APK directly on your Android device (Android 8.0+).
+          files: ${{ steps.find_apk.outputs.apk_path }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
