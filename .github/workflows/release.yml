@@ -26,8 +26,12 @@ jobs:
 
       # Decode the base64-encoded keystore from GitHub Secrets
       - name: Decode keystore
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | tr -d '\n' | base64 --decode > app/dino-release.jks
+          printf '%s' "$KEYSTORE_B64" | base64 --decode > app/dino-release.jks
+          echo "Keystore size: $(wc -c < app/dino-release.jks) bytes"
+          file app/dino-release.jks
 
       # Build the signed release APK
       - name: Build release APK
