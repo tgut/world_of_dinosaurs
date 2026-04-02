@@ -33,7 +33,7 @@ jobs:
       - name: Build release APK
         run: ./gradlew assembleRelease
         env:
-          STOREFILE: app/dino-release.jks
+          STOREFILE: dino-release.jks
           KEYALIAS: ${{ secrets.KEY_ALIAS }}
           KEYPASSWORD: ${{ secrets.KEY_PASSWORD }}
           STOREPASSWORD: ${{ secrets.STORE_PASSWORD }}
