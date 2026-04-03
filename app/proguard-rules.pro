@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Huawei HMS SDK internal classes not present in AAR compile-time classpath.
+# These are referenced transitively by HMS AppGallery/AR Engine SDKs but are
+# only available on Huawei devices at runtime. R8 warns about them at build time.
+-dontwarn com.huawei.android.app.PackageManagerEx
+-dontwarn com.huawei.appgallery.log.LogAdaptor
