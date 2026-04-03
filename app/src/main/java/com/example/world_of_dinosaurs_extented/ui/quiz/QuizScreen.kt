@@ -14,7 +14,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.gms.ads.rewarded.RewardedAd
 import com.example.world_of_dinosaurs_extented.R
 import com.example.world_of_dinosaurs_extented.ui.common.LoadingIndicator
 
@@ -26,9 +25,6 @@ fun QuizScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-
-    // 激励视频广告状态
-    var loadedAd by remember { mutableStateOf<RewardedAd?>(null) }
 
     Scaffold(
         topBar = {
@@ -54,29 +50,16 @@ fun QuizScreen(
                 uiState = uiState,
                 onAnswerSelected = viewModel::selectAnswer,
                 onWatchAdToUnlock = {
-                    // 如果已有预加载广告则直接播放，否则先加载
-                    val ad = loadedAd
-                    if (ad != null) {
-                        loadedAd = null
-                        viewModel.adManager.showRewardedAd(
-                            activity = context as androidx.activity.ComponentActivity,
-                            ad = ad,
-                            onRewarded = { viewModel.unlockAnalysis() },
-                            onDismissed = {}
-                        )
-                    } else {
-                        viewModel.requestRewardedAd(
-                            onLoaded = { newAd ->
-                                viewModel.adManager.showRewardedAd(
-                                    activity = context as androidx.activity.ComponentActivity,
-                                    ad = newAd,
-                                    onRewarded = { viewModel.unlockAnalysis() },
-                                    onDismissed = {}
-                                )
-                            },
-                            onFailed = {}
-                        )
-                    }
+                    viewModel.requestRewardedAd(
+                        onLoaded = {
+                            viewModel.adManager.showRewardedAd(
+                                activity = context as androidx.activity.ComponentActivity,
+                                onRewarded = { viewModel.unlockAnalysis() },
+                                onDismissed = {}
+                            )
+                        },
+                        onFailed = {}
+                    )
                 },
                 modifier = Modifier.padding(padding)
             )

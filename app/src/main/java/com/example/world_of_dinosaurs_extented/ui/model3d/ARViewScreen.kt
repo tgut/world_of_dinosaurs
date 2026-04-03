@@ -1,6 +1,5 @@
 package com.example.world_of_dinosaurs_extented.ui.model3d
 
-import android.view.MotionEvent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -18,20 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.world_of_dinosaurs_extented.R
-import com.google.ar.core.ArCoreApk
-import com.google.ar.core.Config
-import com.google.ar.core.Frame
-import com.google.ar.core.Session
-import com.google.ar.core.TrackingState
-import io.github.sceneview.ar.ARScene
-import io.github.sceneview.ar.arcore.createAnchorOrNull
-import io.github.sceneview.ar.node.AnchorNode
-import io.github.sceneview.math.Position
-import io.github.sceneview.model.ModelInstance
-import io.github.sceneview.node.ModelNode
-import io.github.sceneview.rememberEngine
-import io.github.sceneview.rememberModelLoader
-import io.github.sceneview.rememberNodes
+import com.example.world_of_dinosaurs_extented.ui.model3d.ar.ARDinoViewer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,20 +31,7 @@ fun ARViewScreen(
     var arAvailable by remember { mutableStateOf<Boolean?>(null) }
 
     LaunchedEffect(Unit) {
-        try {
-            var availability = ArCoreApk.getInstance().checkAvailability(context)
-            // checkAvailability may return UNKNOWN_CHECKING on first call;
-            // poll until result is definitive
-            while (availability.isTransient) {
-                kotlinx.coroutines.delay(200)
-                availability = ArCoreApk.getInstance().checkAvailability(context)
-            }
-            arAvailable = availability == ArCoreApk.Availability.SUPPORTED_INSTALLED ||
-                availability == ArCoreApk.Availability.SUPPORTED_APK_TOO_OLD ||
-                availability == ArCoreApk.Availability.SUPPORTED_NOT_INSTALLED
-        } catch (_: Exception) {
-            arAvailable = false
-        }
+        arAvailable = viewModel.arSceneController.checkAvailability(context)
     }
 
     Scaffold(
@@ -164,74 +137,4 @@ fun ARViewScreen(
             }
         }
     }
-}
-
-@Composable
-private fun ARDinoViewer(
-    modelPath: String,
-    scale: Float,
-    onPlaced: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val engine = rememberEngine()
-    val modelLoader = rememberModelLoader(engine)
-    val childNodes = rememberNodes()
-    var loadedInstance by remember { mutableStateOf<ModelInstance?>(null) }
-    var currentFrame by remember { mutableStateOf<Frame?>(null) }
-
-    LaunchedEffect(modelPath) {
-        try {
-            loadedInstance = modelLoader.createModelInstance(modelPath)
-        } catch (e: Exception) {
-            android.util.Log.e("ARDinoViewer", "Failed to load model: $modelPath", e)
-        }
-    }
-
-    ARScene(
-        modifier = modifier,
-        engine = engine,
-        modelLoader = modelLoader,
-        childNodes = childNodes,
-        sessionConfiguration = { session: Session, config: Config ->
-            config.planeFindingMode = Config.PlaneFindingMode.HORIZONTAL_AND_VERTICAL
-            config.depthMode = Config.DepthMode.DISABLED
-            config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
-        },
-        onSessionUpdated = { _: Session, frame: Frame ->
-            currentFrame = frame
-        },
-        onTouchEvent = { e: MotionEvent, _ ->
-            if (e.action == MotionEvent.ACTION_UP && loadedInstance != null) {
-                val frame = currentFrame
-                if (frame != null) {
-                    val arHitResult = frame.hitTest(e.x, e.y)
-                        .firstOrNull { hit ->
-                            hit.trackable.trackingState == TrackingState.TRACKING
-                        }
-                    if (arHitResult != null) {
-                        loadedInstance?.let { instance ->
-                            val anchor = arHitResult.createAnchorOrNull() ?: return@let
-                            val anchorNode = AnchorNode(
-                                engine = engine,
-                                anchor = anchor
-                            ).apply {
-                                val mNode = ModelNode(
-                                    modelInstance = instance,
-                                    scaleToUnits = scale
-                                ).apply {
-                                    position = Position(0f, 0f, 0f)
-                                }
-                                addChildNode(mNode)
-                            }
-                            childNodes.add(anchorNode)
-                            onPlaced()
-                        }
-                        true
-                    } else false
-                } else false
-            } else {
-                false
-            }
-        }
-    )
 }

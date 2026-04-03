@@ -17,6 +17,8 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         // AdMob is served from google() — no extra repo needed
+        // Huawei HMS repository
+        maven { url = uri("https://developer.huawei.com/repo/") }
     }
 }
 

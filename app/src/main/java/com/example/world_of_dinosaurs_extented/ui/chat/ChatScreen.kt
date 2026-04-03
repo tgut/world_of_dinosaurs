@@ -179,6 +179,14 @@ private fun ChatBubble(
             modifier = Modifier.widthIn(max = 300.dp)
         ) {
             Column(modifier = Modifier.padding(12.dp)) {
+                if (!isUser) {
+                    Text(
+                        text = stringResource(R.string.ai_generated_label),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                }
                 Text(
                     text = message.content,
                     style = MaterialTheme.typography.bodyMedium,

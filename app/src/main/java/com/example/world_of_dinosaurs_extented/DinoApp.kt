@@ -3,19 +3,20 @@ package com.example.world_of_dinosaurs_extented
 import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import com.google.android.gms.ads.MobileAds
+import com.example.world_of_dinosaurs_extented.data.ads.AdManager
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.OkHttpClient
+import javax.inject.Inject
 
 @HiltAndroidApp
 class DinoApp : Application(), ImageLoaderFactory {
 
+    @Inject lateinit var adManager: AdManager
+
     override fun onCreate() {
         super.onCreate()
-        // 初始化 Google AdMob
-        // App ID 在 AndroidManifest.xml 中配置
-        // 注册地址: https://admob.google.com/
-        MobileAds.initialize(this) {}
+        // Initialize the flavor-specific ad SDK (AdMob for google, HMS Ads for huawei)
+        adManager.initialize()
     }
 
     override fun newImageLoader(): ImageLoader {

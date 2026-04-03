@@ -7,6 +7,7 @@ import com.example.world_of_dinosaurs_extented.data.SettingsManager
 import com.example.world_of_dinosaurs_extented.data.model3d.Model3dConfig
 import com.example.world_of_dinosaurs_extented.data.model3d.ModelCacheManager
 import com.example.world_of_dinosaurs_extented.domain.usecase.GetDinosaurDetailUseCase
+import com.example.world_of_dinosaurs_extented.ui.model3d.ar.ARSceneController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -28,7 +29,8 @@ class ARViewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getDinosaurDetailUseCase: GetDinosaurDetailUseCase,
     private val settingsManager: SettingsManager,
-    private val modelCacheManager: ModelCacheManager
+    private val modelCacheManager: ModelCacheManager,
+    val arSceneController: ARSceneController
 ) : ViewModel() {
 
     private val dinosaurId: String = savedStateHandle.get<String>("dinosaurId") ?: ""

@@ -68,6 +68,18 @@ android {
         compose = true
         buildConfig = true
     }
+
+    flavorDimensions += "distribution"
+    productFlavors {
+        create("google") {
+            dimension = "distribution"
+            // Uses GMS: ARCore, AdMob, ML Kit — for Google Play
+        }
+        create("huawei") {
+            dimension = "distribution"
+            // Uses HMS: AR Engine, HMS Ads, HMS ML Kit — for Huawei AppGallery / sideload
+        }
+    }
 }
 
 dependencies {
@@ -117,13 +129,19 @@ dependencies {
 
     // 3D/AR
     implementation(libs.sceneview)
-    implementation(libs.arsceneview)
+    // google flavor only: ARCore-backed AR scene
+    "googleImplementation"(libs.arsceneview)
+    // huawei flavor only: Huawei AR Engine
+    "huaweiImplementation"(libs.hms.arengine)
 
     // CameraX + ML Kit
     implementation(libs.camerax.camera2)
     implementation(libs.camerax.lifecycle)
     implementation(libs.camerax.view)
-    implementation(libs.mlkit.barcode)
+    // google flavor: Google ML Kit barcode
+    "googleImplementation"(libs.mlkit.barcode)
+    // huawei flavor: HMS ML Kit barcode
+    "huaweiImplementation"(libs.hms.mlkit.barcode)
     implementation(libs.zxing.core)
     // Guava: provides ListenableFuture used by ProcessCameraProvider.getInstance()
     implementation("com.google.guava:guava:31.1-android")
@@ -131,8 +149,10 @@ dependencies {
     // Map
     implementation(libs.osmdroid)
 
-    // Google AdMob
-    implementation(libs.admob)
+    // google flavor: Google AdMob
+    "googleImplementation"(libs.admob)
+    // huawei flavor: HMS Ads Kit
+    "huaweiImplementation"(libs.hms.ads)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)

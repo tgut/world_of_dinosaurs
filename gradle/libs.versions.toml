@@ -27,6 +27,9 @@ mlkit-barcode = "17.3.0"
 zxing = "3.5.3"
 osmdroid = "6.1.18"
 admob = "23.3.0"
+hms-ads = "3.4.84.300"
+hms-mlkit-barcode = "2.15.0.300"
+hms-arengine = "4.0.0.5"
 
 [libraries]
 # Core Android
@@ -96,6 +99,11 @@ osmdroid = { group = "org.osmdroid", name = "osmdroid-android", version.ref = "o
 
 # Google AdMob
 admob = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "admob" }
+
+# Huawei HMS
+hms-ads = { group = "com.huawei.hms", name = "ads", version.ref = "hms-ads" }
+hms-mlkit-barcode = { group = "com.huawei.hms", name = "scan", version.ref = "hms-mlkit-barcode" }
+hms-arengine = { group = "com.huawei.hms", name = "arenginesdk", version.ref = "hms-arengine" }
 
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }

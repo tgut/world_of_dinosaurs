@@ -4,7 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.world_of_dinosaurs_extented.data.SettingsManager
-import com.example.world_of_dinosaurs_extented.data.ads.AdMobAdManager
+import com.example.world_of_dinosaurs_extented.data.ads.AdManager
+import com.example.world_of_dinosaurs_extented.data.ads.AdUnitIds
 import com.example.world_of_dinosaurs_extented.data.tts.TtsManager
 import com.example.world_of_dinosaurs_extented.domain.usecase.GetDinosaurDetailUseCase
 import com.example.world_of_dinosaurs_extented.domain.usecase.ToggleFavoriteUseCase
@@ -20,7 +21,8 @@ class DetailViewModel @Inject constructor(
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
     private val settingsManager: SettingsManager,
     private val ttsManager: TtsManager,
-    val adManager: AdMobAdManager
+    val adManager: AdManager,
+    val adUnitIds: AdUnitIds
 ) : ViewModel() {
 
     private val dinosaurId: String = savedStateHandle.get<String>("dinosaurId") ?: ""

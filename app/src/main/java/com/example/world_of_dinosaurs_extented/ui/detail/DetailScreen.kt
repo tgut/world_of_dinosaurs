@@ -27,7 +27,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.google.android.gms.ads.AdView
+import android.view.View
 import com.example.world_of_dinosaurs_extented.R
 import com.example.world_of_dinosaurs_extented.data.model3d.Model3dConfig
 import com.example.world_of_dinosaurs_extented.domain.model.Dinosaur
@@ -50,10 +50,11 @@ fun DetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     // Banner 广告状态
-    var bannerAd by remember { mutableStateOf<AdView?>(null) }
+    var bannerAd by remember { mutableStateOf<View?>(null) }
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         viewModel.adManager.loadBanner(
+            unitId = viewModel.adUnitIds.bannerDetail,
             onLoaded = { bannerAd = it },
             onFailed = {}
         )
@@ -356,7 +357,7 @@ fun DetailScreen(
 
 @Composable
 private fun BannerAdView(
-    ad: AdView,
+    ad: View,
     modifier: Modifier = Modifier
 ) {
     AndroidView(

@@ -128,6 +128,7 @@
     <string name="message_hint">Ask about dinosaurs…</string>
     <string name="send">Send</string>
     <string name="ai_thinking">AI is thinking…</string>
+    <string name="ai_generated_label">AI Generated</string>
     <string name="no_messages_yet">No messages yet.\nAsk a question about dinosaurs!</string>
     <string name="voice_input">Voice input</string>
     <string name="listening">Listening…</string>
@@ -193,6 +194,7 @@
     <string name="privacy_consent_title">Your Privacy Matters</string>
     <string name="privacy_consent_message">This app collects camera and microphone data to provide AR viewing, voice chat, and image recognition features. Your data is processed locally or with external AI providers (DeepSeek, Qwen, Gemini, Google Vision). Please read our privacy policy to understand how we handle your information.</string>
     <string name="privacy_consent_accept">Accept</string>
+    <string name="privacy_consent_decline">Decline and Exit</string>
     <string name="privacy_consent_learn_more">Learn More</string>
     <string name="privacy_policy_url">https://github.com/tgut/world_of_dinosaurs/blob/main/PRIVACY_POLICY.md</string>
 
@@ -209,4 +211,9 @@
     <string name="feedback_email_subject">World of Dinosaurs – Feedback</string>
     <string name="feedback_email">Tap to send feedback via email</string>
     <string name="feedback_url">https://github.com/tgut/world_of_dinosaurs/issues</string>
+
+    <!-- Huawei AR Engine -->
+    <string name="ar_engine_not_installed">Huawei AR Engine is not installed. Please install it from AppGallery to use AR features.</string>
+    <string name="ar_engine_install">Install AR Engine</string>
+    <string name="ar_engine_checking">Checking AR availability…</string>
 </resources>

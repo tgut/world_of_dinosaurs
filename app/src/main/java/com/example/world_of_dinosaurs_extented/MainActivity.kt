@@ -49,8 +49,8 @@ class MainActivity : AppCompatActivity() {
                             onAccept = {
                                 scope.launch { settingsManager.acceptPrivacyConsent() }
                             },
-                            onLearnMore = {
-                                // Dialog will open URL via LocalUriHandler
+                            onDecline = {
+                                finish()
                             }
                         )
                     }

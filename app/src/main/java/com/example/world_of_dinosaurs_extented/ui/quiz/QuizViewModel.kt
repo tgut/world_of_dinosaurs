@@ -3,10 +3,10 @@ package com.example.world_of_dinosaurs_extented.ui.quiz
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.world_of_dinosaurs_extented.data.SettingsManager
-import com.example.world_of_dinosaurs_extented.data.ads.AdMobAdManager
+import com.example.world_of_dinosaurs_extented.data.ads.AdManager
+import com.example.world_of_dinosaurs_extented.data.ads.AdUnitIds
 import com.example.world_of_dinosaurs_extented.domain.model.QuizResult
 import com.example.world_of_dinosaurs_extented.domain.usecase.GetQuizQuestionsUseCase
-import com.google.android.gms.ads.rewarded.RewardedAd
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -17,7 +17,8 @@ import javax.inject.Inject
 class QuizViewModel @Inject constructor(
     private val getQuizQuestionsUseCase: GetQuizQuestionsUseCase,
     private val settingsManager: SettingsManager,
-    val adManager: AdMobAdManager
+    val adManager: AdManager,
+    private val adUnitIds: AdUnitIds
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(QuizUiState())
@@ -99,14 +100,15 @@ class QuizViewModel @Inject constructor(
 
     /** 用户点击"看广告解锁解析"按钮 — 加载激励视频广告 */
     fun requestRewardedAd(
-        onLoaded: (RewardedAd) -> Unit,
+        onLoaded: () -> Unit,
         onFailed: () -> Unit
     ) {
         _uiState.update { it.copy(isLoadingAd = true) }
         adManager.loadRewardedAd(
-            onLoaded = { ad ->
+            unitId = adUnitIds.rewardedQuiz,
+            onLoaded = {
                 _uiState.update { it.copy(isLoadingAd = false) }
-                onLoaded(ad)
+                onLoaded()
             },
             onFailed = {
                 _uiState.update { it.copy(isLoadingAd = false) }

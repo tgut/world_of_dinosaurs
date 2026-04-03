@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build signed APK
+    name: Build signed APKs
     runs-on: ubuntu-latest
     permissions:
       contents: write   # required to create GitHub Releases
@@ -35,23 +35,36 @@ jobs:
           echo "Keystore size: $(wc -c < app/dino-release.jks) bytes"
           file app/dino-release.jks
 
-      # Build the signed release APK
-      - name: Build release APK
-        run: ./gradlew assembleRelease
+      # Build signed Google (GMS) release APK
+      - name: Build Google release APK
+        run: ./gradlew assembleGoogleRelease
         env:
           STOREFILE: dino-release.jks
           KEYALIAS: ${{ secrets.KEY_ALIAS }}
           KEYPASSWORD: ${{ secrets.KEY_PASSWORD }}
           STOREPASSWORD: ${{ secrets.STORE_PASSWORD }}
 
-      # Find the generated APK (name may vary by version)
-      - name: Locate APK
-        id: find_apk
-        run: |
-          APK=$(find app/build/outputs/apk/release -name "*.apk" | head -1)
-          echo "apk_path=$APK" >> $GITHUB_OUTPUT
+      # Build signed Huawei (HMS) release APK
+      - name: Build Huawei release APK
+        run: ./gradlew assembleHuaweiRelease
+        env:
+          STOREFILE: dino-release.jks
+          KEYALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYPASSWORD: ${{ secrets.KEY_PASSWORD }}
+          STOREPASSWORD: ${{ secrets.STORE_PASSWORD }}
 
-      # Create GitHub Release and attach the APK
+      # Rename APKs to include flavor in the filename
+      - name: Rename APKs
+        run: |
+          VERSION=${{ github.ref_name }}
+          GOOGLE_APK=$(find app/build/outputs/apk/google/release -name "*.apk" | head -1)
+          HUAWEI_APK=$(find app/build/outputs/apk/huawei/release -name "*.apk" | head -1)
+          cp "$GOOGLE_APK" "world-of-dinosaurs-google-${VERSION}.apk"
+          cp "$HUAWEI_APK" "world-of-dinosaurs-huawei-${VERSION}.apk"
+          echo "google_apk=world-of-dinosaurs-google-${VERSION}.apk" >> $GITHUB_ENV
+          echo "huawei_apk=world-of-dinosaurs-huawei-${VERSION}.apk" >> $GITHUB_ENV
+
+      # Create GitHub Release and attach both APKs
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -62,8 +75,17 @@ jobs:
             <!-- fill in release notes here, or edit after release -->
 
             ## Download
+            Two APK variants are available:
+
+            | APK | For |
+            |-----|-----|
+            | `world-of-dinosaurs-google-*.apk` | Devices with Google Play Services (most Android phones) |
+            | `world-of-dinosaurs-huawei-*.apk` | Huawei devices without GMS (Mate 40 and newer) |
+
             Install the APK directly on your Android device (Android 8.0+).
-          files: ${{ steps.find_apk.outputs.apk_path }}
+          files: |
+            ${{ env.google_apk }}
+            ${{ env.huawei_apk }}
           draft: false
           prerelease: false
         env:

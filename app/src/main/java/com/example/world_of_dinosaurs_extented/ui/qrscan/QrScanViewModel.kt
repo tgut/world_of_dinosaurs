@@ -6,10 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.world_of_dinosaurs_extented.domain.repository.DinosaurRepository
 import com.example.world_of_dinosaurs_extented.domain.repository.ScanHistoryRepository
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.barcode.common.Barcode
-import com.google.mlkit.vision.common.InputImage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -18,7 +14,8 @@ import javax.inject.Inject
 @HiltViewModel
 class QrScanViewModel @Inject constructor(
     private val dinosaurRepository: DinosaurRepository,
-    private val scanHistoryRepository: ScanHistoryRepository
+    private val scanHistoryRepository: ScanHistoryRepository,
+    private val barcodeScanner: BarcodeScanner
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(QrScanUiState())
@@ -59,34 +56,19 @@ class QrScanViewModel @Inject constructor(
         if (_uiState.value.isProcessing) return
         _uiState.update { it.copy(isProcessing = true, errorMessage = null) }
 
-        try {
-            val image = InputImage.fromFilePath(context, uri)
-            val options = BarcodeScannerOptions.Builder()
-                .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
-                .build()
-            val scanner = BarcodeScanning.getClient(options)
-
-            scanner.process(image)
-                .addOnSuccessListener { barcodes ->
-                    val qrValue = barcodes.firstOrNull()?.rawValue
-                    if (qrValue != null) {
-                        onQrCodeScanned(qrValue)
-                    } else {
-                        _uiState.update {
-                            it.copy(isProcessing = false, errorMessage = "No QR code found in this image")
-                        }
-                    }
+        barcodeScanner.scanFromUri(
+            context = context,
+            uri = uri,
+            onSuccess = { qrValue -> onQrCodeScanned(qrValue) },
+            onNoQrFound = {
+                _uiState.update {
+                    it.copy(isProcessing = false, errorMessage = "No QR code found in this image")
                 }
-                .addOnFailureListener { e ->
-                    _uiState.update {
-                        it.copy(isProcessing = false, errorMessage = e.message ?: "Failed to scan image")
-                    }
-                }
-        } catch (e: Exception) {
-            _uiState.update {
-                it.copy(isProcessing = false, errorMessage = e.message ?: "Failed to load image")
+            },
+            onFailure = { msg ->
+                _uiState.update { it.copy(isProcessing = false, errorMessage = msg) }
             }
-        }
+        )
     }
 
     fun resetScanResult() {
