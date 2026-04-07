@@ -4,6 +4,8 @@ import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
@@ -12,6 +14,16 @@ import com.huawei.hiar.ARWorldTrackingConfig
 import com.huawei.hiar.ARConfigBase
 import com.huawei.hiar.exceptions.ARSessionPausedException
 import com.huawei.hiar.ARTrackable
+import io.github.sceneview.Scene
+import io.github.sceneview.math.Position
+import io.github.sceneview.node.ModelNode
+import io.github.sceneview.rememberEngine
+import io.github.sceneview.rememberEnvironment
+import io.github.sceneview.rememberEnvironmentLoader
+import io.github.sceneview.rememberMainLightNode
+import io.github.sceneview.rememberModelLoader
+import io.github.sceneview.rememberNodes
+import io.github.sceneview.model.ModelInstance
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import javax.microedition.khronos.egl.EGLConfig
@@ -20,8 +32,13 @@ import javax.microedition.khronos.opengles.GL10
 /**
  * huawei flavor: AR scene viewer using Huawei AR Engine.
  *
- * Renders the live camera feed as an OES texture on a full-screen quad,
- * then performs hit-testing against tracked planes on tap.
+ * Layer 1 (bottom): GLSurfaceView renders the live camera feed as an OES
+ *   texture on a full-screen quad and performs hit-testing against tracked
+ *   planes on tap.
+ * Layer 2 (top):  SceneView (Filament) renders the GLB model as a Compose
+ *   overlay with a transparent background, shown once placement succeeds.
+ *   Using SceneView's non-AR mode avoids the GMS/ARCore dependency while
+ *   still giving us PBR rendering of the same GLB assets.
  */
 @Composable
 fun ARDinoViewer(
@@ -31,6 +48,8 @@ fun ARDinoViewer(
     modifier: Modifier = Modifier
 ) {
     var arSession by remember { mutableStateOf<ARSession?>(null) }
+    // Set to true when the user successfully taps a tracked plane
+    var modelVisible by remember { mutableStateOf(false) }
 
     DisposableEffect(Unit) {
         onDispose {
@@ -39,42 +58,90 @@ fun ARDinoViewer(
         }
     }
 
-    AndroidView(
-        modifier = modifier,
-        factory = { context ->
-            val session = ARSession(context)
-            val config = ARWorldTrackingConfig(session).apply {
-                setPlaneFindingMode(ARConfigBase.PlaneFindingMode.ENABLE)
-            }
-            session.configure(config)
-            arSession = session
+    Box(modifier = modifier) {
+        // -----------------------------------------------------------------
+        // Layer 1 — camera background + AR plane hit-test
+        // -----------------------------------------------------------------
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { context ->
+                val session = ARSession(context)
+                val config = ARWorldTrackingConfig(session).apply {
+                    setPlaneFindingMode(ARConfigBase.PlaneFindingMode.ENABLE)
+                }
+                session.configure(config)
+                arSession = session
 
-            val renderer = HuaweiARRenderer(session, modelPath, scale, onPlaced)
+                val placedCallback = {
+                    modelVisible = true
+                    onPlaced()
+                }
+                val renderer = HuaweiARRenderer(session, placedCallback)
 
-            GLSurfaceView(context).apply {
-                setEGLContextClientVersion(2)
-                setRenderer(renderer)
-                renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY
-                setOnTouchListener { _, event ->
-                    // Copy the event so it's safe to use off the main thread
-                    if (event.action == MotionEvent.ACTION_UP) {
-                        renderer.enqueueTap(MotionEvent.obtain(event))
+                GLSurfaceView(context).apply {
+                    setEGLContextClientVersion(2)
+                    setRenderer(renderer)
+                    renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY
+                    setOnTouchListener { _, event ->
+                        // Always return true so ACTION_DOWN is consumed;
+                        // otherwise Android drops the gesture and ACTION_UP
+                        // is never delivered to this listener.
+                        if (event.action == MotionEvent.ACTION_UP) {
+                            renderer.enqueueTap(MotionEvent.obtain(event))
+                        }
                         true
-                    } else false
+                    }
                 }
             }
+        )
+
+        // -----------------------------------------------------------------
+        // Layer 2 — Filament SceneView model overlay (transparent bg)
+        // -----------------------------------------------------------------
+        if (modelVisible) {
+            val engine          = rememberEngine()
+            val modelLoader     = rememberModelLoader(engine)
+            val environmentLoader = rememberEnvironmentLoader(engine)
+            val environment     = rememberEnvironment(environmentLoader)
+            val mainLightNode   = rememberMainLightNode(engine) { intensity = 100_000f }
+            val modelNodes      = rememberNodes()
+
+            LaunchedEffect(modelPath) {
+                try {
+                    val instance: ModelInstance = modelLoader.createModelInstance(modelPath)
+                    val node = ModelNode(
+                        modelInstance = instance,
+                        scaleToUnits = scale * 1.5f
+                    ).apply {
+                        position = Position(0f, 0f, -1.5f)   // 1.5 m in front of camera
+                    }
+                    modelNodes.clear()
+                    modelNodes.add(node)
+                } catch (e: Exception) {
+                    android.util.Log.e("HuaweiAR", "Failed to load model: $modelPath", e)
+                }
+            }
+
+            Scene(
+                modifier = Modifier.fillMaxSize(),
+                engine = engine,
+                modelLoader = modelLoader,
+                environment = environment,
+                mainLightNode = mainLightNode,
+                childNodes = modelNodes,
+                // Transparent so the camera feed shows through underneath
+                isOpaque = false
+            )
         }
-    )
+    }
 }
 
 // ---------------------------------------------------------------------------
-// Renderer
+// Renderer — camera background + plane hit-testing
 // ---------------------------------------------------------------------------
 
 private class HuaweiARRenderer(
     private val session: ARSession,
-    private val modelPath: String,
-    private val scale: Float,
     private val onPlaced: () -> Unit
 ) : GLSurfaceView.Renderer {
 
@@ -117,6 +184,8 @@ private class HuaweiARRenderer(
 
     // Thread-safe pending tap: stored from touch thread, consumed in GL thread
     @Volatile private var pendingTap: MotionEvent? = null
+    // Guard so onPlaced() fires only once
+    @Volatile private var placed = false
 
     fun enqueueTap(event: MotionEvent) {
         pendingTap?.recycle()
@@ -188,18 +257,22 @@ private class HuaweiARRenderer(
             GLES20.glEnable(GLES20.GL_DEPTH_TEST)
 
             // --- Process tap (hit-test against tracked planes) ---
-            val tap = pendingTap
-            if (tap != null) {
-                pendingTap = null
-                val hits = frame.hitTest(tap)
-                tap.recycle()
-                val hit = hits.firstOrNull { r ->
-                    r.trackable.trackingState == ARTrackable.TrackingState.TRACKING
-                }
-                if (hit != null) {
-                    hit.createAnchor()
-                    android.util.Log.d("HuaweiAR", "Placed $modelPath scale=$scale")
-                    onPlaced()
+            if (!placed) {
+                val tap = pendingTap
+                if (tap != null) {
+                    pendingTap = null
+                    val hits = frame.hitTest(tap)
+                    tap.recycle()
+                    val hit = hits.firstOrNull { r ->
+                        r.trackable.trackingState == ARTrackable.TrackingState.TRACKING
+                    }
+                    if (hit != null) {
+                        placed = true
+                        hit.createAnchor()
+                        android.util.Log.d("HuaweiAR", "Plane hit — showing model overlay")
+                        // Switch to main thread for Compose state update
+                        android.os.Handler(android.os.Looper.getMainLooper()).post { onPlaced() }
+                    }
                 }
             }
 
