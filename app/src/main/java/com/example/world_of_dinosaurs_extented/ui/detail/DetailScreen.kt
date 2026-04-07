@@ -188,11 +188,8 @@ fun DetailScreen(
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text(stringResource(R.string.view_in_3d))
                                 }
-                                OutlinedButton(onClick = { onViewAR(dino.id) }) {
-                                    Icon(Icons.Default.CameraAlt, contentDescription = null, modifier = Modifier.size(18.dp))
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(stringResource(R.string.view_in_ar))
-                                }
+                                // AR feature temporarily hidden
+                                // OutlinedButton(onClick = { onViewAR(dino.id) }) { ... }
                             }
                             OutlinedButton(onClick = { onAskAI(dino.id) }) {
                                 Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(18.dp))

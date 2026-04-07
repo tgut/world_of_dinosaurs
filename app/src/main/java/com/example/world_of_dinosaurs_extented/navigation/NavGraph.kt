@@ -66,7 +66,7 @@ fun DinoNavGraph(navController: NavHostController) {
         ) {
             Model3DScreen(
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToAR = { id -> navController.navigate(Screen.AR.createRoute(id)) }
+                onNavigateToAR = null  // AR feature temporarily hidden
             )
         }
         composable(
