@@ -1,6 +1,7 @@
 package com.example.world_of_dinosaurs_extented.data.tts
 
 import android.content.Context
+import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -52,12 +53,22 @@ class TtsManager @Inject constructor(
         if (!isInitialized || text.isBlank()) return
 
         val locale = if (language == "zh") Locale.CHINESE else Locale.ENGLISH
-        tts?.language = locale
+        val langResult = tts?.setLanguage(locale)
+        // If the requested locale is missing, fall back to English
+        if (langResult == TextToSpeech.LANG_MISSING_DATA ||
+            langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
+            tts?.setLanguage(Locale.ENGLISH)
+        }
         tts?.setSpeechRate(speed)
         tts?.setPitch(pitch)
 
-        val utteranceId = UUID.randomUUID().toString()
-        tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
+        // Pass the utterance ID via a Bundle so UtteranceProgressListener fires correctly.
+        // The old speak(text, mode, params, utteranceId) signature required a non-null Bundle
+        // for the listener to trigger; passing null silently skips the callbacks.
+        val params = Bundle().apply {
+            putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, UUID.randomUUID().toString())
+        }
+        tts?.speak(text, TextToSpeech.QUEUE_FLUSH, params, params.getString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID))
     }
 
     fun stop() {
