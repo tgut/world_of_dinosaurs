@@ -58,6 +58,7 @@
     <string name="discovered_in">发现于 %1$d 年</string>
     <string name="discovered_at">发现地点：%1$s</string>
     <string name="ar_not_supported">此设备不支持 AR 功能</string>
+    <string name="ar_core_install_required">AR 功能需要 ARCore 支持。请前往 Play 商店安装"Google Play Services for AR"，安装完成后重新进入此页面。</string>
     <string name="camera_permission_required">AR 功能需要相机权限</string>
     <string name="clear_favorites">清空收藏</string>
     <string name="confirm_clear">确定要清空所有收藏吗？</string>

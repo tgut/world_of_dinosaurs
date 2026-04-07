@@ -9,9 +9,8 @@ import javax.inject.Singleton
 @Singleton
 class AREngineSceneController @Inject constructor() : ARSceneController {
 
-    override suspend fun checkAvailability(context: Context): Boolean {
+    override suspend fun checkAvailability(context: Context): ARAvailability {
         return try {
-            // AR Engine uses isAREngineApkReady() for availability check
             var ready = AREnginesApk.isAREngineApkReady(context)
             var retries = 0
             while (!ready && retries < 5) {
@@ -19,9 +18,9 @@ class AREngineSceneController @Inject constructor() : ARSceneController {
                 ready = AREnginesApk.isAREngineApkReady(context)
                 retries++
             }
-            ready
+            if (ready) ARAvailability.Ready else ARAvailability.NeedsInstall
         } catch (_: Exception) {
-            false
+            ARAvailability.Unsupported
         }
     }
 }

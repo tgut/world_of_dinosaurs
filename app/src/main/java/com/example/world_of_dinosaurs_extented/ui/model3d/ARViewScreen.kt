@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.world_of_dinosaurs_extented.R
+import com.example.world_of_dinosaurs_extented.ui.model3d.ar.ARAvailability
 import com.example.world_of_dinosaurs_extented.ui.model3d.ar.ARDinoViewer
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,11 +28,11 @@ fun ARViewScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    // null = still checking, true = supported, false = not supported
-    var arAvailable by remember { mutableStateOf<Boolean?>(null) }
+    // null = still checking
+    var arAvailability by remember { mutableStateOf<ARAvailability?>(null) }
 
     LaunchedEffect(Unit) {
-        arAvailable = viewModel.arSceneController.checkAvailability(context)
+        arAvailability = viewModel.arSceneController.checkAvailability(context)
     }
 
     Scaffold(
@@ -66,7 +67,7 @@ fun ARViewScreen(
             contentAlignment = Alignment.Center
         ) {
             when {
-                arAvailable == false -> {
+                arAvailability == ARAvailability.Unsupported -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = stringResource(R.string.ar_not_supported),
@@ -76,7 +77,19 @@ fun ARViewScreen(
                         )
                     }
                 }
-                arAvailable == null || uiState.isLoading || uiState.isDownloading -> {
+                arAvailability == ARAvailability.NeedsInstall -> {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(32.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.ar_core_install_required),
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+                arAvailability == null || uiState.isLoading || uiState.isDownloading -> {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         CircularProgressIndicator()
                         Spacer(modifier = Modifier.height(12.dp))

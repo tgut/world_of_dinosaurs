@@ -58,6 +58,7 @@
     <string name="discovered_in">Discovered in %1$d</string>
     <string name="discovered_at">at %1$s</string>
     <string name="ar_not_supported">AR is not supported on this device</string>
+    <string name="ar_core_install_required">ARCore is required for AR features. Please install Google Play Services for AR from the Play Store, then reopen this screen.</string>
     <string name="camera_permission_required">Camera permission is required for AR</string>
     <string name="clear_favorites">Clear All Favorites</string>
     <string name="confirm_clear">Are you sure you want to clear all favorites?</string>
