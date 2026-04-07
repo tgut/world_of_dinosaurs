@@ -75,10 +75,12 @@ fun ARDinoViewer(
                             childNodes.add(anchorNode)
                             onPlaced()
                         }
-                        true
-                    } else false
-                } else false
-            } else false
+                    }
+                }
+            }
+            // Always return true so ACTION_DOWN is consumed and ACTION_UP
+            // is guaranteed to be delivered in the same gesture sequence.
+            true
         }
     )
 }
