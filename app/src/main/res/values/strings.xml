@@ -193,7 +193,7 @@
 
     <!-- Privacy Consent -->
     <string name="privacy_consent_title">Your Privacy Matters</string>
-    <string name="privacy_consent_message">This app collects camera and microphone data to provide AR viewing, voice chat, and image recognition features. Your data is processed locally or with external AI providers (DeepSeek, Qwen, Gemini, Google Vision). Please read our privacy policy to understand how we handle your information.</string>
+    <string name="privacy_consent_message">This app collects camera, microphone, and sensor data (accelerometer via AR SDK) to provide AR viewing, voice chat, and image recognition features. Your data is processed locally or with external AI providers (DeepSeek, Qwen, Gemini, Google Vision). Please read our privacy policy to understand how we handle your information.</string>
     <string name="privacy_consent_accept">Accept</string>
     <string name="privacy_consent_decline">Decline and Exit</string>
     <string name="privacy_consent_learn_more">Learn More</string>

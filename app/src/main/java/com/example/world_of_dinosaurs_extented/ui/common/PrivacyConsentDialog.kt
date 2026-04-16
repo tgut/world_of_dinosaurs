@@ -73,7 +73,7 @@ fun PrivacyConsentDialog(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = "• Camera: AR viewing, QR scanning, image recognition\n• Microphone: Voice chat input\n• Network: API calls to external services",
+                        text = "• Camera: AR viewing, QR scanning, image recognition\n• Microphone: Voice chat input\n• Sensor: AR Engine SDK uses accelerometer for motion tracking\n• Network: API calls to external services",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )

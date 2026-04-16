@@ -28,6 +28,10 @@ class TtsManager @Inject constructor(
     private val _isSpeaking = MutableStateFlow(false)
     val isSpeaking: StateFlow<Boolean> = _isSpeaking.asStateFlow()
 
+    // If speak() is called before TTS finishes initialising, store the request
+    // here and replay it once onInit fires with SUCCESS.
+    private var pendingSpeak: (() -> Unit)? = null
+
     // Audio focus request (API 26+) — required on MIUI/EMUI to get audio routing
     private val focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
         .setAudioAttributes(
@@ -69,13 +73,24 @@ class TtsManager @Inject constructor(
                         audioManager.abandonAudioFocusRequest(focusRequest)
                     }
                 })
+                // Replay any speak() call that arrived before init completed.
+                pendingSpeak?.invoke()
+                pendingSpeak = null
             }
         }
     }
 
     fun speak(text: String, language: String, speed: Float = 1.0f, pitch: Float = 1.0f) {
-        if (!isInitialized || text.isBlank()) {
-            Log.w(TAG, "speak() skipped: isInitialized=$isInitialized textBlank=${text.isBlank()}")
+        if (text.isBlank()) {
+            Log.w(TAG, "speak() skipped: text is blank")
+            return
+        }
+
+        // TTS engine hasn't finished initialising yet — queue the request and
+        // execute it as soon as onInit fires with SUCCESS.
+        if (!isInitialized) {
+            Log.w(TAG, "speak() called before TTS is ready — queuing for later")
+            pendingSpeak = { speak(text, language, speed, pitch) }
             return
         }
 
@@ -116,6 +131,7 @@ class TtsManager @Inject constructor(
     }
 
     fun stop() {
+        pendingSpeak = null
         tts?.stop()
         _isSpeaking.value = false
         audioManager.abandonAudioFocusRequest(focusRequest)

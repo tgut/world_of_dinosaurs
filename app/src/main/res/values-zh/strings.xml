@@ -193,7 +193,7 @@
 
     <!-- Privacy Consent -->
     <string name="privacy_consent_title">您的隐私很重要</string>
-    <string name="privacy_consent_message">本应用收集相机和麦克风数据以提供 AR 查看、语音聊天和图像识别功能。您的数据在本地处理或与外部 AI 提供商（DeepSeek、通义千问、Gemini、Google Vision）共享。请阅读我们的隐私政策了解我们如何处理您的信息。</string>
+    <string name="privacy_consent_message">本应用收集相机、麦克风及传感器数据（AR SDK 使用加速度传感器）以提供 AR 查看、语音聊天和图像识别功能。您的数据在本地处理或与外部 AI 提供商（DeepSeek、通义千问、Gemini、Google Vision）共享。请阅读我们的隐私政策了解我们如何处理您的信息。</string>
     <string name="privacy_consent_accept">同意</string>
     <string name="privacy_consent_decline">不同意并退出 APP</string>
     <string name="privacy_consent_learn_more">了解更多</string>
