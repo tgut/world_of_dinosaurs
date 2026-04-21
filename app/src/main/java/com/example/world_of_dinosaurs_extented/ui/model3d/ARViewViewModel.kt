@@ -28,7 +28,7 @@ data class ARViewUiState(
 class ARViewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getDinosaurDetailUseCase: GetDinosaurDetailUseCase,
-    private val settingsManager: SettingsManager,
+    val settingsManager: SettingsManager,
     private val modelCacheManager: ModelCacheManager,
     val arSceneController: ARSceneController
 ) : ViewModel() {

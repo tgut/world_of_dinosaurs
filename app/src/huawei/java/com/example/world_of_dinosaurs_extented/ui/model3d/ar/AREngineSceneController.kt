@@ -1,15 +1,23 @@
 package com.example.world_of_dinosaurs_extented.ui.model3d.ar
 
 import android.content.Context
+import com.example.world_of_dinosaurs_extented.data.SettingsManager
 import com.huawei.hiar.AREnginesApk
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AREngineSceneController @Inject constructor() : ARSceneController {
+class AREngineSceneController @Inject constructor(
+    private val settingsManager: SettingsManager
+) : ARSceneController {
 
     override suspend fun checkAvailability(context: Context): ARAvailability {
+        // Never access AR Engine SDK before privacy consent is accepted
+        if (!settingsManager.privacyConsentAcceptedFlow.first()) {
+            return ARAvailability.Unsupported
+        }
         return try {
             var ready = AREnginesApk.isAREngineApkReady(context)
             var retries = 0

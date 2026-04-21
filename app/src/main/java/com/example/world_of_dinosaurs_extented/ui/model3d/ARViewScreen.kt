@@ -31,7 +31,15 @@ fun ARViewScreen(
     // null = still checking
     var arAvailability by remember { mutableStateOf<ARAvailability?>(null) }
 
-    LaunchedEffect(Unit) {
+    // Check privacy consent before initializing AR
+    val privacyAccepted by viewModel.settingsManager.privacyConsentAcceptedFlow.collectAsState(initial = false)
+
+    LaunchedEffect(privacyAccepted) {
+        if (!privacyAccepted) {
+            // Do not initialize AR Engine SDK before privacy consent
+            arAvailability = ARAvailability.Unsupported
+            return@LaunchedEffect
+        }
         arAvailability = viewModel.arSceneController.checkAvailability(context)
     }
 
