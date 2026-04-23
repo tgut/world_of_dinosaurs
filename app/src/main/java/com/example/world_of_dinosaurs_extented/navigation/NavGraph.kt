@@ -86,7 +86,7 @@ fun DinoNavGraph(navController: NavHostController) {
                     navController.navigate(Screen.Home.createRoute(era.name))
                 },
                 onEraViewDetails = { era, language ->
-                    navController.navigate(Screen.GeologicalDetail.createRoute(era.name) + "?lang=$language")
+                    navController.navigate(Screen.GeologicalDetail.createRoute(era.name, language))
                 },
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToHome = { navController.navigate(Screen.Home.createRoute()) },
