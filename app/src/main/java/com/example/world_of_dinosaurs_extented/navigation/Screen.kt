@@ -29,7 +29,7 @@ sealed class Screen(val route: String) {
         fun createRoute(dinosaurId: String? = null) =
             if (dinosaurId != null) "chat?dinosaurId=$dinosaurId" else "chat"
     }
-    data object GeologicalDetail : Screen("geological/{era}") {
-        fun createRoute(era: String) = "geological/$era"
+    data object GeologicalDetail : Screen("geological/{era}?lang={lang}") {
+        fun createRoute(era: String, lang: String = "en") = "geological/$era?lang=$lang"
     }
 }

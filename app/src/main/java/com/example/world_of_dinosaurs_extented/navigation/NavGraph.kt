@@ -85,8 +85,8 @@ fun DinoNavGraph(navController: NavHostController) {
                 onEraClick = { era ->
                     navController.navigate(Screen.Home.createRoute(era.name))
                 },
-                onEraViewDetails = { era ->
-                    navController.navigate(Screen.GeologicalDetail.createRoute(era.name))
+                onEraViewDetails = { era, language ->
+                    navController.navigate(Screen.GeologicalDetail.createRoute(era.name) + "?lang=$language")
                 },
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToHome = { navController.navigate(Screen.Home.createRoute()) },
@@ -144,9 +144,13 @@ fun DinoNavGraph(navController: NavHostController) {
         }
         composable(
             Screen.GeologicalDetail.route,
-            arguments = listOf(navArgument("era") { type = NavType.StringType })
+            arguments = listOf(
+                navArgument("era") { type = NavType.StringType },
+                navArgument("lang") { type = NavType.StringType; defaultValue = "en" }
+            )
         ) { backStackEntry ->
             val eraString = backStackEntry.arguments?.getString("era") ?: "TRIASSIC"
+            val language = backStackEntry.arguments?.getString("lang") ?: "en"
             val era = try {
                 DinosaurEra.valueOf(eraString)
             } catch (e: IllegalArgumentException) {
@@ -154,6 +158,7 @@ fun DinoNavGraph(navController: NavHostController) {
             }
             GeologicalDetailScreen(
                 era = era,
+                language = language,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

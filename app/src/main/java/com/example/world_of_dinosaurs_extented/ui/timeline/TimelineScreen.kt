@@ -46,7 +46,7 @@ private val TodayColor = Color(0xFF43A047)
 @Composable
 fun TimelineScreen(
     onEraClick: (DinosaurEra) -> Unit,
-    onEraViewDetails: (DinosaurEra) -> Unit,
+    onEraViewDetails: (DinosaurEra, String) -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToHome: () -> Unit,
     onNavigateToQuiz: () -> Unit,
@@ -95,16 +95,18 @@ fun TimelineScreen(
                 // --- Era items with gaps ---
                 val eras = DinosaurEra.entries
                 eras.forEachIndexed { index, era ->
-                    // Gap label between eras
+                    // Gap label between eras (only if there's actual gap)
                     if (index > 0) {
                         val prevEra = eras[index - 1]
                         val gap = prevEra.endMya - era.startMya
-                        item(key = "gap_${prevEra.name}_${era.name}") {
-                            TimelineGapLabel(
-                                gapYears = if (gap > 0) gap else era.startMya - prevEra.endMya,
-                                topColor = eraColor(prevEra),
-                                bottomColor = eraColor(era)
-                            )
+                        if (gap != 0) {
+                            item(key = "gap_${prevEra.name}_${era.name}") {
+                                TimelineGapLabel(
+                                    gapYears = kotlin.math.abs(gap),
+                                    topColor = eraColor(prevEra),
+                                    bottomColor = eraColor(era)
+                                )
+                            }
                         }
                     }
 
@@ -114,7 +116,7 @@ fun TimelineScreen(
                             dinosaurs = uiState.eraGroups[era] ?: emptyList(),
                             language = uiState.language,
                             onClick = { onEraClick(era) },
-                            onViewDetails = { onEraViewDetails(era) }
+                            onViewDetails = { onEraViewDetails(era, uiState.language) }
                         )
                     }
                 }
