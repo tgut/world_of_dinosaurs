@@ -46,6 +46,7 @@ private val TodayColor = Color(0xFF43A047)
 @Composable
 fun TimelineScreen(
     onEraClick: (DinosaurEra) -> Unit,
+    onEraViewDetails: (DinosaurEra) -> Unit,
     onNavigateBack: () -> Unit,
     onNavigateToHome: () -> Unit,
     onNavigateToQuiz: () -> Unit,
@@ -112,7 +113,8 @@ fun TimelineScreen(
                             era = era,
                             dinosaurs = uiState.eraGroups[era] ?: emptyList(),
                             language = uiState.language,
-                            onClick = { onEraClick(era) }
+                            onClick = { onEraClick(era) },
+                            onViewDetails = { onEraViewDetails(era) }
                         )
                     }
                 }
@@ -198,7 +200,8 @@ private fun EraTimelineItem(
     era: DinosaurEra,
     dinosaurs: List<Dinosaur>,
     language: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onViewDetails: () -> Unit
 ) {
     val color = eraColor(era)
     val duration = era.startMya - era.endMya
@@ -322,6 +325,22 @@ private fun EraTimelineItem(
                                 }
                             }
                         }
+                    }
+
+                    // View Details button
+                    Spacer(modifier = Modifier.height(12.dp))
+                    OutlinedButton(
+                        onClick = onViewDetails,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = color
+                        ),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, color)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.view_geological_details),
+                            style = MaterialTheme.typography.labelLarge
+                        )
                     }
                 }
             }

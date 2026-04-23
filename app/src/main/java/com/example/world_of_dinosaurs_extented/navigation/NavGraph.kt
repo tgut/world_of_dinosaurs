@@ -7,8 +7,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.world_of_dinosaurs_extented.domain.model.DinosaurEra
+import com.example.world_of_dinosaurs_extented.ui.chat.ChatScreen
 import com.example.world_of_dinosaurs_extented.ui.detail.DetailScreen
 import com.example.world_of_dinosaurs_extented.ui.favorites.FavoritesScreen
+import com.example.world_of_dinosaurs_extented.ui.geological.GeologicalDetailScreen
 import com.example.world_of_dinosaurs_extented.ui.home.HomeScreen
 import com.example.world_of_dinosaurs_extented.ui.model3d.ARViewScreen
 import com.example.world_of_dinosaurs_extented.ui.model3d.Model3DScreen
@@ -83,6 +85,9 @@ fun DinoNavGraph(navController: NavHostController) {
                 onEraClick = { era ->
                     navController.navigate(Screen.Home.createRoute(era.name))
                 },
+                onEraViewDetails = { era ->
+                    navController.navigate(Screen.GeologicalDetail.createRoute(era.name))
+                },
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToHome = { navController.navigate(Screen.Home.createRoute()) },
                 onNavigateToQuiz = { navController.navigate(Screen.Quiz.route) },
@@ -134,6 +139,21 @@ fun DinoNavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("dinosaurId") { type = NavType.StringType; defaultValue = "" })
         ) {
             ChatScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(
+            Screen.GeologicalDetail.route,
+            arguments = listOf(navArgument("era") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val eraString = backStackEntry.arguments?.getString("era") ?: "TRIASSIC"
+            val era = try {
+                DinosaurEra.valueOf(eraString)
+            } catch (e: IllegalArgumentException) {
+                DinosaurEra.TRIASSIC
+            }
+            GeologicalDetailScreen(
+                era = era,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

@@ -4,12 +4,14 @@ import com.example.world_of_dinosaurs_extented.data.repository.ChatRepositoryImp
 import com.example.world_of_dinosaurs_extented.data.repository.DinoRecognitionRepositoryImpl
 import com.example.world_of_dinosaurs_extented.data.repository.DinosaurRepositoryImpl
 import com.example.world_of_dinosaurs_extented.data.repository.FavoriteRepositoryImpl
+import com.example.world_of_dinosaurs_extented.data.repository.GeologicalPeriodRepositoryImpl
 import com.example.world_of_dinosaurs_extented.data.repository.QuizRepositoryImpl
 import com.example.world_of_dinosaurs_extented.data.repository.ScanHistoryRepositoryImpl
 import com.example.world_of_dinosaurs_extented.domain.repository.ChatRepository
 import com.example.world_of_dinosaurs_extented.domain.repository.DinoRecognitionRepository
 import com.example.world_of_dinosaurs_extented.domain.repository.DinosaurRepository
 import com.example.world_of_dinosaurs_extented.domain.repository.FavoriteRepository
+import com.example.world_of_dinosaurs_extented.domain.repository.GeologicalPeriodRepository
 import com.example.world_of_dinosaurs_extented.domain.repository.QuizRepository
 import com.example.world_of_dinosaurs_extented.domain.repository.ScanHistoryRepository
 import com.squareup.moshi.Moshi
@@ -47,6 +49,10 @@ abstract class AppModule {
     @Binds
     @Singleton
     abstract fun bindChatRepository(impl: ChatRepositoryImpl): ChatRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindGeologicalPeriodRepository(impl: GeologicalPeriodRepositoryImpl): GeologicalPeriodRepository
 
     companion object {
         @Provides

@@ -217,4 +217,7 @@
     <string name="ar_engine_not_installed">未安装华为 AR Engine，请从应用市场安装后再使用 AR 功能。</string>
     <string name="ar_engine_install">安装 AR Engine</string>
     <string name="ar_engine_checking">正在检测 AR 可用性…</string>
+
+    <!-- 地质年代详情 -->
+    <string name="view_geological_details">查看地质详情</string>
 </resources>

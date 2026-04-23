@@ -217,4 +217,7 @@
     <string name="ar_engine_not_installed">Huawei AR Engine is not installed. Please install it from AppGallery to use AR features.</string>
     <string name="ar_engine_install">Install AR Engine</string>
     <string name="ar_engine_checking">Checking AR availability…</string>
+
+    <!-- Geological Period Details -->
+    <string name="view_geological_details">View Geological Details</string>
 </resources>
