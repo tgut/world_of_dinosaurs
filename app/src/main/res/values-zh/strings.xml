@@ -220,4 +220,12 @@
 
     <!-- 地质年代详情 -->
     <string name="view_geological_details">查看地质详情</string>
+
+    <!-- 关于 / ICP备案 -->
+    <string name="app_version">版本 %1$s</string>
+    <string name="developer_name">开发者：tgut</string>
+    <string name="contact_email">联系方式：lzhchen_ustc@163.com</string>
+    <string name="icp_number">ICP备案号：沪ICP备2026018195号-2A</string>
+    <string name="icp_verify_hint">点击前往工信部备案查询</string>
+    <string name="icp_verify_url">https://beian.miit.gov.cn/</string>
 </resources>
