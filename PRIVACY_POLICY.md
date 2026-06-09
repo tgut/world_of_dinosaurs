@@ -28,6 +28,15 @@ The App requests the following device permissions to provide its features:
   - Data synchronization
   - Feature content delivery
 
+- **Installed Applications List**: The App and certain integrated third-party advertising SDKs (see Section 3.5) may access the list of installed applications on your device for the following purposes:
+  - Advertising relevance and fraud prevention (pps SDK, 鲸鸿动能 SDK)
+  - This data is collected only after you accept this Privacy Policy
+
+- **Accelerometer / Motion Sensor**: Used for:
+  - AR (Augmented Reality) motion tracking (AR Engine SDK)
+  - Advertising SDK motion detection for ad interaction (pps SDK)
+  - This data is processed locally or by the respective SDK provider
+
 ##### 1.2 Data We Collect
 
 - **Usage Data**: Dinosaur pages viewed, features used, quiz performance (stored locally on your device)
@@ -92,13 +101,31 @@ Users can select from the following AI providers for chat functionality:
 - Text content you request to be read aloud is processed locally or by your device's TTS provider
 - No data is stored permanently
 
-##### 3.5 Advertising (Google AdMob)
+##### 3.5 Advertising SDKs
 
+**Google AdMob** (Google flavor):
 - The App displays banner advertisements and rewarded video advertisements powered by **Google AdMob**
 - AdMob may collect device identifiers (such as Advertising ID), IP address, and general usage data to serve relevant ads
 - You can opt out of personalized advertising through your device settings (Settings → Google → Ads → Opt out of Ads Personalization)
 - Google AdMob Privacy Policy: https://policies.google.com/privacy
 - Google Ads Data Collection: https://support.google.com/admob/answer/6128543
+
+**Huawei HMS Ads Kit / pps SDK** (Huawei flavor):
+- The App integrates **Huawei HMS Ads Kit**, which includes the **pps (Publisher Protection Service) SDK**
+- The pps SDK may collect the following user information to provide ad services and prevent fraud:
+  - **Installed applications list**: Used for ad relevance matching and fraud detection
+  - **Accelerometer / motion sensor data**: Used for ad interaction detection
+  - Device identifiers (OAID, AAID), IP address
+- This data is collected **only after you accept this Privacy Policy**
+- Huawei Ads Privacy Policy: https://consumer.huawei.com/minisite/cloudservices/ads/privacy-statement.htm
+
+**Huawei 鲸鸿动能 (Petal Ads) SDK** (Huawei flavor):
+- The App integrates the **鲸鸿动能 (Petal Ads) SDK** for Huawei ecosystem advertising
+- The 鲸鸿动能 SDK may collect the following user information:
+  - **Installed applications list**: Used for ad targeting and frequency capping
+  - Device identifiers, network information
+- This data is collected **only after you accept this Privacy Policy**
+- 鲸鸿动能 Privacy Policy: https://privacy.consumer.huawei.com/legal/huawei/en/privacy-statement.htm
 
 ---
 
@@ -220,6 +247,15 @@ If you have questions about this Privacy Policy or our privacy practices, please
   - 数据同步
   - 功能内容传输
 
+- **软件安装列表**: 本应用及集成的第三方广告 SDK（详见第3.5节）可能获取您设备上已安装的应用程序列表，用途如下：
+  - 广告相关性匹配与反欺诈（pps SDK、鲸鸿动能 SDK）
+  - **该数据仅在您同意本隐私政策后方可被收集**
+
+- **加速度传感器 / 运动传感器**: 用于：
+  - AR（增强现实）功能的运动追踪（AR Engine SDK）
+  - 广告 SDK 的广告交互检测（pps SDK）
+  - 该数据在本地处理或由相应 SDK 提供商处理
+
 ##### 1.2 我们收集的数据
 
 - **使用数据**: 浏览过的恐龙页面、使用的功能、测验成绩（存储在您的设备本地）
@@ -284,13 +320,31 @@ If you have questions about this Privacy Policy or our privacy practices, please
 - 您请求朗读的文本内容由您的设备 TTS 提供商在本地或云端处理
 - 不会永久存储数据
 
-##### 3.5 广告 (Google AdMob)
+##### 3.5 广告 SDK
 
+**Google AdMob**（Google 版本）：
 - 本应用通过 **Google AdMob** 展示横幅广告和激励视频广告
 - AdMob 可能会收集设备标识符（如广告 ID）、IP 地址和一般使用数据，以投放相关广告
 - 您可以通过设备设置关闭个性化广告（设置 → Google → 广告 → 选择停用广告个性化）
 - Google AdMob 隐私政策: https://policies.google.com/privacy
 - Google 广告数据收集: https://support.google.com/admob/answer/6128543
+
+**华为 HMS 广告服务 / pps SDK**（华为版本）：
+- 本应用集成了**华为 HMS 广告服务**，其中包含 **pps（Publisher Protection Service）SDK**
+- pps SDK 为提供广告服务及防止广告欺诈，可能收集以下用户信息：
+  - **软件安装列表**：用于广告相关性匹配及反欺诈检测
+  - **加速度传感器 / 运动传感器数据**：用于广告交互检测
+  - 设备标识符（OAID、AAID）、IP 地址
+- **上述数据仅在您同意本隐私政策后方可被收集**
+- 华为广告隐私声明: https://consumer.huawei.com/minisite/cloudservices/ads/privacy-statement.htm
+
+**鲸鸿动能 SDK**（华为版本）：
+- 本应用集成了**鲸鸿动能 SDK**，用于华为生态系统广告服务
+- 鲸鸿动能 SDK 可能收集以下用户信息：
+  - **软件安装列表**：用于广告定向投放和频次控制
+  - 设备标识符、网络信息
+- **上述数据仅在您同意本隐私政策后方可被收集**
+- 鲸鸿动能隐私政策: https://privacy.consumer.huawei.com/legal/huawei/en/privacy-statement.htm
 
 ---
 
@@ -387,4 +441,5 @@ If you have questions about this Privacy Policy or our privacy practices, please
 | 版本 | 日期 | 变更 |
 |------|------|------|
 | 1.0 | 2026年4月 | 初始版本 |
+| 1.1 | 2026年6月 | 补充软件安装列表、pps SDK、鲸鸿动能SDK数据收集说明；明确数据仅在用户同意后收集 |
 

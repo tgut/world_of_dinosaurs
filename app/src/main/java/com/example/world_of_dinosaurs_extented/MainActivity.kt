@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 import androidx.core.os.LocaleListCompat
 import androidx.navigation.compose.rememberNavController
 import com.example.world_of_dinosaurs_extented.data.SettingsManager
+import com.example.world_of_dinosaurs_extented.data.ads.AdManager
 import com.example.world_of_dinosaurs_extented.navigation.DinoNavGraph
 import com.example.world_of_dinosaurs_extented.ui.common.PrivacyConsentDialog
 import com.example.world_of_dinosaurs_extented.ui.theme.DinoTheme
@@ -26,6 +28,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var settingsManager: SettingsManager
+
+    @Inject
+    lateinit var adManager: AdManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +44,14 @@ class MainActivity : AppCompatActivity() {
                 "light" -> false
                 else -> androidx.compose.foundation.isSystemInDarkTheme()
             }
+
+            // Initialize ad SDK only after user has accepted privacy consent
+            LaunchedEffect(privacyConsentAccepted) {
+                if (privacyConsentAccepted) {
+                    adManager.initialize()
+                }
+            }
+
             DinoTheme(darkTheme = darkTheme) {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     val navController = rememberNavController()
