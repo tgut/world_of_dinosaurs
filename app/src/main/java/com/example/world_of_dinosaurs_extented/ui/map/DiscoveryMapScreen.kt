@@ -23,10 +23,28 @@ import com.example.world_of_dinosaurs_extented.domain.model.DinosaurEra
 import com.example.world_of_dinosaurs_extented.domain.model.DinosaurMapMarker
 import com.example.world_of_dinosaurs_extented.ui.common.LoadingIndicator
 import org.osmdroid.config.Configuration
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.tileprovider.tilesource.XYTileSource
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+
+private val TILE_SOURCE_STANDARD = XYTileSource(
+    "OSMFrance", 0, 19, 256, ".png",
+    arrayOf(
+        "https://a.tile.openstreetmap.fr/osmfr/",
+        "https://b.tile.openstreetmap.fr/osmfr/",
+        "https://c.tile.openstreetmap.fr/osmfr/"
+    )
+)
+
+private val TILE_SOURCE_HOT = XYTileSource(
+    "OSMFranceHOT", 0, 19, 256, ".png",
+    arrayOf(
+        "https://a.tile.openstreetmap.fr/hot/",
+        "https://b.tile.openstreetmap.fr/hot/",
+        "https://c.tile.openstreetmap.fr/hot/"
+    )
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -144,7 +162,7 @@ private fun OsmMapView(
     AndroidView(
         factory = { ctx ->
             MapView(ctx).apply {
-                setTileSource(TileSourceFactory.MAPNIK)
+                setTileSource(TILE_SOURCE_STANDARD)
                 setMultiTouchControls(true)
                 if (focusLat != null && focusLng != null) {
                     controller.setZoom(focusZoom ?: 6.0)
@@ -158,9 +176,9 @@ private fun OsmMapView(
         update = { mapView ->
             // Update tile source based on style
             val newTileSource = when (mapStyle) {
-                MapStyle.FLAT -> TileSourceFactory.MAPNIK
-                MapStyle.SATELLITE -> TileSourceFactory.OpenTopo
-                MapStyle.GLOBE -> TileSourceFactory.MAPNIK // not used for globe
+                MapStyle.FLAT -> TILE_SOURCE_STANDARD
+                MapStyle.SATELLITE -> TILE_SOURCE_HOT
+                MapStyle.GLOBE -> TILE_SOURCE_STANDARD // not used for globe
             }
             if (mapView.tileProvider.tileSource != newTileSource) {
                 mapView.setTileSource(newTileSource)
