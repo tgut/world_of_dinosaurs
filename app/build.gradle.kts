@@ -134,6 +134,9 @@ dependencies {
     // huawei flavor only: Huawei AR Engine
     "huaweiImplementation"(libs.hms.arengine)
 
+    // Huawei Account Kit
+    "huaweiImplementation"(libs.hms.hwid)
+
     // CameraX + ML Kit
     implementation(libs.camerax.camera2)
     implementation(libs.camerax.lifecycle)

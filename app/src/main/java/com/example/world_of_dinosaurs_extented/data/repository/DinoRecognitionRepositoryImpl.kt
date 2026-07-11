@@ -1,6 +1,5 @@
 package com.example.world_of_dinosaurs_extented.data.repository
 
-import com.example.world_of_dinosaurs_extented.data.SettingsManager
 import com.example.world_of_dinosaurs_extented.data.local.dao.DinosaurDao
 import com.example.world_of_dinosaurs_extented.data.local.mapper.toDomain
 import com.example.world_of_dinosaurs_extented.data.remote.VisionRemoteDataSource
@@ -12,11 +11,9 @@ import javax.inject.Singleton
 @Singleton
 class DinoRecognitionRepositoryImpl @Inject constructor(
     private val visionRemoteDataSource: VisionRemoteDataSource,
-    private val dinosaurDao: DinosaurDao,
-    private val settingsManager: SettingsManager
+    private val dinosaurDao: DinosaurDao
 ) : DinoRecognitionRepository {
 
-    // Common dinosaur-related keywords to filter relevant labels
     private val dinoKeywords = listOf(
         "dinosaur", "fossil", "skeleton", "prehistoric", "reptile",
         "saurus", "raptor", "rex", "ceratops", "sauropod",
@@ -25,35 +22,15 @@ class DinoRecognitionRepositoryImpl @Inject constructor(
     )
 
     override suspend fun recognizeDinosaur(base64Image: String): List<RecognitionMatch> {
-        val apiKey = settingsManager.getVisionApiKey()
-        if (apiKey.isBlank()) {
-            throw Exception("Vision API key not configured. Please set it in Settings.")
+        // Analyze image using the configured Vision service
+        val labels = visionRemoteDataSource.analyzeImage(base64Image)
+
+        if (labels.isEmpty()) {
+            throw Exception("No labels returned from Vision API")
         }
 
-        val response = visionRemoteDataSource.analyzeImage(base64Image, apiKey)
-
-        response.error?.let { error ->
-            throw Exception("Vision API error: ${error.message}")
-        }
-
-        // Collect all labels from both label detection and web detection
-        val labels = mutableListOf<Pair<String, Float>>()
-
-        response.labelAnnotations?.forEach { label ->
-            labels.add(label.description.lowercase() to label.score)
-        }
-
-        response.webDetection?.webEntities?.forEach { entity ->
-            entity.description?.let { desc ->
-                labels.add(desc.lowercase() to entity.score)
-            }
-        }
-
-        response.webDetection?.bestGuessLabels?.forEach { label ->
-            label.label?.let { desc ->
-                labels.add(desc.lowercase() to 0.8f)
-            }
-        }
+        // Convert to label pairs
+        val labelPairs = labels.map { it.description.lowercase() to it.score }
 
         // Get all dinosaurs from DB
         val allDinosaurs = dinosaurDao.getAllDinosaursList().map { it.toDomain() }
@@ -61,7 +38,7 @@ class DinoRecognitionRepositoryImpl @Inject constructor(
         // Match labels against dinosaur names
         val matches = mutableMapOf<String, RecognitionMatch>()
 
-        for ((label, score) in labels) {
+        for ((label, score) in labelPairs) {
             for (dino in allDinosaurs) {
                 val nameMatch = label.contains(dino.name.lowercase()) ||
                         label.contains(dino.scientificName.lowercase()) ||
@@ -81,11 +58,10 @@ class DinoRecognitionRepositoryImpl @Inject constructor(
 
         // If no direct name matches, try fuzzy matching with keywords
         if (matches.isEmpty()) {
-            val isDinoRelated = labels.any { (label, _) ->
+            val isDinoRelated = labelPairs.any { (label, _) ->
                 dinoKeywords.any { keyword -> label.contains(keyword) }
             }
             if (isDinoRelated) {
-                // Return top featured dinosaurs as suggestions
                 val suggestions = allDinosaurs
                     .filter { it.isFeatured }
                     .take(3)

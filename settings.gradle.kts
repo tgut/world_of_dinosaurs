@@ -9,6 +9,8 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        // Huawei HMS repository
+        maven { url = uri("https://developer.huawei.com/repo/") }
     }
 }
 dependencyResolutionManagement {

@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Feedback
 import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.*
@@ -29,11 +30,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import com.example.world_of_dinosaurs_extented.R
 import com.example.world_of_dinosaurs_extented.data.ChatProvider
+import com.example.world_of_dinosaurs_extented.data.map.MapProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     onNavigateBack: () -> Unit,
+    onLoginClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val language by viewModel.language.collectAsStateWithLifecycle(initialValue = "en")
@@ -46,7 +50,16 @@ fun SettingsScreen(
     val savedChatModel by viewModel.chatModel.collectAsStateWithLifecycle(initialValue = "")
     val ttsSpeed by viewModel.ttsSpeed.collectAsStateWithLifecycle(initialValue = 1.0f)
     val ttsPitch by viewModel.ttsPitch.collectAsStateWithLifecycle(initialValue = 1.0f)
+    val mapProviderKey by viewModel.mapProvider.collectAsStateWithLifecycle(initialValue = MapProvider.AUTO.key)
+    val visionProviderKey by viewModel.visionProvider.collectAsStateWithLifecycle(initialValue = "auto")
+    val tencentSecretId by viewModel.tencentSecretId.collectAsStateWithLifecycle(initialValue = "")
+    val tencentSecretKey by viewModel.tencentSecretKey.collectAsStateWithLifecycle(initialValue = "")
     var apiKeyInput by remember { mutableStateOf("") }
+    var tencentSecretIdInput by remember { mutableStateOf("") }
+    var tencentSecretKeyInput by remember { mutableStateOf("") }
+    var tencentSecretKeyVisible by remember { mutableStateOf(false) }
+    var mapProviderDropdownExpanded by remember { mutableStateOf(false) }
+    var visionProviderDropdownExpanded by remember { mutableStateOf(false) }
     var apiKeyVisible by remember { mutableStateOf(false) }
     var chatApiKeyInput by remember { mutableStateOf("") }
     var chatApiKeyVisible by remember { mutableStateOf(false) }
@@ -82,6 +95,18 @@ fun SettingsScreen(
             chatModelInput = savedChatModel
         }
     }
+    LaunchedEffect(tencentSecretId) {
+        if (tencentSecretIdInput.isEmpty() && tencentSecretId.isNotEmpty()) {
+            tencentSecretIdInput = tencentSecretId
+        }
+    }
+    LaunchedEffect(tencentSecretKey) {
+        if (tencentSecretKeyInput.isEmpty() && tencentSecretKey.isNotEmpty()) {
+            tencentSecretKeyInput = tencentSecretKey
+        }
+    }
+
+    val currentMapProvider = MapProvider.fromKey(mapProviderKey)
 
     Scaffold(
         topBar = {
@@ -101,6 +126,20 @@ fun SettingsScreen(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            // User Profile section
+            OutlinedButton(
+                onClick = onProfileClick,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(Icons.Default.AccountCircle, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("User Profile")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(16.dp))
+
             // Language section
             Text(
                 text = stringResource(R.string.language),
@@ -333,6 +372,163 @@ fun SettingsScreen(
                 enabled = apiKeyInput.trim() != savedApiKey
             ) {
                 Text(stringResource(R.string.save_api_key))
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Map Provider section
+            Text(
+                text = "地图服务",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "选择地图服务提供商（自动检测会根据网络环境选择）",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            ExposedDropdownMenuBox(
+                expanded = mapProviderDropdownExpanded,
+                onExpandedChange = { mapProviderDropdownExpanded = it }
+            ) {
+                OutlinedTextField(
+                    value = currentMapProvider.displayName,
+                    onValueChange = {},
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = mapProviderDropdownExpanded) },
+                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = mapProviderDropdownExpanded,
+                    onDismissRequest = { mapProviderDropdownExpanded = false }
+                ) {
+                    MapProvider.entries.forEach { provider ->
+                        DropdownMenuItem(
+                            text = { Text(provider.displayName) },
+                            onClick = {
+                                viewModel.setMapProvider(provider.key)
+                                mapProviderDropdownExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Vision Provider section
+            Text(
+                text = "图像识别服务",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "选择图像识别服务提供商（自动检测会根据网络环境选择）",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            ExposedDropdownMenuBox(
+                expanded = visionProviderDropdownExpanded,
+                onExpandedChange = { visionProviderDropdownExpanded = it }
+            ) {
+                OutlinedTextField(
+                    value = when (visionProviderKey) {
+                        "google" -> "Google Vision"
+                        "tencent" -> "腾讯云 Vision"
+                        else -> "自动检测"
+                    },
+                    onValueChange = {},
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = visionProviderDropdownExpanded) },
+                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = visionProviderDropdownExpanded,
+                    onDismissRequest = { visionProviderDropdownExpanded = false }
+                ) {
+                    listOf(
+                        "auto" to "自动检测",
+                        "google" to "Google Vision",
+                        "tencent" to "腾讯云 Vision"
+                    ).forEach { (key, name) ->
+                        DropdownMenuItem(
+                            text = { Text(name) },
+                            onClick = {
+                                viewModel.setVisionProvider(key)
+                                visionProviderDropdownExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            // Tencent Cloud credentials (only when tencent is selected)
+            if (visionProviderKey == "tencent") {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "腾讯云 API 凭据",
+                    style = MaterialTheme.typography.labelMedium
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "请在腾讯云控制台获取",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = tencentSecretIdInput,
+                    onValueChange = { tencentSecretIdInput = it },
+                    label = { Text("SecretId") },
+                    placeholder = { Text("AKIDxxxxxxxxxxxxxxxx") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = tencentSecretKeyInput,
+                    onValueChange = { tencentSecretKeyInput = it },
+                    label = { Text("SecretKey") },
+                    placeholder = { Text("xxxxxxxxxxxxxxxx") },
+                    singleLine = true,
+                    visualTransformation = if (tencentSecretKeyVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { tencentSecretKeyVisible = !tencentSecretKeyVisible }) {
+                            Icon(
+                                if (tencentSecretKeyVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {
+                        viewModel.setTencentSecretId(tencentSecretIdInput)
+                        viewModel.setTencentSecretKey(tencentSecretKeyInput)
+                        focusManager.clearFocus()
+                    }),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        viewModel.setTencentSecretId(tencentSecretIdInput)
+                        viewModel.setTencentSecretKey(tencentSecretKeyInput)
+                        focusManager.clearFocus()
+                    },
+                    enabled = tencentSecretIdInput.trim() != tencentSecretId ||
+                        tencentSecretKeyInput.trim() != tencentSecretKey
+                ) {
+                    Text("保存腾讯云凭据")
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))

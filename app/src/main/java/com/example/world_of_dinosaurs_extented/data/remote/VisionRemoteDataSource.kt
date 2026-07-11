@@ -1,28 +1,21 @@
 package com.example.world_of_dinosaurs_extented.data.remote
 
-import com.example.world_of_dinosaurs_extented.data.remote.api.VisionApiService
-import com.example.world_of_dinosaurs_extented.data.remote.dto.*
+import com.example.world_of_dinosaurs_extented.data.remote.dto.LabelAnnotation
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Remote data source for Vision API
+ * Uses the VisionService interface which supports both Google Vision and Tencent Cloud Vision
+ */
 @Singleton
 class VisionRemoteDataSource @Inject constructor(
-    private val visionApiService: VisionApiService
+    private val visionService: VisionService
 ) {
-    suspend fun analyzeImage(base64Image: String, apiKey: String): AnnotateImageResponse {
-        val request = VisionApiRequest(
-            requests = listOf(
-                AnnotateImageRequest(
-                    image = VisionImage(content = base64Image),
-                    features = listOf(
-                        VisionFeature(type = "LABEL_DETECTION", maxResults = 15),
-                        VisionFeature(type = "WEB_DETECTION", maxResults = 10)
-                    )
-                )
-            )
-        )
-        val response = visionApiService.annotateImage(apiKey, request)
-        return response.responses?.firstOrNull()
-            ?: throw Exception("Empty response from Vision API")
+    /**
+     * Analyze an image using the configured Vision service
+     */
+    suspend fun analyzeImage(base64Image: String): List<LabelAnnotation> {
+        return visionService.analyzeImage(base64Image)
     }
 }

@@ -20,9 +20,10 @@ import com.example.world_of_dinosaurs_extented.ui.scanhistory.ScanHistoryScreen
 import com.example.world_of_dinosaurs_extented.ui.reviewquiz.ReviewQuizScreen
 import com.example.world_of_dinosaurs_extented.ui.recognition.DinoRecognitionScreen
 import com.example.world_of_dinosaurs_extented.ui.map.DiscoveryMapScreen
-import com.example.world_of_dinosaurs_extented.ui.chat.ChatScreen
 import com.example.world_of_dinosaurs_extented.ui.settings.SettingsScreen
 import com.example.world_of_dinosaurs_extented.ui.timeline.TimelineScreen
+import com.example.world_of_dinosaurs_extented.ui.auth.LoginScreen
+import com.example.world_of_dinosaurs_extented.ui.auth.UserProfileScreen
 
 @Composable
 fun DinoNavGraph(navController: NavHostController) {
@@ -78,7 +79,11 @@ fun DinoNavGraph(navController: NavHostController) {
             ARViewScreen(onNavigateBack = { navController.popBackStack() })
         }
         composable(Screen.Settings.route) {
-            SettingsScreen(onNavigateBack = { navController.popBackStack() })
+            SettingsScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onProfileClick = { navController.navigate(Screen.UserProfile.route) },
+                onLoginClick = { navController.navigate(Screen.Login.route) }
+            )
         }
         composable(Screen.Timeline.route) {
             TimelineScreen(
@@ -160,6 +165,17 @@ fun DinoNavGraph(navController: NavHostController) {
                 era = era,
                 language = language,
                 onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(Screen.Login.route) {
+            LoginScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        composable(Screen.UserProfile.route) {
+            UserProfileScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onLoginClick = { navController.navigate(Screen.Login.route) }
             )
         }
     }

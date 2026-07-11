@@ -1,5 +1,6 @@
 package com.example.world_of_dinosaurs_extented.ui.map
 
+import com.example.world_of_dinosaurs_extented.data.map.MapProvider
 import com.example.world_of_dinosaurs_extented.domain.model.DinosaurMapMarker
 
 enum class MapStyle { FLAT, SATELLITE, GLOBE }
@@ -10,6 +11,7 @@ data class DiscoveryMapUiState(
     val error: String? = null,
     val selectedMarker: DinosaurMapMarker? = null,
     val mapStyle: MapStyle = MapStyle.FLAT,
+    val mapProvider: MapProvider = MapProvider.AUTO,
     val focusDinosaurId: String? = null,
     val focusLat: Double? = null,
     val focusLng: Double? = null,

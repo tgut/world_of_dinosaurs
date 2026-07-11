@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.world_of_dinosaurs_extented.data.map.MapProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -78,6 +79,10 @@ class SettingsManager @Inject constructor(
         prefs[PRIVACY_CONSENT_ACCEPTED_KEY] ?: false
     }
 
+    val mapProviderFlow: Flow<String> = dataStore.data.map { prefs ->
+        prefs[MAP_PROVIDER_KEY] ?: MapProvider.AUTO.key
+    }
+
     suspend fun setLanguage(language: String) {
         dataStore.edit { prefs -> prefs[LANGUAGE_KEY] = language }
     }
@@ -126,6 +131,62 @@ class SettingsManager @Inject constructor(
         dataStore.edit { prefs -> prefs[PRIVACY_CONSENT_ACCEPTED_KEY] = true }
     }
 
+    /**
+     * Get map provider (returns Flow for reactive updates)
+     */
+    fun getMapProvider(): Flow<MapProvider> = mapProviderFlow.map { key ->
+        MapProvider.fromKey(key)
+    }
+
+    /**
+     * Set map provider
+     */
+    suspend fun setMapProvider(provider: MapProvider) {
+        dataStore.edit { prefs -> prefs[MAP_PROVIDER_KEY] = provider.key }
+    }
+
+    /**
+     * Get Vision provider (returns Flow for reactive updates)
+     */
+    fun getVisionProvider(): Flow<String> = dataStore.data.map { prefs ->
+        prefs[VISION_PROVIDER_KEY] ?: "auto"
+    }
+
+    /**
+     * Set Vision provider
+     */
+    suspend fun setVisionProvider(provider: String) {
+        dataStore.edit { prefs -> prefs[VISION_PROVIDER_KEY] = provider }
+    }
+
+    /**
+     * Get Tencent Vision SecretId
+     */
+    fun getTencentSecretId(): Flow<String> = dataStore.data.map { prefs ->
+        prefs[TENCENT_SECRET_ID_KEY] ?: AppConfig.TENCENT_SECRET_ID
+    }
+
+    /**
+     * Set Tencent Vision SecretId
+     */
+    suspend fun setTencentSecretId(secretId: String) {
+        dataStore.edit { prefs -> prefs[TENCENT_SECRET_ID_KEY] = secretId }
+    }
+
+    /**
+     * Get Tencent Vision SecretKey
+     */
+    fun getTencentSecretKey(): Flow<String> = dataStore.data.map { prefs ->
+        prefs[TENCENT_SECRET_KEY_KEY] ?: AppConfig.TENCENT_SECRET_KEY
+    }
+
+    /**
+     * Set Tencent Vision SecretKey
+     */
+    suspend fun setTencentSecretKey(secretKey: String) {
+        dataStore.edit { prefs -> prefs[TENCENT_SECRET_KEY_KEY] = secretKey }
+    }
+
     fun getResolvedChatBaseUrl(provider: ChatProvider, customUrl: String): String {
         return if (provider == ChatProvider.CUSTOM) customUrl else provider.baseUrl
     }
@@ -138,6 +199,9 @@ class SettingsManager @Inject constructor(
         private val LANGUAGE_KEY = stringPreferencesKey("language")
         private val THEME_KEY = stringPreferencesKey("theme")
         private val VISION_API_KEY = stringPreferencesKey("vision_api_key")
+        private val VISION_PROVIDER_KEY = stringPreferencesKey("vision_provider")
+        private val TENCENT_SECRET_ID_KEY = stringPreferencesKey("tencent_secret_id")
+        private val TENCENT_SECRET_KEY_KEY = stringPreferencesKey("tencent_secret_key")
         private val GLOBE_ROTATE_TIMEOUT = stringPreferencesKey("globe_rotate_timeout")
         private val CHAT_PROVIDER_KEY = stringPreferencesKey("chat_provider")
         private val CHAT_API_KEY = stringPreferencesKey("chat_api_key")
@@ -146,5 +210,6 @@ class SettingsManager @Inject constructor(
         private val TTS_SPEED_KEY = floatPreferencesKey("tts_speed")
         private val TTS_PITCH_KEY = floatPreferencesKey("tts_pitch")
         private val PRIVACY_CONSENT_ACCEPTED_KEY = booleanPreferencesKey("privacy_consent_accepted")
+        private val MAP_PROVIDER_KEY = stringPreferencesKey("map_provider")
     }
 }

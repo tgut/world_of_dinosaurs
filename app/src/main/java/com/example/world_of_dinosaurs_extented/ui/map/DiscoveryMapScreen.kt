@@ -19,15 +19,20 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.world_of_dinosaurs_extented.R
+import com.example.world_of_dinosaurs_extented.data.map.CoordinateConverter
+import com.example.world_of_dinosaurs_extented.data.map.MapProvider
+import com.example.world_of_dinosaurs_extented.data.map.TencentTileSources
 import com.example.world_of_dinosaurs_extented.domain.model.DinosaurEra
 import com.example.world_of_dinosaurs_extented.domain.model.DinosaurMapMarker
 import com.example.world_of_dinosaurs_extented.ui.common.LoadingIndicator
 import org.osmdroid.config.Configuration
+import org.osmdroid.tileprovider.tilesource.ITileSource
 import org.osmdroid.tileprovider.tilesource.XYTileSource
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 
+// OSM France tile sources
 private val TILE_SOURCE_STANDARD = XYTileSource(
     "OSMFrance", 0, 19, 256, ".png",
     arrayOf(
@@ -103,6 +108,7 @@ fun DiscoveryMapScreen(
                         markers = uiState.markers,
                         language = uiState.language,
                         mapStyle = uiState.mapStyle,
+                        mapProvider = uiState.mapProvider,
                         focusDinosaurId = uiState.focusDinosaurId,
                         focusLat = uiState.focusLat,
                         focusLng = uiState.focusLng,
@@ -112,9 +118,32 @@ fun DiscoveryMapScreen(
                     )
                 }
 
+                // Map provider label (only for 2D maps)
+                if (uiState.mapStyle != MapStyle.GLOBE) {
+                    Surface(
+                        modifier = Modifier.align(Alignment.TopEnd).padding(end = 8.dp, top = 8.dp),
+                        shape = MaterialTheme.shapes.small,
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f),
+                        tonalElevation = 2.dp
+                    ) {
+                        Text(
+                            text = when (uiState.mapProvider) {
+                                MapProvider.OSM_FRANCE -> "OSM"
+                                MapProvider.TENCENT -> "腾讯"
+                                MapProvider.AUTO -> "自动"
+                            },
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
+                }
+
                 // Map style label
                 Surface(
-                    modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
+                    modifier = Modifier.align(Alignment.TopEnd).padding(end = 8.dp, top = when (uiState.mapStyle) {
+                        MapStyle.GLOBE -> 8.dp
+                        else -> 40.dp
+                    }),
                     shape = MaterialTheme.shapes.small,
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f),
                     tonalElevation = 2.dp
@@ -152,6 +181,7 @@ private fun OsmMapView(
     markers: List<DinosaurMapMarker>,
     language: String,
     mapStyle: MapStyle,
+    mapProvider: MapProvider,
     focusDinosaurId: String?,
     focusLat: Double?,
     focusLng: Double?,
@@ -162,24 +192,42 @@ private fun OsmMapView(
     AndroidView(
         factory = { ctx ->
             MapView(ctx).apply {
-                setTileSource(TILE_SOURCE_STANDARD)
                 setMultiTouchControls(true)
                 if (focusLat != null && focusLng != null) {
                     controller.setZoom(focusZoom ?: 6.0)
-                    controller.setCenter(GeoPoint(focusLat, focusLng))
+                    // Convert coordinates based on map provider
+                    val (displayLat, displayLng) = if (mapProvider == MapProvider.TENCENT) {
+                        CoordinateConverter.wgs84ToGcj02(focusLat, focusLng)
+                    } else {
+                        focusLat to focusLng
+                    }
+                    controller.setCenter(GeoPoint(displayLat, displayLng))
                 } else {
                     controller.setZoom(3.0)
-                    controller.setCenter(GeoPoint(20.0, 0.0))
+                    val (displayLat, displayLng) = if (mapProvider == MapProvider.TENCENT) {
+                        CoordinateConverter.wgs84ToGcj02(20.0, 0.0)
+                    } else {
+                        20.0 to 0.0
+                    }
+                    controller.setCenter(GeoPoint(displayLat, displayLng))
                 }
             }
         },
         update = { mapView ->
-            // Update tile source based on style
-            val newTileSource = when (mapStyle) {
-                MapStyle.FLAT -> TILE_SOURCE_STANDARD
-                MapStyle.SATELLITE -> TILE_SOURCE_HOT
-                MapStyle.GLOBE -> TILE_SOURCE_STANDARD // not used for globe
+            // Update tile source based on provider and style
+            val newTileSource: ITileSource = when (mapProvider) {
+                MapProvider.TENCENT -> {
+                    TencentTileSources.getTileSource(mapStyle == MapStyle.SATELLITE)
+                }
+                else -> {
+                    when (mapStyle) {
+                        MapStyle.FLAT -> TILE_SOURCE_STANDARD
+                        MapStyle.SATELLITE -> TILE_SOURCE_HOT
+                        MapStyle.GLOBE -> TILE_SOURCE_STANDARD
+                    }
+                }
             }
+
             if (mapView.tileProvider.tileSource != newTileSource) {
                 mapView.setTileSource(newTileSource)
             }
@@ -187,8 +235,15 @@ private fun OsmMapView(
             mapView.overlays.clear()
             markers.forEach { dinoMarker ->
                 val isFocused = dinoMarker.dinosaurId == focusDinosaurId
+                // Convert coordinates for Tencent Maps
+                val (displayLat, displayLng) = if (mapProvider == MapProvider.TENCENT) {
+                    CoordinateConverter.wgs84ToGcj02(dinoMarker.lat, dinoMarker.lng)
+                } else {
+                    dinoMarker.lat to dinoMarker.lng
+                }
+
                 val osmMarker = Marker(mapView).apply {
-                    position = GeoPoint(dinoMarker.lat, dinoMarker.lng)
+                    position = GeoPoint(displayLat, displayLng)
                     title = dinoMarker.getLocalizedName(language)
                     snippet = dinoMarker.discoveryLocation
                     if (isFocused) {

@@ -25,6 +25,10 @@ class SettingsViewModel @Inject constructor(
     val chatModel: Flow<String> = settingsManager.chatModelFlow
     val ttsSpeed: Flow<Float> = settingsManager.ttsSpeedFlow
     val ttsPitch: Flow<Float> = settingsManager.ttsPitchFlow
+    val mapProvider: Flow<String> = settingsManager.mapProviderFlow
+    val visionProvider: Flow<String> = settingsManager.getVisionProvider()
+    val tencentSecretId: Flow<String> = settingsManager.getTencentSecretId()
+    val tencentSecretKey: Flow<String> = settingsManager.getTencentSecretKey()
 
     fun setGlobeRotateTimeout(seconds: Int) {
         viewModelScope.launch {
@@ -85,6 +89,30 @@ class SettingsViewModel @Inject constructor(
     fun setTtsPitch(pitch: Float) {
         viewModelScope.launch {
             settingsManager.setTtsPitch(pitch)
+        }
+    }
+
+    fun setMapProvider(provider: String) {
+        viewModelScope.launch {
+            settingsManager.setMapProvider(com.example.world_of_dinosaurs_extented.data.map.MapProvider.fromKey(provider))
+        }
+    }
+
+    fun setVisionProvider(provider: String) {
+        viewModelScope.launch {
+            settingsManager.setVisionProvider(provider)
+        }
+    }
+
+    fun setTencentSecretId(secretId: String) {
+        viewModelScope.launch {
+            settingsManager.setTencentSecretId(secretId.trim())
+        }
+    }
+
+    fun setTencentSecretKey(secretKey: String) {
+        viewModelScope.launch {
+            settingsManager.setTencentSecretKey(secretKey.trim())
         }
     }
 }

@@ -6,6 +6,8 @@ import com.example.world_of_dinosaurs_extented.data.local.DinoDatabase
 import com.example.world_of_dinosaurs_extented.data.local.dao.DinosaurDao
 import com.example.world_of_dinosaurs_extented.data.local.dao.FavoriteDao
 import com.example.world_of_dinosaurs_extented.data.local.dao.ScanHistoryDao
+import com.example.world_of_dinosaurs_extented.data.local.dao.UserDao
+import com.example.world_of_dinosaurs_extented.data.local.entity.UserEntity
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,7 +27,11 @@ object DatabaseModule {
             DinoDatabase::class.java,
             "dino_database"
         )
-            .addMigrations(DinoDatabase.MIGRATION_1_2, DinoDatabase.MIGRATION_2_3)
+            .addMigrations(
+                DinoDatabase.MIGRATION_1_2,
+                DinoDatabase.MIGRATION_2_3,
+                DinoDatabase.MIGRATION_3_4
+            )
             .build()
     }
 
@@ -42,5 +48,10 @@ object DatabaseModule {
     @Provides
     fun provideDinosaurDao(database: DinoDatabase): DinosaurDao {
         return database.dinosaurDao()
+    }
+
+    @Provides
+    fun provideUserDao(database: DinoDatabase): UserDao {
+        return database.userDao()
     }
 }

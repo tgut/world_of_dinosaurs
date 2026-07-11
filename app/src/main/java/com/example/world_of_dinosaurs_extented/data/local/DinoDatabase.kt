@@ -1,20 +1,20 @@
 package com.example.world_of_dinosaurs_extented.data.local
 
-import androidx.room.Database
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.world_of_dinosaurs_extented.data.local.dao.DinosaurDao
 import com.example.world_of_dinosaurs_extented.data.local.dao.FavoriteDao
 import com.example.world_of_dinosaurs_extented.data.local.dao.ScanHistoryDao
+import com.example.world_of_dinosaurs_extented.data.local.dao.UserDao
 import com.example.world_of_dinosaurs_extented.data.local.entity.DinosaurEntity
 import com.example.world_of_dinosaurs_extented.data.local.entity.FavoriteEntity
 import com.example.world_of_dinosaurs_extented.data.local.entity.ScanHistoryEntity
+import com.example.world_of_dinosaurs_extented.data.local.entity.UserEntity
 
 @Database(
-    entities = [FavoriteEntity::class, ScanHistoryEntity::class, DinosaurEntity::class],
-    version = 3,
+    entities = [FavoriteEntity::class, ScanHistoryEntity::class, DinosaurEntity::class, UserEntity::class],
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -22,6 +22,7 @@ abstract class DinoDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
     abstract fun scanHistoryDao(): ScanHistoryDao
     abstract fun dinosaurDao(): DinosaurDao
+    abstract fun userDao(): UserDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -63,6 +64,22 @@ abstract class DinoDatabase : RoomDatabase() {
                         "`isFeatured` INTEGER NOT NULL DEFAULT 0, " +
                         "`dataSource` TEXT NOT NULL DEFAULT 'bundled', " +
                         "`lastUpdated` INTEGER NOT NULL DEFAULT 0)"
+                )
+            }
+        }
+
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `users` (" +
+                        "`id` TEXT NOT NULL PRIMARY KEY, " +
+                        "`provider` TEXT NOT NULL, " +
+                        "`providerId` TEXT NOT NULL, " +
+                        "`displayName` TEXT, " +
+                        "`avatarUrl` TEXT, " +
+                        "`email` TEXT, " +
+                        "`createdAt` INTEGER NOT NULL, " +
+                        "`updatedAt` INTEGER NOT NULL)"
                 )
             }
         }

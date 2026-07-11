@@ -32,4 +32,6 @@ sealed class Screen(val route: String) {
     data object GeologicalDetail : Screen("geological/{era}?lang={lang}") {
         fun createRoute(era: String, lang: String = "en") = "geological/$era?lang=$lang"
     }
+    data object Login : Screen("login")
+    data object UserProfile : Screen("user_profile")
 }
