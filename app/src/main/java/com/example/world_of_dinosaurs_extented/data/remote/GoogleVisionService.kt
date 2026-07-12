@@ -7,6 +7,7 @@ import com.example.world_of_dinosaurs_extented.data.remote.dto.VisionFeature
 import com.example.world_of_dinosaurs_extented.data.remote.dto.VisionImage
 import com.example.world_of_dinosaurs_extented.data.remote.dto.LabelAnnotation
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -16,7 +17,7 @@ import javax.inject.Singleton
 @Singleton
 class GoogleVisionService @Inject constructor(
     private val visionApiService: VisionApiService,
-    private val apiKeyProvider: () -> String
+    @Named("googleVisionApiKey") private val apiKeyProvider: () -> String
 ) : VisionService {
 
     override suspend fun analyzeImage(base64Image: String): List<LabelAnnotation> {

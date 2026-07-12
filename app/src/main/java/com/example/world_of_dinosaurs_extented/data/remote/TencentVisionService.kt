@@ -7,6 +7,7 @@ import com.example.world_of_dinosaurs_extented.data.remote.dto.toLabelAnnotation
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -16,8 +17,8 @@ import javax.inject.Singleton
 @Singleton
 class TencentVisionService @Inject constructor(
     private val tencentVisionApiService: TencentVisionApiService,
-    private val secretIdProvider: () -> String,
-    private val secretKeyProvider: () -> String
+    @Named("tencentSecretId") private val secretIdProvider: () -> String,
+    @Named("tencentSecretKey") private val secretKeyProvider: () -> String
 ) : VisionService {
 
     private val moshi: Moshi = Moshi.Builder().build()

@@ -20,6 +20,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -124,6 +125,7 @@ object NetworkModule {
      */
     @Provides
     @Singleton
+    @Named("googleVisionApiKey")
     fun provideGoogleVisionApiKey(settingsManager: SettingsManager): () -> String {
         return {
             runBlocking { settingsManager.getVisionApiKey() }
@@ -135,6 +137,7 @@ object NetworkModule {
      */
     @Provides
     @Singleton
+    @Named("tencentSecretId")
     fun provideTencentSecretId(settingsManager: SettingsManager): () -> String {
         return {
             runBlocking { settingsManager.getTencentSecretId().first() }
@@ -146,6 +149,7 @@ object NetworkModule {
      */
     @Provides
     @Singleton
+    @Named("tencentSecretKey")
     fun provideTencentSecretKey(settingsManager: SettingsManager): () -> String {
         return {
             runBlocking { settingsManager.getTencentSecretKey().first() }
