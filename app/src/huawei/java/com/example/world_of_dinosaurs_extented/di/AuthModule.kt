@@ -13,6 +13,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import com.example.world_of_dinosaurs_extented.ui.auth.LoginIntentProvider
+import com.example.world_of_dinosaurs_extented.ui.auth.LoginIntentProviderImpl
 import javax.inject.Singleton
 
 /**
@@ -56,5 +58,11 @@ object AuthModule {
     @Singleton
     fun provideGetUserProfileUseCase(userRepository: UserRepository): GetUserProfileUseCase {
         return GetUserProfileUseCase(userRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLoginIntentProvider(impl: LoginIntentProviderImpl): LoginIntentProvider {
+        return impl
     }
 }

@@ -6,6 +6,8 @@ import com.example.world_of_dinosaurs_extented.domain.repository.UserRepository
 import com.example.world_of_dinosaurs_extented.domain.usecase.GetUserProfileUseCase
 import com.example.world_of_dinosaurs_extented.domain.usecase.LoginUseCase
 import com.example.world_of_dinosaurs_extented.domain.usecase.LogoutUseCase
+import com.example.world_of_dinosaurs_extented.ui.auth.LoginIntentProvider
+import com.example.world_of_dinosaurs_extented.ui.auth.LoginIntentProviderImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,5 +46,11 @@ object AuthModule {
     @Singleton
     fun provideGetUserProfileUseCase(userRepository: UserRepository): GetUserProfileUseCase {
         return GetUserProfileUseCase(userRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLoginIntentProvider(impl: LoginIntentProviderImpl): LoginIntentProvider {
+        return impl
     }
 }
