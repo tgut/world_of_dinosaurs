@@ -1,5 +1,8 @@
 package com.example.world_of_dinosaurs_extented.ui.auth
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -22,6 +25,17 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // Activity result launcher for platform auth (Huawei Account Kit)
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            viewModel.handleLoginResult(result.data)
+        } else {
+            viewModel.onLoginCancelled()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -72,14 +86,24 @@ fun LoginScreen(
 
             // Huawei login button
             OutlinedButton(
-                onClick = { viewModel.loginWithHuawei() },
+                onClick = {
+                    val intent = viewModel.getSignInIntent()
+                    if (intent != null) {
+                        // Huawei flavor: launch Account Kit sign-in activity
+                        launcher.launch(intent)
+                    } else {
+                        // Google flavor: log in locally
+                        viewModel.loginLocally()
+                    }
+                },
                 modifier = Modifier.fillMaxWidth().height(52.dp),
                 enabled = !uiState.isLoading
             ) {
                 if (uiState.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp))
                 } else {
-                    Text("HUAWEI ID Login", style = MaterialTheme.typography.titleSmall)
+                    val label = if (uiState.hasPlatformLogin) "HUAWEI ID Login" else "Sign In"
+                    Text(label, style = MaterialTheme.typography.titleSmall)
                 }
             }
 
