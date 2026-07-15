@@ -40,6 +40,11 @@ open class UserRepositoryImpl(
         return user
     }
 
+    override suspend fun completeExternalLogin(user: User): User {
+        saveUser(user)
+        return user
+    }
+
     override suspend fun logout() {
         currentUserId?.let { userId ->
             userDao.getUserById(userId)?.let { userDao.deleteUser(it) }

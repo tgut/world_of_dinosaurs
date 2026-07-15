@@ -24,6 +24,12 @@ interface UserRepository {
     suspend fun login(provider: String, credentials: Map<String, Any>): User
 
     /**
+     * Complete an external platform login (e.g., Huawei Account Kit).
+     * Persists the user from an already-completed platform auth flow.
+     */
+    suspend fun completeExternalLogin(user: User): User
+
+    /**
      * Logout current user
      */
     suspend fun logout()

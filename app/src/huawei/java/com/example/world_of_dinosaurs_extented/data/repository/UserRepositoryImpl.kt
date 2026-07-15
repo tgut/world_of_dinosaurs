@@ -34,6 +34,11 @@ class UserRepositoryImpl(
         throw UnsupportedOperationException("Use HuaweiAccountManager.startLogin() instead")
     }
 
+    override suspend fun completeExternalLogin(user: User): User {
+        saveUser(user)
+        return user
+    }
+
     override suspend fun logout() {
         huaweiAccountManager.logout()
         currentUserId?.let { userId ->
