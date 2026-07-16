@@ -1,6 +1,7 @@
 package com.example.world_of_dinosaurs_extented.ui.auth
 
 import android.content.Intent
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.world_of_dinosaurs_extented.domain.model.User
@@ -90,10 +91,13 @@ class LoginViewModel @Inject constructor(
      * Simple local-only login for the Google flavor (no platform auth).
      */
     fun loginLocally() {
+        Log.d("LoginVM", "loginLocally called")
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
+                Log.d("LoginVM", "invoking loginUseCase")
                 val user = loginUseCase("local", mapOf("provider" to "local"))
+                Log.d("LoginVM", "loginUseCase succeeded: user=$user")
                 _uiState.update {
                     it.copy(
                         isLoggedIn = true,
@@ -101,7 +105,9 @@ class LoginViewModel @Inject constructor(
                         userName = user.displayName
                     )
                 }
+                Log.d("LoginVM", "state updated to isLoggedIn=true")
             } catch (e: Exception) {
+                Log.e("LoginVM", "login failed", e)
                 _uiState.update {
                     it.copy(isLoading = false, error = e.message ?: "Login failed")
                 }

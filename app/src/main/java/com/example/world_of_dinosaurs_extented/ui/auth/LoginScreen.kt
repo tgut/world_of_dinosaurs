@@ -26,6 +26,13 @@ fun LoginScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    // Navigate back when login succeeds
+    LaunchedEffect(uiState.isLoggedIn) {
+        if (uiState.isLoggedIn) {
+            onNavigateBack()
+        }
+    }
+
     // Activity result launcher for platform auth (Huawei Account Kit)
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
