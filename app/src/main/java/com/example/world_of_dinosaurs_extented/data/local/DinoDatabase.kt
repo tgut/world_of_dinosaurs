@@ -3,18 +3,19 @@ package com.example.world_of_dinosaurs_extented.data.local
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.world_of_dinosaurs_extented.data.local.dao.DinosaurDao
-import com.example.world_of_dinosaurs_extented.data.local.dao.FavoriteDao
-import com.example.world_of_dinosaurs_extented.data.local.dao.ScanHistoryDao
-import com.example.world_of_dinosaurs_extented.data.local.dao.UserDao
-import com.example.world_of_dinosaurs_extented.data.local.entity.DinosaurEntity
-import com.example.world_of_dinosaurs_extented.data.local.entity.FavoriteEntity
-import com.example.world_of_dinosaurs_extented.data.local.entity.ScanHistoryEntity
-import com.example.world_of_dinosaurs_extented.data.local.entity.UserEntity
+import com.example.world_of_dinosaurs_extented.data.local.dao.*
+import com.example.world_of_dinosaurs_extented.data.local.entity.*
 
 @Database(
-    entities = [FavoriteEntity::class, ScanHistoryEntity::class, DinosaurEntity::class, UserEntity::class],
-    version = 4,
+    entities = [
+        FavoriteEntity::class,
+        ScanHistoryEntity::class,
+        DinosaurEntity::class,
+        UserEntity::class,
+        ChatSessionEntity::class,
+        ChatMessageEntity::class
+    ],
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -23,6 +24,7 @@ abstract class DinoDatabase : RoomDatabase() {
     abstract fun scanHistoryDao(): ScanHistoryDao
     abstract fun dinosaurDao(): DinosaurDao
     abstract fun userDao(): UserDao
+    abstract fun chatHistoryDao(): ChatHistoryDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -81,6 +83,49 @@ abstract class DinoDatabase : RoomDatabase() {
                         "`createdAt` INTEGER NOT NULL, " +
                         "`updatedAt` INTEGER NOT NULL)"
                 )
+            }
+        }
+
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // Recreate favorites with composite key + userId
+                db.execSQL("CREATE TABLE IF NOT EXISTS `favorites_new` (" +
+                    "`dinosaurId` TEXT NOT NULL, " +
+                    "`userId` TEXT NOT NULL DEFAULT '', " +
+                    "`addedAt` INTEGER NOT NULL, " +
+                    "PRIMARY KEY(`dinosaurId`, `userId`))")
+                db.execSQL("INSERT INTO favorites_new (dinosaurId, userId, addedAt) " +
+                    "SELECT dinosaurId, '', addedAt FROM favorites")
+                db.execSQL("DROP TABLE favorites")
+                db.execSQL("ALTER TABLE favorites_new RENAME TO favorites")
+
+                // Add userId to scan_history
+                db.execSQL("CREATE TABLE IF NOT EXISTS `scan_history_new` (" +
+                    "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    "`dinosaurId` TEXT NOT NULL, " +
+                    "`userId` TEXT NOT NULL DEFAULT '', " +
+                    "`scannedAt` INTEGER NOT NULL)")
+                db.execSQL("INSERT INTO scan_history_new (id, dinosaurId, userId, scannedAt) " +
+                    "SELECT id, dinosaurId, '', scannedAt FROM scan_history")
+                db.execSQL("DROP TABLE scan_history")
+                db.execSQL("ALTER TABLE scan_history_new RENAME TO scan_history")
+
+                // New tables for chat history
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `chat_sessions` (" +
+                        "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                        "`userId` TEXT NOT NULL DEFAULT '', " +
+                        "`title` TEXT NOT NULL DEFAULT 'New Chat', " +
+                        "`dinosaurId` TEXT, " +
+                        "`createdAt` INTEGER NOT NULL, " +
+                        "`updatedAt` INTEGER NOT NULL)")
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `chat_messages` (" +
+                        "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                        "`sessionId` INTEGER NOT NULL, " +
+                        "`role` TEXT NOT NULL, " +
+                        "`content` TEXT NOT NULL, " +
+                        "`createdAt` INTEGER NOT NULL)")
             }
         }
     }

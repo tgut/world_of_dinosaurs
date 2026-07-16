@@ -1,5 +1,6 @@
 package com.example.world_of_dinosaurs_extented.di
 
+import com.example.world_of_dinosaurs_extented.data.repository.ChatHistoryRepositoryImpl
 import com.example.world_of_dinosaurs_extented.data.repository.ChatRepositoryImpl
 import com.example.world_of_dinosaurs_extented.data.repository.DinoRecognitionRepositoryImpl
 import com.example.world_of_dinosaurs_extented.data.repository.DinosaurRepositoryImpl
@@ -7,6 +8,7 @@ import com.example.world_of_dinosaurs_extented.data.repository.FavoriteRepositor
 import com.example.world_of_dinosaurs_extented.data.repository.GeologicalPeriodRepositoryImpl
 import com.example.world_of_dinosaurs_extented.data.repository.QuizRepositoryImpl
 import com.example.world_of_dinosaurs_extented.data.repository.ScanHistoryRepositoryImpl
+import com.example.world_of_dinosaurs_extented.domain.repository.ChatHistoryRepository
 import com.example.world_of_dinosaurs_extented.domain.repository.ChatRepository
 import com.example.world_of_dinosaurs_extented.domain.repository.DinoRecognitionRepository
 import com.example.world_of_dinosaurs_extented.domain.repository.DinosaurRepository
@@ -53,6 +55,10 @@ abstract class AppModule {
     @Binds
     @Singleton
     abstract fun bindGeologicalPeriodRepository(impl: GeologicalPeriodRepositoryImpl): GeologicalPeriodRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindChatHistoryRepository(impl: ChatHistoryRepositoryImpl): ChatHistoryRepository
 
     companion object {
         @Provides

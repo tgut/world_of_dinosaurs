@@ -8,17 +8,17 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ScanHistoryDao {
-    @Query("SELECT * FROM scan_history ORDER BY scannedAt DESC")
-    fun getAll(): Flow<List<ScanHistoryEntity>>
+    @Query("SELECT * FROM scan_history WHERE userId = :userId ORDER BY scannedAt DESC")
+    fun getAll(userId: String = ""): Flow<List<ScanHistoryEntity>>
 
-    @Query("SELECT DISTINCT dinosaurId FROM scan_history")
-    fun getDistinctDinosaurIds(): Flow<List<String>>
+    @Query("SELECT DISTINCT dinosaurId FROM scan_history WHERE userId = :userId")
+    fun getDistinctDinosaurIds(userId: String = ""): Flow<List<String>>
 
     @Insert
     suspend fun insert(entity: ScanHistoryEntity)
 
-    @Query("SELECT COUNT(*) FROM scan_history WHERE dinosaurId = :id")
-    suspend fun getScanCount(id: String): Int
+    @Query("SELECT COUNT(*) FROM scan_history WHERE dinosaurId = :id AND userId = :userId")
+    suspend fun getScanCount(id: String, userId: String = ""): Int
 
     @Query("DELETE FROM scan_history")
     suspend fun clearAll()

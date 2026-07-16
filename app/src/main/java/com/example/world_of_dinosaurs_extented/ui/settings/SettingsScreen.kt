@@ -316,66 +316,6 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Vision API Key section
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.vision_api_key_title),
-                    style = MaterialTheme.typography.titleMedium
-                )
-                TextButton(onClick = { showVisionKeyGuide = true }) {
-                    Icon(
-                        Icons.Default.HelpOutline,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(stringResource(R.string.how_to_get_key), style = MaterialTheme.typography.labelSmall)
-                }
-            }
-            Text(
-                text = stringResource(R.string.vision_api_key_hint),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(
-                value = apiKeyInput,
-                onValueChange = { apiKeyInput = it },
-                label = { Text("API Key") },
-                singleLine = true,
-                visualTransformation = if (apiKeyVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = { apiKeyVisible = !apiKeyVisible }) {
-                        Icon(
-                            if (apiKeyVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                            contentDescription = null
-                        )
-                    }
-                },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = {
-                    viewModel.setVisionApiKey(apiKeyInput)
-                    focusManager.clearFocus()
-                }),
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(
-                onClick = {
-                    viewModel.setVisionApiKey(apiKeyInput)
-                    focusManager.clearFocus()
-                },
-                enabled = apiKeyInput.trim() != savedApiKey
-            ) {
-                Text(stringResource(R.string.save_api_key))
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
             // Map Provider section
             Text(
                 text = "地图服务",
@@ -418,14 +358,29 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Vision Provider section
-            Text(
-                text = "图像识别服务",
-                style = MaterialTheme.typography.titleMedium
-            )
+            // Unified Vision Provider section
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "图像识别服务",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                TextButton(onClick = { showVisionKeyGuide = true }) {
+                    Icon(
+                        Icons.Default.HelpOutline,
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("获取Key", style = MaterialTheme.typography.labelSmall)
+                }
+            }
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "选择图像识别服务提供商（自动检测会根据网络环境选择）",
+                text = "选择识别服务，自动检测会根据网络环境选择可用的服务",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -466,7 +421,53 @@ fun SettingsScreen(
                 }
             }
 
-            // Tencent Cloud credentials (only when tencent is selected)
+            // Dynamic API key fields based on selected provider
+            if (visionProviderKey == "google") {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "Google Vision API Key",
+                    style = MaterialTheme.typography.labelMedium
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "从 Google Cloud Console 获取",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = apiKeyInput,
+                    onValueChange = { apiKeyInput = it },
+                    label = { Text("API Key") },
+                    singleLine = true,
+                    visualTransformation = if (apiKeyVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { apiKeyVisible = !apiKeyVisible }) {
+                            Icon(
+                                if (apiKeyVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {
+                        viewModel.setVisionApiKey(apiKeyInput)
+                        focusManager.clearFocus()
+                    }),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        viewModel.setVisionApiKey(apiKeyInput)
+                        focusManager.clearFocus()
+                    },
+                    enabled = apiKeyInput.trim() != savedApiKey
+                ) {
+                    Text("保存 API Key")
+                }
+            }
+
             if (visionProviderKey == "tencent") {
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
@@ -475,7 +476,7 @@ fun SettingsScreen(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "请在腾讯云控制台获取",
+                    text = "从腾讯云控制台 - 访问管理 - API密钥管理获取",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -490,9 +491,7 @@ fun SettingsScreen(
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     modifier = Modifier.fillMaxWidth()
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
-
                 OutlinedTextField(
                     value = tencentSecretKeyInput,
                     onValueChange = { tencentSecretKeyInput = it },
@@ -516,7 +515,6 @@ fun SettingsScreen(
                     }),
                     modifier = Modifier.fillMaxWidth()
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = {
@@ -696,22 +694,43 @@ fun SettingsScreen(
 
     // Vision API Key Guide Dialog
     if (showVisionKeyGuide) {
-        val visionUrl = stringResource(R.string.vision_key_guide_url)
         AlertDialog(
             onDismissRequest = { showVisionKeyGuide = false },
-            title = { Text(stringResource(R.string.vision_key_guide_title)) },
+            title = { Text("获取 API Key") },
             text = {
-                Text(
-                    text = stringResource(R.string.vision_key_guide),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = { uriHandler.openUri(visionUrl) }) {
-                    Text(stringResource(R.string.open_link))
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    Text(
+                        text = "Google Vision",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "1. 访问 console.cloud.google.com\n" +
+                            "2. 创建或选择项目\n" +
+                            "3. 启用 Vision API\n" +
+                            "4. 创建 API Key（凭据页面）\n" +
+                            "5. 复制 API Key 粘贴到设置中",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "腾讯云视觉识别",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "1. 访问 console.cloud.tencent.com\n" +
+                            "2. 搜索「图像识别」并开通服务\n" +
+                            "3. 进入「访问管理」→「API密钥管理」\n" +
+                            "4. 创建 SecretId 和 SecretKey\n" +
+                            "5. 复制到设置中",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             },
-            dismissButton = {
+            confirmButton = {
                 TextButton(onClick = { showVisionKeyGuide = false }) {
                     Text(stringResource(R.string.close))
                 }

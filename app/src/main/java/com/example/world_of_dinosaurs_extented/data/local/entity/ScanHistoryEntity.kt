@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class ScanHistoryEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val dinosaurId: String,
+    val userId: String = "",
     val scannedAt: Long = System.currentTimeMillis()
 )

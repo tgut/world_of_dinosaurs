@@ -1,10 +1,10 @@
 package com.example.world_of_dinosaurs_extented.data.local.entity
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity(tableName = "favorites")
+@Entity(tableName = "favorites", primaryKeys = ["dinosaurId", "userId"])
 data class FavoriteEntity(
-    @PrimaryKey val dinosaurId: String,
+    val dinosaurId: String,
+    val userId: String = "",
     val addedAt: Long = System.currentTimeMillis()
 )

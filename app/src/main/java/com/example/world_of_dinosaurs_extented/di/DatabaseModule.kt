@@ -3,6 +3,7 @@ package com.example.world_of_dinosaurs_extented.di
 import android.content.Context
 import androidx.room.Room
 import com.example.world_of_dinosaurs_extented.data.local.DinoDatabase
+import com.example.world_of_dinosaurs_extented.data.local.dao.ChatHistoryDao
 import com.example.world_of_dinosaurs_extented.data.local.dao.DinosaurDao
 import com.example.world_of_dinosaurs_extented.data.local.dao.FavoriteDao
 import com.example.world_of_dinosaurs_extented.data.local.dao.ScanHistoryDao
@@ -30,7 +31,8 @@ object DatabaseModule {
             .addMigrations(
                 DinoDatabase.MIGRATION_1_2,
                 DinoDatabase.MIGRATION_2_3,
-                DinoDatabase.MIGRATION_3_4
+                DinoDatabase.MIGRATION_3_4,
+                DinoDatabase.MIGRATION_4_5
             )
             .build()
     }
@@ -53,5 +55,10 @@ object DatabaseModule {
     @Provides
     fun provideUserDao(database: DinoDatabase): UserDao {
         return database.userDao()
+    }
+
+    @Provides
+    fun provideChatHistoryDao(database: DinoDatabase): ChatHistoryDao {
+        return database.chatHistoryDao()
     }
 }

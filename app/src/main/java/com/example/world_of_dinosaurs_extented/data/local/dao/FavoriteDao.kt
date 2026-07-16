@@ -9,23 +9,23 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoriteDao {
-    @Query("SELECT * FROM favorites ORDER BY addedAt DESC")
-    fun getAllFavorites(): Flow<List<FavoriteEntity>>
+    @Query("SELECT * FROM favorites WHERE userId = :userId ORDER BY addedAt DESC")
+    fun getAllFavorites(userId: String = ""): Flow<List<FavoriteEntity>>
 
-    @Query("SELECT dinosaurId FROM favorites")
-    fun getAllFavoriteIds(): Flow<List<String>>
+    @Query("SELECT dinosaurId FROM favorites WHERE userId = :userId")
+    fun getAllFavoriteIds(userId: String = ""): Flow<List<String>>
 
-    @Query("SELECT EXISTS(SELECT 1 FROM favorites WHERE dinosaurId = :id)")
-    fun isFavorite(id: String): Flow<Boolean>
+    @Query("SELECT EXISTS(SELECT 1 FROM favorites WHERE dinosaurId = :id AND userId = :userId)")
+    fun isFavorite(id: String, userId: String = ""): Flow<Boolean>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addFavorite(favorite: FavoriteEntity)
 
-    @Query("DELETE FROM favorites WHERE dinosaurId = :id")
-    suspend fun removeFavorite(id: String)
+    @Query("DELETE FROM favorites WHERE dinosaurId = :id AND userId = :userId")
+    suspend fun removeFavorite(id: String, userId: String = "")
 
-    @Query("SELECT EXISTS(SELECT 1 FROM favorites WHERE dinosaurId = :id)")
-    suspend fun isFavoriteSync(id: String): Boolean
+    @Query("SELECT EXISTS(SELECT 1 FROM favorites WHERE dinosaurId = :id AND userId = :userId)")
+    suspend fun isFavoriteSync(id: String, userId: String = ""): Boolean
 
     @Query("DELETE FROM favorites")
     suspend fun clearAll()
