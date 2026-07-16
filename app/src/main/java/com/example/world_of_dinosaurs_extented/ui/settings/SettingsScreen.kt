@@ -1,6 +1,7 @@
 package com.example.world_of_dinosaurs_extented.ui.settings
 
 import androidx.compose.foundation.layout.*
+import android.content.Intent
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -13,11 +14,14 @@ import androidx.compose.material.icons.filled.Feedback
 import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.FileDownload
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -50,6 +54,7 @@ fun SettingsScreen(
     val savedChatModel by viewModel.chatModel.collectAsStateWithLifecycle(initialValue = "")
     val ttsSpeed by viewModel.ttsSpeed.collectAsStateWithLifecycle(initialValue = 1.0f)
     val ttsPitch by viewModel.ttsPitch.collectAsStateWithLifecycle(initialValue = 1.0f)
+    val exportState by viewModel.exportState.collectAsStateWithLifecycle(initialValue = ExportUiState())
     val mapProviderKey by viewModel.mapProvider.collectAsStateWithLifecycle(initialValue = MapProvider.AUTO.key)
     val visionProviderKey by viewModel.visionProvider.collectAsStateWithLifecycle(initialValue = "auto")
     val tencentSecretId by viewModel.tencentSecretId.collectAsStateWithLifecycle(initialValue = "")
@@ -69,6 +74,7 @@ fun SettingsScreen(
     var showVisionKeyGuide by remember { mutableStateOf(false) }
     var showChatKeyGuide by remember { mutableStateOf(false) }
     var showDonateDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val uriHandler = LocalUriHandler.current
 
@@ -611,6 +617,77 @@ fun SettingsScreen(
                     text = stringResource(R.string.tts_pitch_value, ttsPitch),
                     style = MaterialTheme.typography.bodyMedium
                 )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Data Export section
+            Text(
+                text = "数据管理",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "导出收藏的恐龙信息到 JSON 文件",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedButton(
+                onClick = { viewModel.exportFavorites() },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !exportState.isExporting
+            ) {
+                if (exportState.isExporting) {
+                    CircularProgressIndicator(modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                } else {
+                    Icon(Icons.Default.FileDownload, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+                Text(if (exportState.isExporting) "导出中..." else "导出收藏数据")
+            }
+
+            // Export success message
+            if (exportState.exportSuccessPath != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "已导出到: ${exportState.exportSuccessPath}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                OutlinedButton(
+                    onClick = {
+                        exportState.exportShareIntent?.let { intent ->
+                            context.startActivity(Intent.createChooser(intent, "分享导出文件"))
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("分享导出文件")
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                TextButton(onClick = { viewModel.dismissExportResult() }) {
+                    Text("关闭")
+                }
+            }
+
+            // Export error
+            if (exportState.exportError != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = exportState.exportError ?: "",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                TextButton(onClick = { viewModel.dismissExportResult() }) {
+                    Text("关闭")
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))

@@ -16,5 +16,7 @@ data class HomeUiState(
     val selectedSize: DinosaurSize? = null,
     val isGridView: Boolean = true,
     val only3D: Boolean = false,
+    val onlyFavorites: Boolean = false,
+    val favoriteIds: Set<String> = emptySet(),
     val language: String = "en"
 )

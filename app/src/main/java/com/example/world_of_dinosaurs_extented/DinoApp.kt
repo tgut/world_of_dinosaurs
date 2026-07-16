@@ -3,6 +3,8 @@ package com.example.world_of_dinosaurs_extented
 import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
+import coil.disk.DiskCache
+import coil.memory.MemoryCache
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.OkHttpClient
 import javax.inject.Inject
@@ -28,6 +30,17 @@ class DinoApp : Application(), ImageLoaderFactory {
                     .build()
             }
             .crossfade(true)
+            .memoryCache {
+                MemoryCache.Builder(this)
+                    .maxSizePercent(0.25)
+                    .build()
+            }
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(cacheDir.resolve("coil_images"))
+                    .maxSizeBytes(50L * 1024 * 1024) // 50MB disk cache
+                    .build()
+            }
             .build()
     }
 }

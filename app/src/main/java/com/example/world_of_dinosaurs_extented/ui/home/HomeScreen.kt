@@ -102,9 +102,11 @@ fun HomeScreen(
                 selectedEra = uiState.selectedEra,
                 selectedDiet = uiState.selectedDiet,
                 only3D = uiState.only3D,
+                onlyFavorites = uiState.onlyFavorites,
                 onEraSelected = viewModel::onEraFilterChanged,
                 onDietSelected = viewModel::onDietFilterChanged,
-                onToggle3D = viewModel::toggleOnly3D
+                onToggle3D = viewModel::toggleOnly3D,
+                onToggleFavorites = viewModel::toggleOnlyFavorites
             )
 
             when {

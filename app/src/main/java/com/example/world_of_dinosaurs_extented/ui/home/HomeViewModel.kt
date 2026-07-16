@@ -8,6 +8,7 @@ import com.example.world_of_dinosaurs_extented.data.model3d.Model3dConfig
 import com.example.world_of_dinosaurs_extented.domain.model.DinosaurDiet
 import com.example.world_of_dinosaurs_extented.domain.model.DinosaurEra
 import com.example.world_of_dinosaurs_extented.domain.model.DinosaurSize
+import com.example.world_of_dinosaurs_extented.domain.repository.FavoriteRepository
 import com.example.world_of_dinosaurs_extented.domain.usecase.GetDinosaursUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getDinosaursUseCase: GetDinosaursUseCase,
-    private val settingsManager: SettingsManager
+    private val settingsManager: SettingsManager,
+    private val favoriteRepository: FavoriteRepository
 ) : ViewModel() {
 
     private val initialEra: DinosaurEra? = savedStateHandle.get<String>("era")?.let { eraName ->
@@ -31,12 +33,21 @@ class HomeViewModel @Inject constructor(
     init {
         loadDinosaurs()
         observeLanguage()
+        observeFavorites()
     }
 
     private fun observeLanguage() {
         viewModelScope.launch {
             settingsManager.languageFlow.collect { lang ->
                 _uiState.update { it.copy(language = lang) }
+            }
+        }
+    }
+
+    private fun observeFavorites() {
+        viewModelScope.launch {
+            favoriteRepository.getFavoriteIds().collect { ids ->
+                _uiState.update { it.copy(favoriteIds = ids.toSet()) }
             }
         }
     }
@@ -88,6 +99,11 @@ class HomeViewModel @Inject constructor(
         reloadWithFilters()
     }
 
+    fun toggleOnlyFavorites() {
+        _uiState.update { it.copy(onlyFavorites = !it.onlyFavorites) }
+        reloadWithFilters()
+    }
+
     fun retry() = loadDinosaurs()
 
     private fun reloadWithFilters() {
@@ -115,7 +131,8 @@ class HomeViewModel @Inject constructor(
             val matchesDiet = state.selectedDiet == null || dino.diet == state.selectedDiet
             val matchesSize = state.selectedSize == null || dino.size == state.selectedSize
             val matches3D = !state.only3D || Model3dConfig.hasModel(dino.id)
-            matchesSearch && matchesEra && matchesDiet && matchesSize && matches3D
+            val matchesFavorite = !state.onlyFavorites || dino.id in state.favoriteIds
+            matchesSearch && matchesEra && matchesDiet && matchesSize && matches3D && matchesFavorite
         }
     }
 }

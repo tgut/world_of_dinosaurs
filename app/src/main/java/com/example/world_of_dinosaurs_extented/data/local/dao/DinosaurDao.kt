@@ -42,4 +42,7 @@ interface DinosaurDao {
 
     @Query("SELECT * FROM dinosaurs ORDER BY name ASC")
     suspend fun getAllDinosaursList(): List<DinosaurEntity>
+
+    @Query("SELECT * FROM dinosaurs WHERE id IN (:ids) ORDER BY name ASC")
+    suspend fun getDinosaursByIds(ids: List<String>): List<DinosaurEntity>
 }
