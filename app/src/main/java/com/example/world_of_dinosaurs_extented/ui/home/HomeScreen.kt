@@ -1,5 +1,10 @@
 package com.example.world_of_dinosaurs_extented.ui.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,12 +14,15 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.ViewList
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -51,8 +59,59 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showSearch by remember { mutableStateOf(false) }
+    var fabExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
+        floatingActionButton = {
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                AnimatedVisibility(
+                    visible = fabExpanded,
+                    enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
+                    exit = fadeOut() + slideOutVertically(targetOffsetY = { it })
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        // Toggle favorites filter
+                        SmallFloatingActionButton(
+                            onClick = {
+                                viewModel.toggleOnlyFavorites()
+                                fabExpanded = false
+                            },
+                            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                        ) {
+                            Icon(
+                                imageVector = if (uiState.onlyFavorites) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                contentDescription = if (uiState.onlyFavorites) "Show all" else "Show favorites only"
+                            )
+                        }
+                        // Toggle grid/list view
+                        SmallFloatingActionButton(
+                            onClick = {
+                                viewModel.toggleViewMode()
+                                fabExpanded = false
+                            },
+                            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                        ) {
+                            Icon(
+                                imageVector = if (uiState.isGridView) Icons.Filled.ViewList else Icons.Filled.GridView,
+                                contentDescription = if (uiState.isGridView) "Switch to list" else "Switch to grid"
+                            )
+                        }
+                    }
+                }
+                FloatingActionButton(
+                    onClick = { fabExpanded = !fabExpanded },
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                ) {
+                    Icon(Icons.Filled.MoreVert, contentDescription = if (fabExpanded) "Close" else "More options")
+                }
+            }
+        },
         topBar = {
             if (showSearch) {
                 SearchBar(
@@ -76,12 +135,6 @@ fun HomeScreen(
                         IconButton(onClick = { showSearch = true }) {
                             Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_dinosaurs))
                         }
-                        IconButton(onClick = viewModel::toggleViewMode) {
-                            Icon(
-                                if (uiState.isGridView) Icons.Default.ViewList else Icons.Default.GridView,
-                                contentDescription = "Toggle view"
-                            )
-                        }
                     }
                 )
             }
@@ -102,11 +155,9 @@ fun HomeScreen(
                 selectedEra = uiState.selectedEra,
                 selectedDiet = uiState.selectedDiet,
                 only3D = uiState.only3D,
-                onlyFavorites = uiState.onlyFavorites,
                 onEraSelected = viewModel::onEraFilterChanged,
                 onDietSelected = viewModel::onDietFilterChanged,
-                onToggle3D = viewModel::toggleOnly3D,
-                onToggleFavorites = viewModel::toggleOnlyFavorites
+                onToggle3D = viewModel::toggleOnly3D
             )
 
             when {

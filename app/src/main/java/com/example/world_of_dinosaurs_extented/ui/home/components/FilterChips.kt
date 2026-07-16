@@ -3,9 +3,6 @@ package com.example.world_of_dinosaurs_extented.ui.home.components
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,11 +17,9 @@ fun FilterChips(
     selectedEra: DinosaurEra?,
     selectedDiet: DinosaurDiet?,
     only3D: Boolean = false,
-    onlyFavorites: Boolean = false,
     onEraSelected: (DinosaurEra?) -> Unit,
     onDietSelected: (DinosaurDiet?) -> Unit,
-    onToggle3D: () -> Unit = {},
-    onToggleFavorites: () -> Unit = {}
+    onToggle3D: () -> Unit = {}
 ) {
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         Row(
@@ -61,18 +56,6 @@ fun FilterChips(
                 selected = only3D,
                 onClick = onToggle3D,
                 label = { Text("3D") }
-            )
-            FilterChip(
-                selected = onlyFavorites,
-                onClick = onToggleFavorites,
-                label = { Text("❤️") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = if (onlyFavorites) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                        contentDescription = null,
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
-                    )
-                }
             )
             FilterChip(
                 selected = selectedDiet == null,
