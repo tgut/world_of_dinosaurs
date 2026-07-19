@@ -163,13 +163,14 @@ This project is for educational purposes.
 
 ## Changelog
 
-### v1.2.6 (2026-07-19)
+### v1.2.7 (2026-07-19)
 
-- **Home UI**: favorites filter + grid/list toggle moved to bottom-right FAB speed dial
-- **Image loading**: All 186 dinosaur images use local `asset:///` URLs — instant load in China, no more wikimedia.org timeouts
-- **Coil cache**: Added memory (25%) + disk (50MB) cache
+- **Settings UI**: Redesigned as categorized menu with dedicated pages for Appearance, Chat, Services, Voice & Interaction, Data Management, and About
+- **Image loading**: All 186 dinosaur images use local `asset:///` URLs — instant load in China
+- **Coil cache**: Added memory (25%) + disk (50MB) cache for faster image loading
+- **Home UI**: Favorites filter + grid/list toggle moved to bottom-right FAB speed dial
 - **Data export**: Export favorites to JSON file + Share Sheet in Settings → Data Management
-- **Settings**: Reorganized into categorized pages (Appearance / Chat / Services / Interaction / Data / About)
+- **Login flow**: Google flavor auto-navigates back on successful sign-in
 
 ### v1.2.5 (2026-07-15)
 
