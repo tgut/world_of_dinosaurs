@@ -132,7 +132,7 @@ fun UserProfileScreen(
                 )
             } else {
                 Text(
-                    text = "Sign in to sync your data",
+                    text = stringResource(R.string.sign_in_desc),
                     style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -147,14 +147,13 @@ fun UserProfileScreen(
 
             // Usage description
             Text(
-                text = "说明",
+                text = stringResource(R.string.profile_usage_title),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "登录后将收藏和聊天记录与您的账户关联，不同设备间的数据暂未同步。" +
-                    "华为版本使用华为账号登录，Google 版本支持本地登录。",
+                text = stringResource(R.string.profile_usage_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

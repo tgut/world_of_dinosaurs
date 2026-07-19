@@ -86,6 +86,14 @@
     <string name="logout">退出登录</string>
     <string name="login">登录</string>
     <string name="data_usage_desc">导出的 JSON 文件包含您收藏的恐龙名称、学名、年代和食性等信息。文件保存在设备 Downloads 目录，可通过分享按钮发送到微信、邮件等应用。导出的数据仅包含本机内容，不含历史聊天记录。</string>
+    <string name="sign_in_desc">登录后可跨设备同步收藏和聊天记录</string>
+    <string name="profile_usage_title">登录说明</string>
+    <string name="profile_usage_desc">登录后将收藏和聊天记录与您的账户关联，不同设备间的数据暂未同步。华为版本使用华为账号登录，其他设备支持本地登录。</string>
+    <string name="import_favorites">导入收藏</string>
+    <string name="import_favorites_desc">从之前导出的 JSON 文件导入收藏数据</string>
+    <string name="import_action">导入 JSON 文件</string>
+    <string name="importing">导入中...</string>
+    <string name="import_success">成功导入 %1$d 条收藏%2$s</string>
     <string name="app_description">探索恐龙的奇妙世界，包含详细资料、3D模型和趣味问答！</string>
     <string name="start_quiz">开始问答</string>
     <string name="next_question">下一题</string>

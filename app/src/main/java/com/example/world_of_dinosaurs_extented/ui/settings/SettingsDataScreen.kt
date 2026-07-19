@@ -98,12 +98,12 @@ fun SettingsDataScreen(
 
             // Import section
             Text(
-                text = "Import Favorites",
+                text = stringResource(R.string.import_favorites),
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Import favorites from a previously exported JSON file",
+                text = stringResource(R.string.import_favorites_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -121,7 +121,7 @@ fun SettingsDataScreen(
                     Icon(Icons.Default.FileUpload, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(if (importState.isImporting) "Importing..." else "Import JSON File")
+                Text(if (importState.isImporting) stringResource(R.string.importing) else stringResource(R.string.import_action))
             }
 
             if (importState.importResult != null) {
