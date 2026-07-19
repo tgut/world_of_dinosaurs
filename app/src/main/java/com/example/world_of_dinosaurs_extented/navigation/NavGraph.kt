@@ -20,7 +20,13 @@ import com.example.world_of_dinosaurs_extented.ui.scanhistory.ScanHistoryScreen
 import com.example.world_of_dinosaurs_extented.ui.reviewquiz.ReviewQuizScreen
 import com.example.world_of_dinosaurs_extented.ui.recognition.DinoRecognitionScreen
 import com.example.world_of_dinosaurs_extented.ui.map.DiscoveryMapScreen
+import com.example.world_of_dinosaurs_extented.ui.settings.SettingsAboutScreen
+import com.example.world_of_dinosaurs_extented.ui.settings.SettingsAppearanceScreen
+import com.example.world_of_dinosaurs_extented.ui.settings.SettingsChatScreen
+import com.example.world_of_dinosaurs_extented.ui.settings.SettingsDataScreen
+import com.example.world_of_dinosaurs_extented.ui.settings.SettingsInteractionScreen
 import com.example.world_of_dinosaurs_extented.ui.settings.SettingsScreen
+import com.example.world_of_dinosaurs_extented.ui.settings.SettingsServiceScreen
 import com.example.world_of_dinosaurs_extented.ui.timeline.TimelineScreen
 import com.example.world_of_dinosaurs_extented.ui.auth.LoginScreen
 import com.example.world_of_dinosaurs_extented.ui.auth.UserProfileScreen
@@ -82,8 +88,31 @@ fun DinoNavGraph(navController: NavHostController) {
             SettingsScreen(
                 onNavigateBack = { navController.popBackStack() },
                 onProfileClick = { navController.navigate(Screen.UserProfile.route) },
-                onLoginClick = { navController.navigate(Screen.Login.route) }
+                onNavigateToAppearance = { navController.navigate(Screen.SettingsAppearance.route) },
+                onNavigateToChat = { navController.navigate(Screen.SettingsChat.route) },
+                onNavigateToService = { navController.navigate(Screen.SettingsService.route) },
+                onNavigateToInteraction = { navController.navigate(Screen.SettingsInteraction.route) },
+                onNavigateToData = { navController.navigate(Screen.SettingsData.route) },
+                onNavigateToAbout = { navController.navigate(Screen.SettingsAbout.route) }
             )
+        }
+        composable(Screen.SettingsAppearance.route) {
+            SettingsAppearanceScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Screen.SettingsChat.route) {
+            SettingsChatScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Screen.SettingsService.route) {
+            SettingsServiceScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Screen.SettingsInteraction.route) {
+            SettingsInteractionScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Screen.SettingsData.route) {
+            SettingsDataScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Screen.SettingsAbout.route) {
+            SettingsAboutScreen(onNavigateBack = { navController.popBackStack() })
         }
         composable(Screen.Timeline.route) {
             TimelineScreen(

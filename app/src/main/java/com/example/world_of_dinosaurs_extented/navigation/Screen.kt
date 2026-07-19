@@ -34,4 +34,12 @@ sealed class Screen(val route: String) {
     }
     data object Login : Screen("login")
     data object UserProfile : Screen("user_profile")
+
+    // Settings sub-pages
+    data object SettingsAppearance : Screen("settings_appearance")
+    data object SettingsChat : Screen("settings_chat")
+    data object SettingsService : Screen("settings_service")
+    data object SettingsInteraction : Screen("settings_interaction")
+    data object SettingsData : Screen("settings_data")
+    data object SettingsAbout : Screen("settings_about")
 }
