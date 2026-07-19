@@ -85,7 +85,7 @@
     <string name="vision_key_guide_tencent_steps">1. Go to console.cloud.tencent.com\n2. Search for Image Recognition and enable\n3. Go to Access Management > API Key Management\n4. Create SecretId and SecretKey\n5. Paste them here</string>
     <string name="logout">Logout</string>
     <string name="login">Login</string>
-    <string name="data_usage_desc">导出的 JSON 文件包含您收藏的恐龙名称、学名、年代和食性等信息。文件保存在设备 Downloads 目录，可通过分享按钮发送到微信、邮件等应用。导出的数据仅包含本机内容，不含历史聊天记录。</string>
+    <string name="data_usage_desc">The exported JSON file contains your favorite dinosaur names, scientific names, eras, and diets. The file is saved to your Downloads folder and can be shared via email, messaging apps, or cloud storage. Only local data is included.</string>
     <string name="app_description">Explore the fascinating world of dinosaurs with detailed information, 3D models, and fun quizzes!</string>
     <string name="start_quiz">Start Quiz</string>
     <string name="next_question">Next</string>
