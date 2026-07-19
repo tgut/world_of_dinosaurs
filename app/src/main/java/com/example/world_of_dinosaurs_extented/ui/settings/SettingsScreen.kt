@@ -157,7 +157,7 @@ fun SettingsScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp)) {
                     Text(
                         text = stringResource(R.string.app_description),
                         style = MaterialTheme.typography.bodyMedium,
@@ -179,12 +179,12 @@ fun SettingsScreen(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     val icpVerifyUrl = stringResource(R.string.icp_verify_url)
                     TextButton(
                         onClick = { uriHandler.openUri(icpVerifyUrl) },
-                        contentPadding = PaddingValues(0.dp)
+                        contentPadding = PaddingValues(horizontal = 0.dp)
                     ) {
                         Column {
                             Text(
@@ -201,7 +201,7 @@ fun SettingsScreen(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             OutlinedButton(
                 onClick = { showDonateDialog = true },

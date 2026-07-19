@@ -26,7 +26,7 @@ fun SettingsInteractionScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Voice & Interaction") },
+                title = { Text(stringResource(R.string.settings_interaction)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
