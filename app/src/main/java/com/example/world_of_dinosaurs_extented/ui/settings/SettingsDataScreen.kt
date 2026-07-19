@@ -55,6 +55,22 @@ fun SettingsDataScreen(
             )
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Usage description
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "导出的 JSON 文件包含您收藏的恐龙名称、学名、年代和食性等信息。" +
+                        "文件保存在设备 Downloads 目录，可通过分享按钮发送到微信、邮件等应用。" +
+                        "导出的数据仅包含本机内容，不含历史聊天记录。",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
             OutlinedButton(
                 onClick = { viewModel.exportFavorites() },
                 modifier = Modifier.fillMaxWidth(),

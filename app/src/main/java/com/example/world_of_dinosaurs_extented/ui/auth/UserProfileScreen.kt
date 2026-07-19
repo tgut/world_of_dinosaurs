@@ -140,6 +140,24 @@ fun UserProfileScreen(
                     Text("Login")
                 }
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Usage description
+            Text(
+                text = "说明",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "登录后将收藏和聊天记录与您的账户关联，不同设备间的数据暂未同步。" +
+                    "华为版本使用华为账号登录，Google 版本支持本地登录。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
