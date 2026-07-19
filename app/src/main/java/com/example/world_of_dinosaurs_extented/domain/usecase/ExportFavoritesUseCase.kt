@@ -66,7 +66,7 @@ class ExportFavoritesUseCase @Inject constructor(
 
         val exportJson = JSONObject().apply {
             put("exportedAt", dateFormat.format(Date()))
-            put("appVersion", "1.1")
+            put("appVersion", "1.2")
             put("user", JSONObject().apply {
                 put("id", userId)
             })
