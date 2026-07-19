@@ -56,6 +56,36 @@
     <string name="settings_interaction_subtitle">TTS 朗读、地球自转等</string>
     <string name="settings_data">数据管理</string>
     <string name="settings_data_subtitle">导出收藏数据为 JSON 文件</string>
+    <string name="settings_data_title">数据管理</string>
+    <string name="settings_services_title">服务设置</string>
+    <string name="export_favorites">导出收藏</string>
+    <string name="export_favorites_desc">将收藏的恐龙信息导出为 JSON 文件</string>
+    <string name="export_json">导出 JSON 文件</string>
+    <string name="share_export">分享导出文件</string>
+    <string name="dismiss">关闭</string>
+    <string name="exporting">导出中...</string>
+    <string name="exported_to">已导出到: %1$s</string>
+    <string name="map_provider">地图服务</string>
+    <string name="map_provider_desc">选择地图服务提供商（自动检测会根据网络环境选择）</string>
+    <string name="vision_service">图像识别服务</string>
+    <string name="vision_service_desc">选择图像识别服务提供商</string>
+    <string name="get_key">获取 Key</string>
+    <string name="auto_detect">自动检测</string>
+    <string name="save_api_key">保存 API Key</string>
+    <string name="save_credentials">保存凭据</string>
+    <string name="google_vision_api_key">Google Vision API Key</string>
+    <string name="google_vision_console">从 Google Cloud Console 获取</string>
+    <string name="tencent_cloud_credentials">腾讯云 API 凭据</string>
+    <string name="tencent_cloud_console_hint">从腾讯云控制台 - 访问管理 - API密钥管理获取</string>
+    <string name="vision_key_guide_title">获取 API Key</string>
+    <string name="vision_key_guide_close">关闭</string>
+    <string name="vision_key_guide_google_title">Google Vision</string>
+    <string name="vision_key_guide_google_steps">1. 访问 console.cloud.google.com\n2. 创建或选择项目\n3. 启用 Vision API\n4. 创建 API Key\n5. 复制粘贴到下方</string>
+    <string name="vision_key_guide_tencent_title">腾讯云视觉识别</string>
+    <string name="vision_key_guide_tencent_steps">1. 访问 console.cloud.tencent.com\n2. 搜索「图像识别」并开通\n3. 进入「访问管理」→「API密钥管理」\n4. 创建 SecretId 和 SecretKey\n5. 粘贴到下方</string>
+    <string name="logout">退出登录</string>
+    <string name="login">登录</string>
+    <string name="data_usage_desc">导出的 JSON 文件包含您收藏的恐龙名称、学名、年代和食性等信息。文件保存在设备 Downloads 目录，可通过分享按钮发送到微信、邮件等应用。导出的数据仅包含本机内容，不含历史聊天记录。</string>
     <string name="app_description">探索恐龙的奇妙世界，包含详细资料、3D模型和趣味问答！</string>
     <string name="start_quiz">开始问答</string>
     <string name="next_question">下一题</string>
@@ -118,8 +148,6 @@
     <string name="captured_image">拍摄的图片</string>
 
     <string name="vision_api_key_title">Vision API 密钥</string>
-    <string name="vision_api_key_hint">恐龙图像识别功能需要此密钥。请从 Google Cloud Console 获取。</string>
-    <string name="save_api_key">保存</string>
 
     <!-- Phase 17: 发现地图 -->
     <string name="discovery_map">发现地图</string>
@@ -168,7 +196,6 @@
     <string name="close">关闭</string>
     <string name="open_link">打开链接</string>
 
-    <string name="vision_key_guide_title">如何获取 Vision API 密钥</string>
     <string name="vision_key_guide">1. 打开 Google Cloud Console\n\n2. 创建新项目（或使用已有项目）\n\n3. 在左侧菜单进入「API 和服务」→「库」\n\n4. 搜索「Cloud Vision API」并启用\n\n5. 进入「API 和服务」→「凭据」\n\n6. 点击「创建凭据」→「API 密钥」\n\n7. 复制密钥粘贴到此处</string>
     <string name="vision_key_guide_url">https://console.cloud.google.com/apis/credentials</string>
 

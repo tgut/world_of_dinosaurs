@@ -85,7 +85,7 @@ fun UserProfileScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Profile") },
+                title = { Text(stringResource(R.string.settings_profile)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -94,7 +94,7 @@ fun UserProfileScreen(
                 actions = {
                     if (uiState.isLoggedIn) {
                         IconButton(onClick = { viewModel.logout() }) {
-                            Icon(Icons.Default.Logout, contentDescription = "Logout")
+                            Icon(Icons.Default.Logout, contentDescription = stringResource(R.string.logout))
                         }
                     }
                 }
@@ -137,7 +137,7 @@ fun UserProfileScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = onLoginClick) {
-                    Text("Login")
+                    Text(stringResource(R.string.login))
                 }
             }
 

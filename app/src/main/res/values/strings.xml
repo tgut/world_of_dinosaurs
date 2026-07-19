@@ -56,6 +56,36 @@
     <string name="settings_interaction_subtitle">TTS voice, globe auto-rotation, and more</string>
     <string name="settings_data">Data Management</string>
     <string name="settings_data_subtitle">Export favorites to JSON file</string>
+    <string name="settings_data_title">Data Management</string>
+    <string name="settings_services_title">Services</string>
+    <string name="export_favorites">Export Favorites</string>
+    <string name="export_favorites_desc">Export your favorite dinosaurs to a JSON file</string>
+    <string name="export_json">Export Favorites JSON</string>
+    <string name="share_export">Share Export</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="exporting">Exporting...</string>
+    <string name="exported_to">Exported to: %1$s</string>
+    <string name="map_provider">Map Provider</string>
+    <string name="map_provider_desc">Select a map service provider (Auto detects based on network)</string>
+    <string name="vision_service">Vision Service</string>
+    <string name="vision_service_desc">Select image recognition service</string>
+    <string name="get_key">Get Key</string>
+    <string name="auto_detect">Auto Detect</string>
+    <string name="save_api_key">Save API Key</string>
+    <string name="save_credentials">Save Credentials</string>
+    <string name="google_vision_api_key">Google Vision API Key</string>
+    <string name="google_vision_console">Get from Google Cloud Console</string>
+    <string name="tencent_cloud_credentials">Tencent Cloud Credentials</string>
+    <string name="tencent_cloud_console_hint">Get from Tencent Cloud Console > Access Management > API Key Management</string>
+    <string name="vision_key_guide_title">Get API Key</string>
+    <string name="vision_key_guide_close">Close</string>
+    <string name="vision_key_guide_google_title">Google Vision</string>
+    <string name="vision_key_guide_google_steps">1. Go to console.cloud.google.com\n2. Create or select a project\n3. Enable Vision API\n4. Create API Key\n5. Copy and paste it here</string>
+    <string name="vision_key_guide_tencent_title">Tencent Cloud Vision</string>
+    <string name="vision_key_guide_tencent_steps">1. Go to console.cloud.tencent.com\n2. Search for Image Recognition and enable\n3. Go to Access Management > API Key Management\n4. Create SecretId and SecretKey\n5. Paste them here</string>
+    <string name="logout">Logout</string>
+    <string name="login">Login</string>
+    <string name="data_usage_desc">导出的 JSON 文件包含您收藏的恐龙名称、学名、年代和食性等信息。文件保存在设备 Downloads 目录，可通过分享按钮发送到微信、邮件等应用。导出的数据仅包含本机内容，不含历史聊天记录。</string>
     <string name="app_description">Explore the fascinating world of dinosaurs with detailed information, 3D models, and fun quizzes!</string>
     <string name="start_quiz">Start Quiz</string>
     <string name="next_question">Next</string>
@@ -118,8 +148,6 @@
     <string name="captured_image">Captured image</string>
 
     <string name="vision_api_key_title">Vision API Key</string>
-    <string name="vision_api_key_hint">Required for dinosaur image recognition. Get your key from Google Cloud Console.</string>
-    <string name="save_api_key">Save</string>
 
     <!-- Phase 17: Discovery Map -->
     <string name="discovery_map">Discovery Map</string>
@@ -168,7 +196,6 @@
     <string name="close">Close</string>
     <string name="open_link">Open Link</string>
 
-    <string name="vision_key_guide_title">How to Get Vision API Key</string>
     <string name="vision_key_guide">1. Go to Google Cloud Console\n\n2. Create a new project (or use an existing one)\n\n3. In the left menu, go to \"APIs &amp; Services\" → \"Library\"\n\n4. Search for \"Cloud Vision API\" and enable it\n\n5. Go to \"APIs &amp; Services\" → \"Credentials\"\n\n6. Click \"Create Credentials\" → \"API Key\"\n\n7. Copy the API key and paste it here</string>
     <string name="vision_key_guide_url">https://console.cloud.google.com/apis/credentials</string>
 

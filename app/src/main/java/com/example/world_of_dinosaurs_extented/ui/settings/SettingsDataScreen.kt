@@ -29,7 +29,7 @@ fun SettingsDataScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Data Management") },
+                title = { Text(stringResource(R.string.settings_data_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
@@ -44,12 +44,12 @@ fun SettingsDataScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = "Export Favorites",
+                text = stringResource(R.string.export_favorites),
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Export your favorite dinosaurs to a JSON file",
+                text = stringResource(R.string.export_favorites_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -61,9 +61,7 @@ fun SettingsDataScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "导出的 JSON 文件包含您收藏的恐龙名称、学名、年代和食性等信息。" +
-                        "文件保存在设备 Downloads 目录，可通过分享按钮发送到微信、邮件等应用。" +
-                        "导出的数据仅包含本机内容，不含历史聊天记录。",
+                    text = stringResource(R.string.data_usage_desc),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onTertiaryContainer,
                     modifier = Modifier.padding(16.dp)
@@ -83,34 +81,38 @@ fun SettingsDataScreen(
                     Icon(Icons.Default.FileDownload, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Text(if (exportState.isExporting) "Exporting..." else "Export Favorites JSON")
+                Text(if (exportState.isExporting) stringResource(R.string.exporting) else stringResource(R.string.export_json))
             }
 
-            if (exportState.exportSuccessPath != null) {
+            val successPath = exportState.exportSuccessPath
+            val shareIntent = exportState.exportShareIntent
+            val shareLabel = stringResource(R.string.share_export)
+
+            if (successPath != null) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = "Exported to: ${exportState.exportSuccessPath}",
+                            text = stringResource(R.string.exported_to, successPath),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.primary
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         OutlinedButton(
                             onClick = {
-                                exportState.exportShareIntent?.let { intent ->
-                                    context.startActivity(Intent.createChooser(intent, "Share Export"))
+                                shareIntent?.let { intent ->
+                                    context.startActivity(Intent.createChooser(intent, shareLabel))
                                 }
                             },
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("Share Export")
+                            Text(stringResource(R.string.share_export))
                         }
                         Spacer(modifier = Modifier.height(4.dp))
                         TextButton(onClick = { viewModel.dismissExportResult() }) {
-                            Text("Dismiss")
+                            Text(stringResource(R.string.dismiss))
                         }
                     }
                 }
@@ -127,7 +129,7 @@ fun SettingsDataScreen(
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         TextButton(onClick = { viewModel.dismissExportResult() }) {
-                            Text("Dismiss")
+                            Text(stringResource(R.string.dismiss))
                         }
                     }
                 }
