@@ -9,7 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.world_of_dinosaurs_extented.data.SettingsManager
 import com.example.world_of_dinosaurs_extented.data.map.MapProvider
+import android.net.Uri
 import com.example.world_of_dinosaurs_extented.domain.usecase.ExportFavoritesUseCase
+import com.example.world_of_dinosaurs_extented.domain.usecase.ImportFavoritesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -26,10 +28,17 @@ data class ExportUiState(
     val exportShareIntent: Intent? = null
 )
 
+data class ImportUiState(
+    val isImporting: Boolean = false,
+    val importResult: String? = null,
+    val importError: String? = null
+)
+
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val settingsManager: SettingsManager,
-    private val exportFavoritesUseCase: ExportFavoritesUseCase
+    private val exportFavoritesUseCase: ExportFavoritesUseCase,
+    private val importFavoritesUseCase: ImportFavoritesUseCase
 ) : ViewModel() {
 
     val language: Flow<String> = settingsManager.languageFlow
@@ -49,6 +58,9 @@ class SettingsViewModel @Inject constructor(
 
     private val _exportState = MutableStateFlow(ExportUiState())
     val exportState: StateFlow<ExportUiState> = _exportState.asStateFlow()
+
+    private val _importState = MutableStateFlow(ImportUiState())
+    val importState: StateFlow<ImportUiState> = _importState.asStateFlow()
 
     fun setGlobeRotateTimeout(seconds: Int) {
         viewModelScope.launch { settingsManager.setGlobeRotateTimeout(seconds) }
@@ -133,5 +145,28 @@ class SettingsViewModel @Inject constructor(
 
     fun dismissExportResult() {
         _exportState.value = ExportUiState()
+    }
+
+    fun importFavorites(uri: Uri) {
+        viewModelScope.launch {
+            _importState.value = ImportUiState(isImporting = true)
+            try {
+                val result = importFavoritesUseCase(uri)
+                _importState.value = ImportUiState(
+                    isImporting = false,
+                    importResult = "Imported ${result.importedCount} favorites" +
+                        if (result.skippedCount > 0) " (${result.skippedCount} skipped)" else ""
+                )
+            } catch (e: Exception) {
+                _importState.value = ImportUiState(
+                    isImporting = false,
+                    importError = e.message ?: "Import failed"
+                )
+            }
+        }
+    }
+
+    fun dismissImportResult() {
+        _importState.value = ImportUiState()
     }
 }
