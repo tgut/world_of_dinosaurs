@@ -1,5 +1,6 @@
 package com.example.world_of_dinosaurs_extented.ui.home
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -80,29 +81,17 @@ fun HomeScreen(
                         SmallFloatingActionButton(
                             onClick = { viewModel.toggleOnlyFavorites(); fabExpanded = false },
                             containerColor = MaterialTheme.colorScheme.tertiaryContainer
-                        ) {
-                            Icon(
-                                if (uiState.onlyFavorites) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                                contentDescription = if (uiState.onlyFavorites) "Show all" else "Show favorites only"
-                            )
-                        }
+                        ) { Icon(if (uiState.onlyFavorites) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder, contentDescription = null) }
                         SmallFloatingActionButton(
                             onClick = { viewModel.toggleViewMode(); fabExpanded = false },
                             containerColor = MaterialTheme.colorScheme.tertiaryContainer
-                        ) {
-                            Icon(
-                                if (uiState.isGridView) Icons.Filled.ViewList else Icons.Filled.GridView,
-                                contentDescription = if (uiState.isGridView) "Switch to list" else "Switch to grid"
-                            )
-                        }
+                        ) { Icon(if (uiState.isGridView) Icons.Filled.ViewList else Icons.Filled.GridView, contentDescription = null) }
                     }
                 }
                 FloatingActionButton(
                     onClick = { fabExpanded = !fabExpanded },
                     containerColor = MaterialTheme.colorScheme.primaryContainer
-                ) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = if (fabExpanded) "Close" else "More options")
-                }
+                ) { Icon(Icons.Filled.MoreVert, contentDescription = null) }
             }
         },
         topBar = {
@@ -177,7 +166,7 @@ private fun DinosaurList(dinosaurs: List<Dinosaur>, language: String, onClick: (
 private fun DinosaurGridCard(dino: Dinosaur, language: String, onClick: () -> Unit) {
     Card(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
         Column {
-            DinoImageOrPlaceholder(imageUrl = dino.imageUrl, name = dino.getLocalizedName(language), era = dino.era, modifier = Modifier.fillMaxWidth().height(140.dp).clip(MaterialTheme.shapes.medium))
+            DinoImageOrPlaceholder(imageUrl = dino.imageUrl, dinoId = dino.id, name = dino.getLocalizedName(language), era = dino.era, modifier = Modifier.fillMaxWidth().height(140.dp).clip(MaterialTheme.shapes.medium))
             Column(modifier = Modifier.padding(8.dp)) {
                 Text(text = dino.getLocalizedName(language), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(modifier = Modifier.height(4.dp))
@@ -191,7 +180,7 @@ private fun DinosaurGridCard(dino: Dinosaur, language: String, onClick: () -> Un
 private fun DinosaurListCard(dino: Dinosaur, language: String, onClick: () -> Unit) {
     Card(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
         Row(modifier = Modifier.padding(8.dp)) {
-            DinoImageOrPlaceholder(imageUrl = dino.imageUrl, name = dino.getLocalizedName(language), era = dino.era, modifier = Modifier.size(80.dp).clip(MaterialTheme.shapes.small))
+            DinoImageOrPlaceholder(imageUrl = dino.imageUrl, dinoId = dino.id, name = dino.getLocalizedName(language), era = dino.era, modifier = Modifier.size(80.dp).clip(MaterialTheme.shapes.small))
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = dino.getLocalizedName(language), style = MaterialTheme.typography.titleMedium)
@@ -219,6 +208,7 @@ private fun eraColor(era: DinosaurEra): Color = when (era) {
 @Composable
 private fun DinoImageOrPlaceholder(
     imageUrl: String?,
+    dinoId: String,
     name: String,
     era: DinosaurEra,
     modifier: Modifier = Modifier
@@ -228,32 +218,59 @@ private fun DinoImageOrPlaceholder(
             Text(text = name.take(1), style = MaterialTheme.typography.headlineLarge, color = eraColor(era))
         }
     }
-    if (imageUrl != null && imageUrl.startsWith("file:///android_asset/")) {
+
+    // Always try local asset first — most reliable approach
+    val context = LocalContext.current
+    val extensions = listOf("jpg", "png", "JPG", "PNG", "gif")
+    var bitmap by remember(dinoId) { mutableStateOf<android.graphics.Bitmap?>(null) }
+    var tried by remember(dinoId) { mutableStateOf(false) }
+
+    LaunchedEffect(dinoId) {
+        if (!tried) {
+            tried = true
+            for (ext in extensions) {
+                val path = "images/$dinoId.$ext"
+                try {
+                    Log.d("DinoIMG", "Trying asset: $path")
+                    context.assets.open(path).use { inputStream ->
+                        val bm = android.graphics.BitmapFactory.decodeStream(inputStream)
+                        if (bm != null) {
+                            Log.d("DinoIMG", "Loaded: $path ${bm.width}x${bm.height}")
+                            bitmap = bm
+                            return@LaunchedEffect
+                        }
+                    }
+                } catch (_: Exception) {
+                    Log.d("DinoIMG", "Not found: $path")
+                }
+            }
+            Log.d("DinoIMG", "No asset found for dinoId=$dinoId, URL=$imageUrl")
+        }
+    }
+
+    if (bitmap != null) {
+        androidx.compose.foundation.Image(
+            bitmap = bitmap!!.asImageBitmap(),
+            contentDescription = name,
+            modifier = modifier,
+            contentScale = ContentScale.Crop
+        )
+    } else if (!imageUrl.isNullOrBlank() && imageUrl.startsWith("file:///android_asset/")) {
+        // Fallback: try from URL
         val assetPath = imageUrl.removePrefix("file:///android_asset/")
-        val context = LocalContext.current
-        val bitmap = remember(assetPath) {
+        val bm = remember(assetPath) {
             try {
-                val `is` = context.assets.open(assetPath)
-                android.graphics.BitmapFactory.decodeStream(`is`)
+                context.assets.open(assetPath).use { android.graphics.BitmapFactory.decodeStream(it) }
             } catch (e: Exception) { null }
         }
-        if (bitmap != null) {
-            androidx.compose.foundation.Image(
-                bitmap = bitmap.asImageBitmap(),
-                contentDescription = name,
-                modifier = modifier,
-                contentScale = ContentScale.Crop
-            )
+        if (bm != null) {
+            androidx.compose.foundation.Image(bitmap = bm.asImageBitmap(), contentDescription = name, modifier = modifier, contentScale = ContentScale.Crop)
         } else {
             placeholder()
         }
     } else if (!imageUrl.isNullOrBlank()) {
-        val context = LocalContext.current
-        SubcomposeAsyncImage(
-            model = ImageRequest.Builder(context).data(imageUrl).crossfade(true).build(),
-            contentDescription = name, modifier = modifier, contentScale = ContentScale.Crop,
-            loading = { placeholder() }, error = { placeholder() }
-        )
+        val context2 = LocalContext.current
+        SubcomposeAsyncImage(model = ImageRequest.Builder(context2).data(imageUrl).crossfade(true).build(), contentDescription = name, modifier = modifier, contentScale = ContentScale.Crop, loading = { placeholder() }, error = { placeholder() })
     } else {
         placeholder()
     }

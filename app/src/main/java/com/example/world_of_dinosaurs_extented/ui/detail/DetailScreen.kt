@@ -107,7 +107,7 @@ fun DetailScreen(
                         .verticalScroll(rememberScrollState())
                 ) {
                     // Hero image
-                    DinoImage(
+                    DinoImage(dinosaurId = dino.id,
                         imageUrl = dino.imageUrl,
                         contentDescription = dino.getLocalizedName(language),
                         modifier = Modifier
