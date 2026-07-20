@@ -27,9 +27,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -37,7 +39,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
-import androidx.compose.ui.platform.LocalContext
 import com.example.world_of_dinosaurs_extented.R
 import com.example.world_of_dinosaurs_extented.domain.model.Dinosaur
 import com.example.world_of_dinosaurs_extented.domain.model.DinosaurDiet
@@ -76,29 +77,21 @@ fun HomeScreen(
                         horizontalAlignment = Alignment.End,
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        // Toggle favorites filter
                         SmallFloatingActionButton(
-                            onClick = {
-                                viewModel.toggleOnlyFavorites()
-                                fabExpanded = false
-                            },
+                            onClick = { viewModel.toggleOnlyFavorites(); fabExpanded = false },
                             containerColor = MaterialTheme.colorScheme.tertiaryContainer
                         ) {
                             Icon(
-                                imageVector = if (uiState.onlyFavorites) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                if (uiState.onlyFavorites) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                 contentDescription = if (uiState.onlyFavorites) "Show all" else "Show favorites only"
                             )
                         }
-                        // Toggle grid/list view
                         SmallFloatingActionButton(
-                            onClick = {
-                                viewModel.toggleViewMode()
-                                fabExpanded = false
-                            },
+                            onClick = { viewModel.toggleViewMode(); fabExpanded = false },
                             containerColor = MaterialTheme.colorScheme.tertiaryContainer
                         ) {
                             Icon(
-                                imageVector = if (uiState.isGridView) Icons.Filled.ViewList else Icons.Filled.GridView,
+                                if (uiState.isGridView) Icons.Filled.ViewList else Icons.Filled.GridView,
                                 contentDescription = if (uiState.isGridView) "Switch to list" else "Switch to grid"
                             )
                         }
@@ -114,27 +107,14 @@ fun HomeScreen(
         },
         topBar = {
             if (showSearch) {
-                SearchBar(
-                    query = uiState.searchQuery,
-                    onQueryChange = viewModel::onSearchQueryChanged,
-                    onClose = {
-                        showSearch = false
-                        viewModel.onSearchQueryChanged("")
-                    }
-                )
+                SearchBar(query = uiState.searchQuery, onQueryChange = viewModel::onSearchQueryChanged, onClose = { showSearch = false; viewModel.onSearchQueryChanged("") })
             } else {
                 TopAppBar(
                     title = { Text(stringResource(R.string.app_name)) },
                     actions = {
-                        IconButton(onClick = onNavigateToMap) {
-                            Icon(Icons.Default.Map, contentDescription = stringResource(R.string.discovery_map))
-                        }
-                        IconButton(onClick = onNavigateToRecognition) {
-                            Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.identify_dinosaur))
-                        }
-                        IconButton(onClick = { showSearch = true }) {
-                            Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_dinosaurs))
-                        }
+                        IconButton(onClick = onNavigateToMap) { Icon(Icons.Default.Map, contentDescription = stringResource(R.string.discovery_map)) }
+                        IconButton(onClick = onNavigateToRecognition) { Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.identify_dinosaur)) }
+                        IconButton(onClick = { showSearch = true }) { Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_dinosaurs)) }
                     }
                 )
             }
@@ -159,7 +139,6 @@ fun HomeScreen(
                 onDietSelected = viewModel::onDietFilterChanged,
                 onToggle3D = viewModel::toggleOnly3D
             )
-
             when {
                 uiState.isLoading -> LoadingIndicator()
                 uiState.error != null -> ErrorView(message = uiState.error, onRetry = viewModel::retry)
@@ -173,102 +152,36 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SearchBar(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    onClose: () -> Unit
-) {
+private fun SearchBar(query: String, onQueryChange: (String) -> Unit, onClose: () -> Unit) {
     TopAppBar(
-        title = {
-            TextField(
-                value = query,
-                onValueChange = onQueryChange,
-                placeholder = { Text(stringResource(R.string.search_dinosaurs)) },
-                singleLine = true,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = onClose) {
-                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.back))
-            }
-        }
+        title = { TextField(value = query, onValueChange = onQueryChange, placeholder = { Text(stringResource(R.string.search_dinosaurs)) }, singleLine = true, colors = TextFieldDefaults.colors(focusedContainerColor = MaterialTheme.colorScheme.surface, unfocusedContainerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth()) },
+        navigationIcon = { IconButton(onClick = onClose) { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.back)) } }
     )
 }
 
 @Composable
-private fun DinosaurGrid(
-    dinosaurs: List<Dinosaur>,
-    language: String,
-    onClick: (String) -> Unit
-) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(dinosaurs, key = { it.id }) { dino ->
-            DinosaurGridCard(dino = dino, language = language, onClick = { onClick(dino.id) })
-        }
+private fun DinosaurGrid(dinosaurs: List<Dinosaur>, language: String, onClick: (String) -> Unit) {
+    LazyVerticalGrid(columns = GridCells.Fixed(2), contentPadding = PaddingValues(8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        items(dinosaurs, key = { it.id }) { dino -> DinosaurGridCard(dino = dino, language = language, onClick = { onClick(dino.id) }) }
     }
 }
 
 @Composable
-private fun DinosaurList(
-    dinosaurs: List<Dinosaur>,
-    language: String,
-    onClick: (String) -> Unit
-) {
-    LazyColumn(
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(dinosaurs, key = { it.id }) { dino ->
-            DinosaurListCard(dino = dino, language = language, onClick = { onClick(dino.id) })
-        }
+private fun DinosaurList(dinosaurs: List<Dinosaur>, language: String, onClick: (String) -> Unit) {
+    LazyColumn(contentPadding = PaddingValues(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        items(dinosaurs, key = { it.id }) { dino -> DinosaurListCard(dino = dino, language = language, onClick = { onClick(dino.id) }) }
     }
 }
 
 @Composable
 private fun DinosaurGridCard(dino: Dinosaur, language: String, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
+    Card(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
         Column {
-            Box {
-                DinoImageOrPlaceholder(
-                    imageUrl = dino.imageUrl,
-                    name = dino.getLocalizedName(language),
-                    era = dino.era,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(140.dp)
-                        .clip(MaterialTheme.shapes.medium)
-                )
-            }
+            DinoImageOrPlaceholder(imageUrl = dino.imageUrl, name = dino.getLocalizedName(language), era = dino.era, modifier = Modifier.fillMaxWidth().height(140.dp).clip(MaterialTheme.shapes.medium))
             Column(modifier = Modifier.padding(8.dp)) {
-                Text(
-                    text = dino.getLocalizedName(language),
-                    style = MaterialTheme.typography.titleSmall,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Text(text = dino.getLocalizedName(language), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(modifier = Modifier.height(4.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    AssistChip(
-                        onClick = {},
-                        label = { Text(eraLabel(dino.era), style = MaterialTheme.typography.labelSmall) },
-                        modifier = Modifier.height(24.dp)
-                    )
-                }
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) { AssistChip(onClick = {}, label = { Text(eraLabel(dino.era), style = MaterialTheme.typography.labelSmall) }, modifier = Modifier.height(24.dp)) }
             }
         }
     }
@@ -276,41 +189,15 @@ private fun DinosaurGridCard(dino: Dinosaur, language: String, onClick: () -> Un
 
 @Composable
 private fun DinosaurListCard(dino: Dinosaur, language: String, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
+    Card(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
         Row(modifier = Modifier.padding(8.dp)) {
-            DinoImageOrPlaceholder(
-                imageUrl = dino.imageUrl,
-                name = dino.getLocalizedName(language),
-                era = dino.era,
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(MaterialTheme.shapes.small)
-            )
+            DinoImageOrPlaceholder(imageUrl = dino.imageUrl, name = dino.getLocalizedName(language), era = dino.era, modifier = Modifier.size(80.dp).clip(MaterialTheme.shapes.small))
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = dino.getLocalizedName(language),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-                Text(
-                    text = dino.scientificName,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Text(text = dino.getLocalizedName(language), style = MaterialTheme.typography.titleMedium)
+                Text(text = dino.scientificName, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = dino.periodYearsAgo,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Text(text = dino.periodYearsAgo, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
@@ -337,42 +224,37 @@ private fun DinoImageOrPlaceholder(
     modifier: Modifier = Modifier
 ) {
     val placeholder = @Composable {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(eraColor(era).copy(alpha = 0.3f)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = name.take(1),
-                style = MaterialTheme.typography.headlineLarge,
-                color = eraColor(era)
-            )
+        Box(modifier = Modifier.fillMaxSize().background(eraColor(era).copy(alpha = 0.3f)), contentAlignment = Alignment.Center) {
+            Text(text = name.take(1), style = MaterialTheme.typography.headlineLarge, color = eraColor(era))
         }
     }
-    if (!imageUrl.isNullOrBlank()) {
+    if (imageUrl != null && imageUrl.startsWith("file:///android_asset/")) {
+        val assetPath = imageUrl.removePrefix("file:///android_asset/")
+        val context = LocalContext.current
+        val bitmap = remember(assetPath) {
+            try {
+                val `is` = context.assets.open(assetPath)
+                android.graphics.BitmapFactory.decodeStream(`is`)
+            } catch (e: Exception) { null }
+        }
+        if (bitmap != null) {
+            androidx.compose.foundation.Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = name,
+                modifier = modifier,
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            placeholder()
+        }
+    } else if (!imageUrl.isNullOrBlank()) {
         val context = LocalContext.current
         SubcomposeAsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(imageUrl)
-                .crossfade(true)
-                .build(),
-            contentDescription = name,
-            modifier = modifier,
-            contentScale = ContentScale.Crop,
-            loading = { placeholder() },
-            error = { placeholder() }
+            model = ImageRequest.Builder(context).data(imageUrl).crossfade(true).build(),
+            contentDescription = name, modifier = modifier, contentScale = ContentScale.Crop,
+            loading = { placeholder() }, error = { placeholder() }
         )
     } else {
-        Box(
-            modifier = modifier.background(eraColor(era).copy(alpha = 0.3f)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = name.take(1),
-                style = MaterialTheme.typography.headlineLarge,
-                color = eraColor(era)
-            )
-        }
+        placeholder()
     }
 }
