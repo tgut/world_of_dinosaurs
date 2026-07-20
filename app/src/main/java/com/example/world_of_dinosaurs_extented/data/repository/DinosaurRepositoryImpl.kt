@@ -58,12 +58,9 @@ class DinosaurRepositoryImpl @Inject constructor(
         if (initialized) return
         initialized = true
 
-        val count = dinosaurDao.getCount()
-        if (count == 0) {
-            seedFromAssets()
-        } else {
-            updateStaleImageUrls()
-        }
+        // Always seed from assets — bundled JSON is the source of truth.
+        // REPLACE strategy updates existing rows (e.g. stale wikimedia URLs → local).
+        seedFromAssets()
         tryRefreshFromRemote()
     }
 
@@ -81,34 +78,6 @@ class DinosaurRepositoryImpl @Inject constructor(
         }
     }
 
-    /**
-     * Update stale wikimedia.org image URLs to local file:///android_asset/ URLs.
-     * Called on every app start after seeding; only applies if the bundled JSON
-     * contains local URLs but the DB still has remote ones.
-     */
-    private suspend fun updateStaleImageUrls() {
-        try {
-            val bundledDtos = assetDataSource.loadDinosaurs()
-            val localUrlsById = bundledDtos
-                .filter { it.imageUrl?.startsWith("file:///android_asset/") == true }
-                .associate { it.id to it.imageUrl!! }
-
-            if (localUrlsById.isEmpty()) return
-
-            val dbEntities = dinosaurDao.getAllDinosaursList()
-            for (entity in dbEntities) {
-                val localUrl = localUrlsById[entity.id] ?: continue
-                if (entity.imageUrl == localUrl) continue // already updated
-                if (entity.imageUrl?.startsWith("file:///android_asset/") == true) continue
-                // Has stale remote URL — update to local
-                dinosaurDao.insertAll(
-                    listOf(entity.copy(imageUrl = localUrl, lastUpdated = System.currentTimeMillis()))
-                )
-            }
-        } catch (_: Exception) {
-            // Non-critical — images fall back to placeholder
-        }
-    }
 
     private suspend fun tryRefreshFromRemote() {
         try {

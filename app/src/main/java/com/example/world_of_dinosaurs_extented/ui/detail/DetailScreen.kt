@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
+import com.example.world_of_dinosaurs_extented.ui.common.DinoImage
 import android.view.View
 import com.example.world_of_dinosaurs_extented.R
 import com.example.world_of_dinosaurs_extented.data.model3d.Model3dConfig
@@ -107,8 +107,8 @@ fun DetailScreen(
                         .verticalScroll(rememberScrollState())
                 ) {
                     // Hero image
-                    AsyncImage(
-                        model = dino.imageUrl,
+                    DinoImage(
+                        imageUrl = dino.imageUrl,
                         contentDescription = dino.getLocalizedName(language),
                         modifier = Modifier
                             .fillMaxWidth()
