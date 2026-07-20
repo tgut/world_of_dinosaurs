@@ -85,6 +85,18 @@
     <string name="vision_key_guide_tencent_steps">1. Go to console.cloud.tencent.com\n2. Search for Image Recognition and enable\n3. Go to Access Management > API Key Management\n4. Create SecretId and SecretKey\n5. Paste them here</string>
     <string name="logout">Logout</string>
     <string name="login">Login</string>
+    <string name="login_title">Login</string>
+    <string name="login_optional">Your data is stored locally. Login is optional.</string>
+    <string name="login_huawei">HUAWEI ID Login</string>
+    <string name="login_sign_in">Sign In</string>
+    <string name="login_cancelled">Login cancelled</string>
+    <string name="login_failed">Login failed</string>
+    <string name="feedback_title">Send Feedback</string>
+    <string name="feedback_hint">Please describe your feedback or issue...</string>
+    <string name="feedback_name_hint">Your name (optional)</string>
+    <string name="feedback_send">Send</string>
+    <string name="feedback_sent">Feedback sent. Thank you!</string>
+    <string name="camera_privacy_hint">用于拍摄图片，然后上传云端来识别恐龙</string>
     <string name="data_usage_desc">The exported JSON file contains your favorite dinosaur names, scientific names, eras, and diets. The file is saved to your Downloads folder and can be shared via email, messaging apps, or cloud storage. Only local data is included.</string>
     <string name="sign_in_desc">Sign in to sync favorites and chat history across devices</string>
     <string name="profile_usage_title">About Login</string>
@@ -255,8 +267,6 @@
     <string name="donate_hint">Like the app? Scan the QR code to buy me a coffee ☕</string>
     <string name="donate_wechat_label">WeChat Pay</string>
     <string name="feedback">Send Feedback</string>
-    <string name="feedback_hint">Found a bug or have a suggestion? Let me know!</string>
-    <string name="feedback_email_subject">World of Dinosaurs – Feedback</string>
     <string name="feedback_email">Tap to send feedback via email</string>
     <string name="feedback_url">https://github.com/tgut/world_of_dinosaurs/issues</string>
 

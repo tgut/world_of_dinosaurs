@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -113,6 +114,21 @@ fun DinoRecognitionScreen(
         ) {
             // Capture buttons
             item {
+                // Camera privacy hint banner
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFB3E5FC)
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(R.string.camera_privacy_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFF01579B),
+                        modifier = Modifier.padding(12.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)

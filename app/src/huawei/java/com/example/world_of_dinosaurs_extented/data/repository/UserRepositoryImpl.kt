@@ -31,7 +31,19 @@ class UserRepositoryImpl(
     }
 
     override suspend fun login(provider: String, credentials: Map<String, Any>): User {
-        throw UnsupportedOperationException("Use HuaweiAccountManager.startLogin() instead")
+        val id = (credentials["id"] as? String) ?: throw Exception("No user id provided")
+        val user = User(
+            id = id,
+            provider = provider,
+            providerId = id,
+            displayName = credentials["displayName"] as? String ?: "User",
+            avatarUrl = null,
+            email = null,
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis()
+        )
+        saveUser(user)
+        return user
     }
 
     override suspend fun completeExternalLogin(user: User): User {
