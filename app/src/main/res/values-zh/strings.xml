@@ -267,7 +267,6 @@
     <string name="donate_wechat_label">微信支付</string>
     <string name="feedback">发送反馈</string>
     <string name="feedback_hint">遇到 bug 或有改进建议？告诉我！</string>
-    <string name="feedback_email_subject">恐龙世界 – 反馈</string>
     <string name="feedback_email">点击通过邮件发送反馈</string>
     <string name="feedback_url">https://github.com/tgut/world_of_dinosaurs/issues</string>
 
